@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.StreamProcessingModel", "Manisero.StreamProcessingModel\Manisero.StreamProcessingModel.csproj", "{48C44692-D70B-42FD-9D18-835209A46357}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.StreamProcessingModel.Samples", "Manisero.StreamProcessingModel.Samples\Manisero.StreamProcessingModel.Samples.csproj", "{D00B0649-549C-47E0-B72D-7BB2F03B94A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48C44692-D70B-42FD-9D18-835209A46357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48C44692-D70B-42FD-9D18-835209A46357}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48C44692-D70B-42FD-9D18-835209A46357}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48C44692-D70B-42FD-9D18-835209A46357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D00B0649-549C-47E0-B72D-7BB2F03B94A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D00B0649-549C-47E0-B72D-7BB2F03B94A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D00B0649-549C-47E0-B72D-7BB2F03B94A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D00B0649-549C-47E0-B72D-7BB2F03B94A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {069D5782-0582-418B-B5A2-9B8780848096}
+	EndGlobalSection
+EndGlobal
