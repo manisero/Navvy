@@ -51,6 +51,14 @@
     <Compile Include="PipelineExecutors\IPipelineExecutor.cs" />
     <Compile Include="PipelineExecutors\Synchronous\SynchronousPipelineExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskExecution\Executors\StepExecutors\BasicStepExecutor.cs" />
+    <Compile Include="TaskExecution\Executors\ITaskStepExecutor.cs" />
+    <Compile Include="TaskExecution\Executors\StepExecutors\DataflowPipelineStepExecutor.cs" />
+    <Compile Include="TaskExecution\Executors\StepExecutors\SequentialPipelineStepExecutor.cs" />
+    <Compile Include="TaskExecution\Models\TaskSteps\BasicTaskStep.cs" />
+    <Compile Include="TaskExecution\Models\ITaskStep.cs" />
+    <Compile Include="TaskExecution\Models\TaskSteps\PipelineTaskStep.cs" />
+    <Compile Include="TaskExecution\Models\TaskDescription.cs" />
     <Compile Include="Utils\MethodInfoExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
