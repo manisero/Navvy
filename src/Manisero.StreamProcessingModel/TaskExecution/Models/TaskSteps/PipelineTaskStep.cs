@@ -13,12 +13,12 @@ namespace Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps
         /// <summary>Used to report progress. Assumption: output count == input count.</summary>
         public int ExpectedInputBatchesCount { get; }
 
-        public ICollection<PipelineBlock<TData>> Blocks { get; }
+        public IList<PipelineBlock<TData>> Blocks { get; }
 
         public PipelineTaskStep(
             string name,
             ICollection<ICollection<TData>> input,
-            ICollection<PipelineBlock<TData>> blocks)
+            IList<PipelineBlock<TData>> blocks)
             : this(name, input, input.Count, blocks)
         {
         }
@@ -27,7 +27,7 @@ namespace Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps
             string name,
             IEnumerable<ICollection<TData>> input,
             int expectedInputBatchesCount,
-            ICollection<PipelineBlock<TData>> blocks)
+            IList<PipelineBlock<TData>> blocks)
         {
             Name = name;
             Input = input;
@@ -44,18 +44,14 @@ namespace Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps
 
         public bool Parallel { get; }
 
-        public Action OnCompleted { get; }
-
         public PipelineBlock(
             string name,
             Action<TData> body,
-            bool parallel = false,
-            Action onCompleted = null)
+            bool parallel = false)
         {
             Name = name;
             Body = body;
             Parallel = parallel;
-            OnCompleted = onCompleted;
         }
     }
 }

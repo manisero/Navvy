@@ -14,8 +14,6 @@ namespace Manisero.StreamProcessingModel.TaskExecution.Executors.StepExecutors
                     {
                         block.Body(data);
                     }
-
-                    block.OnCompleted();
                 }
             }
         }
