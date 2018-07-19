@@ -20,7 +20,18 @@ namespace Manisero.StreamProcessingModel.Samples.TaskExecution
         }
 
         [Fact]
-        public void sample()
+        public void sequential()
+        {
+            test(new SequentialTaskExecutorResolver());
+        }
+
+        [Fact]
+        public void streaming()
+        {
+            test(new StreamingTaskExecutorResolver());
+        }
+        
+        private void test(ITaskStepExecutorResolver taskStepExecutorResolver)
         {
             var initialized = false;
             var sum = 0;
@@ -58,12 +69,14 @@ namespace Manisero.StreamProcessingModel.Samples.TaskExecution
                     }
                 }
             };
-            
-            var executor = new TaskExecutor(new StreamingTaskExecutorResolver());
+
+            var executor = new TaskExecutor(taskStepExecutorResolver);
 
             executor.Execute(taskDescription);
 
+            initialized.Should().Be(true);
             sum.Should().Be(21);
+            completed.Should().Be(true);
         }
     }
 }
