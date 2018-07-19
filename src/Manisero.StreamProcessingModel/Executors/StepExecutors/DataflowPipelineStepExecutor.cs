@@ -30,7 +30,18 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
             }
 
             pipeline.InputBlock.Complete();
-            pipeline.Completion.Wait();
+
+            try
+            {
+                pipeline.Completion.Wait();
+            }
+            catch (AggregateException e)
+            {
+                if (e.InnerException is OperationCanceledException)
+                {
+                    throw e.InnerException;
+                }
+            }
         }
     }
 }

@@ -12,37 +12,54 @@ namespace Manisero.StreamProcessingModel.Samples
 {
     public class task_cancellation
     {
+        private bool _completed;
+
         [Fact]
         public void sequential_basic()
         {
-            basic(new SequentialTaskExecutorResolver());
+            test(GetBasicTask, new SequentialTaskExecutorResolver());
         }
 
         [Fact]
         public void sequential_pipeline()
         {
-            pipeline(new SequentialTaskExecutorResolver());
+            test(GetPipelineTask, new SequentialTaskExecutorResolver());
         }
 
         [Fact]
         public void streaming_basic()
         {
-            basic(new StreamingTaskExecutorResolver());
+            test(GetBasicTask, new StreamingTaskExecutorResolver());
         }
 
         [Fact]
         public void streaming_pipeline()
         {
-            pipeline(new StreamingTaskExecutorResolver());
+            test(GetPipelineTask, new StreamingTaskExecutorResolver());
         }
 
-        private void basic(ITaskStepExecutorResolver taskStepExecutorResolver)
+        private void test(
+            Func<CancellationTokenSource, TaskDescription> taskFactory,
+            ITaskStepExecutorResolver taskStepExecutorResolver)
         {
             // Arrange
-            var completed = false;
             var cancellationSource = new CancellationTokenSource();
+            var taskDescription = taskFactory(cancellationSource);
 
-            var taskDescription = new TaskDescription
+            var progress = new Progress<TaskProgress>(_ => {});
+            var executor = new TaskExecutor(taskStepExecutorResolver);
+
+            // Act
+            var result = executor.Execute(taskDescription, progress, cancellationSource.Token);
+
+            // Assert
+            _completed.Should().Be(false);
+            result.Outcome.Should().Be(TaskOutcome.Canceled);
+        }
+
+        private TaskDescription GetBasicTask(CancellationTokenSource cancellationSource)
+        {
+            return new TaskDescription
             {
                 Steps = new List<ITaskStep>
                 {
@@ -54,28 +71,15 @@ namespace Manisero.StreamProcessingModel.Samples
                     new BasicTaskStep
                     {
                         Name = "Complete",
-                        Body = () => { completed = true; }
+                        Body = () => { _completed = true; }
                     }
                 }
             };
-
-            var progress = new Progress<TaskProgress>(_ => {});
-            var executor = new TaskExecutor(taskStepExecutorResolver);
-
-            // Act
-            var result = executor.Execute(taskDescription, progress, cancellationSource.Token);
-
-            // Assert
-            completed.Should().Be(false);
-            result.Outcome.Should().Be(TaskOutcome.Canceled);
         }
 
-        private void pipeline(ITaskStepExecutorResolver taskStepExecutorResolver)
+        private TaskDescription GetPipelineTask(CancellationTokenSource cancellationSource)
         {
-            var completed = false;
-            var cancellationSource = new CancellationTokenSource();
-
-            var taskDescription = new TaskDescription
+            return new TaskDescription
             {
                 Steps = new List<ITaskStep>
                 {
@@ -98,22 +102,12 @@ namespace Manisero.StreamProcessingModel.Samples
                                     }
                                     else
                                     {
-                                        completed = true;
+                                        _completed = true;
                                     }
                                 })
                         })
                 }
             };
-
-            var progress = new Progress<TaskProgress>(_ => { });
-            var executor = new TaskExecutor(taskStepExecutorResolver);
-
-            // Act
-            var result = executor.Execute(taskDescription, progress, cancellationSource.Token);
-
-            // Assert
-            completed.Should().Be(false);
-            result.Outcome.Should().Be(TaskOutcome.Canceled);
         }
     }
 }

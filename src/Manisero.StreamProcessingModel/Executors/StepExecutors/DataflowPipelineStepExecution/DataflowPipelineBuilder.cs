@@ -61,6 +61,7 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
                 },
                 new ExecutionDataflowBlockOptions
                 {
+                    NameFormat = block.Name,
                     MaxDegreeOfParallelism = maxDegreeOfParallelism,
                     BoundedCapacity = maxDegreeOfParallelism,
                     EnsureOrdered = true,
@@ -83,6 +84,7 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
                 },
                 new ExecutionDataflowBlockOptions
                 {
+                    NameFormat = "Progress",
                     BoundedCapacity = 1,
                     EnsureOrdered = true,
                     CancellationToken = cancellation
