@@ -6,6 +6,15 @@ namespace Manisero.StreamProcessingModel.Utils
 {
     public static class MethodInfoExtensions
     {
+        [System.Diagnostics.DebuggerStepThrough]
+        public static void InvokeAsGeneric(
+            this MethodInfo method,
+            object target,
+            Type[] typeArguments,
+            params object[] arguments)
+            => method.InvokeAsGeneric<object>(target, typeArguments, arguments);
+
+        [System.Diagnostics.DebuggerStepThrough]
         public static TResult InvokeAsGeneric<TResult>(
             this MethodInfo method,
             object target,

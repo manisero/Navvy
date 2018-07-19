@@ -5,7 +5,7 @@ namespace Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps
 {
     public class PipelineTaskStep<TData> : ITaskStep
     {
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>Batches of data to input to first block. After iterating, first block will be completed.</summary>
         public IEnumerable<ICollection<TData>> Input { get; }
