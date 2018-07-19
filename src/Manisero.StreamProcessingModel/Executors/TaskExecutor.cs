@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Utils;
 
@@ -20,20 +21,22 @@ namespace Manisero.StreamProcessingModel.Executors
 
         public void Execute(
             TaskDescription taskDescription,
-            IProgress<TaskProgress> progress)
+            IProgress<TaskProgress> progress,
+            CancellationToken cancellation)
         {
             foreach (var step in taskDescription.Steps)
             {
                 ExecuteStepMethod.InvokeAsGeneric(
                     this,
                     new[] { step.GetType() },
-                    step, progress);
+                    step, progress, cancellation);
             }
         }
 
         private void ExecuteStep<TStep>(
             TStep step,
-            IProgress<TaskProgress> progress)
+            IProgress<TaskProgress> progress,
+            CancellationToken cancellation)
             where TStep : ITaskStep
         {
             var stepExecutor = _taskStepExecutorResolver.Resolve<TStep>();
@@ -45,7 +48,7 @@ namespace Manisero.StreamProcessingModel.Executors
                     ProgressPercentage = x
                 }));
 
-            stepExecutor.Execute(step, stepProgress);
+            stepExecutor.Execute(step, stepProgress, cancellation);
         }
     }
 }

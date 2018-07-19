@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelineStepExecution;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
@@ -11,9 +12,10 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
 
         public void Execute(
             PipelineTaskStep<TData> step,
-            IProgress<byte> progress)
+            IProgress<byte> progress,
+            CancellationToken cancellation)
         {
-            var pipeline = _dataflowPipelineBuilder.Build(step, progress);
+            var pipeline = _dataflowPipelineBuilder.Build(step, progress, cancellation);
             var batchNumber = 1;
 
             foreach (var input in step.Input)
