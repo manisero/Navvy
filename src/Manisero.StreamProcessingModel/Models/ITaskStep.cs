@@ -1,4 +1,4 @@
-﻿namespace Manisero.StreamProcessingModel.TaskExecution.Models
+﻿namespace Manisero.StreamProcessingModel.Models
 {
     public interface ITaskStep
     {

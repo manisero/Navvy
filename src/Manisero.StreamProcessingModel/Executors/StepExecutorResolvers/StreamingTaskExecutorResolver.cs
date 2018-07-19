@@ -1,9 +1,9 @@
 ﻿using System;
-using Manisero.StreamProcessingModel.TaskExecution.Executors.StepExecutors;
-using Manisero.StreamProcessingModel.TaskExecution.Models;
-using Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Executors.StepExecutors;
+using Manisero.StreamProcessingModel.Models;
+using Manisero.StreamProcessingModel.Models.TaskSteps;
 
-namespace Manisero.StreamProcessingModel.TaskExecution.Executors.StepExecutorResolvers
+namespace Manisero.StreamProcessingModel.Executors.StepExecutorResolvers
 {
     public class StreamingTaskExecutorResolver : ITaskStepExecutorResolver
     {

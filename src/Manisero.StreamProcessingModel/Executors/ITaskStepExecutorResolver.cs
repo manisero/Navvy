@@ -1,6 +1,6 @@
-﻿using Manisero.StreamProcessingModel.TaskExecution.Models;
+﻿using Manisero.StreamProcessingModel.Models;
 
-namespace Manisero.StreamProcessingModel.TaskExecution.Executors
+namespace Manisero.StreamProcessingModel.Executors
 {
     public interface ITaskStepExecutorResolver
     {

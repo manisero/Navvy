@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Manisero.StreamProcessingModel.TaskExecution.Executors.StepExecutors.DataflowPipelineStepExecution
+namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelineStepExecution
 {
     public class DataBatch<TData>
     {

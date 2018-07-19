@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps
+namespace Manisero.StreamProcessingModel.Models.TaskSteps
 {
     public class BasicTaskStep : ITaskStep
     {

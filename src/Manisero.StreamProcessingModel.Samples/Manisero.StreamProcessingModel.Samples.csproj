@@ -61,10 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dataflow.cs" />
-    <Compile Include="Synchronous.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskExecution\Streaming.cs" />
+    <Compile Include="task_execution.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

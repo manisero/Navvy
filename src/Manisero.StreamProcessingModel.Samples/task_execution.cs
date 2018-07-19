@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using Manisero.StreamProcessingModel.TaskExecution.Executors;
-using Manisero.StreamProcessingModel.TaskExecution.Executors.StepExecutorResolvers;
-using Manisero.StreamProcessingModel.TaskExecution.Models;
-using Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Executors;
+using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
+using Manisero.StreamProcessingModel.Models;
+using Manisero.StreamProcessingModel.Models.TaskSteps;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Manisero.StreamProcessingModel.Samples.TaskExecution
+namespace Manisero.StreamProcessingModel.Samples
 {
-    public class Streaming
+    public class task_execution
     {
         private readonly ITestOutputHelper _output;
 
-        public Streaming(
+        public task_execution(
             ITestOutputHelper output)
         {
             _output = output;

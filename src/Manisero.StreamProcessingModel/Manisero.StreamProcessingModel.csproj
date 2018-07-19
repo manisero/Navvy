@@ -43,28 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Block.cs" />
-    <Compile Include="Pipeline.cs" />
-    <Compile Include="PipelineExecutors\Dataflow\DataflowPipeline.cs" />
-    <Compile Include="PipelineExecutors\Dataflow\DataflowPipelineBuilder.cs" />
-    <Compile Include="PipelineExecutors\Dataflow\DataflowPipelineExecutor.cs" />
-    <Compile Include="PipelineExecutors\IPipelineExecutor.cs" />
-    <Compile Include="PipelineExecutors\Synchronous\SynchronousPipelineExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskExecution\Executors\ITaskStepExecutorResolver.cs" />
-    <Compile Include="TaskExecution\Executors\StepExecutorResolvers\SequentialTaskExecutorResolver.cs" />
-    <Compile Include="TaskExecution\Executors\StepExecutorResolvers\StreamingTaskExecutorResolver.cs" />
-    <Compile Include="TaskExecution\Executors\StepExecutors\BasicStepExecutor.cs" />
-    <Compile Include="TaskExecution\Executors\ITaskStepExecutor.cs" />
-    <Compile Include="TaskExecution\Executors\StepExecutors\DataflowPipelineStepExecution\DataBatch.cs" />
-    <Compile Include="TaskExecution\Executors\StepExecutors\DataflowPipelineStepExecution\DataflowPipelineBuilder.cs" />
-    <Compile Include="TaskExecution\Executors\StepExecutors\DataflowPipelineStepExecutor.cs" />
-    <Compile Include="TaskExecution\Executors\StepExecutors\SequentialPipelineStepExecutor.cs" />
-    <Compile Include="TaskExecution\Executors\TaskExecutor.cs" />
-    <Compile Include="TaskExecution\Models\TaskSteps\BasicTaskStep.cs" />
-    <Compile Include="TaskExecution\Models\ITaskStep.cs" />
-    <Compile Include="TaskExecution\Models\TaskSteps\PipelineTaskStep.cs" />
-    <Compile Include="TaskExecution\Models\TaskDescription.cs" />
+    <Compile Include="Executors\ITaskStepExecutorResolver.cs" />
+    <Compile Include="Executors\StepExecutorResolvers\SequentialTaskExecutorResolver.cs" />
+    <Compile Include="Executors\StepExecutorResolvers\StreamingTaskExecutorResolver.cs" />
+    <Compile Include="Executors\StepExecutors\BasicStepExecutor.cs" />
+    <Compile Include="Executors\ITaskStepExecutor.cs" />
+    <Compile Include="Executors\StepExecutors\DataflowPipelineStepExecution\DataBatch.cs" />
+    <Compile Include="Executors\StepExecutors\DataflowPipelineStepExecution\DataflowPipelineBuilder.cs" />
+    <Compile Include="Executors\StepExecutors\DataflowPipelineStepExecutor.cs" />
+    <Compile Include="Executors\StepExecutors\SequentialPipelineStepExecutor.cs" />
+    <Compile Include="Executors\TaskExecutor.cs" />
+    <Compile Include="Models\TaskSteps\BasicTaskStep.cs" />
+    <Compile Include="Models\ITaskStep.cs" />
+    <Compile Include="Models\TaskSteps\PipelineTaskStep.cs" />
+    <Compile Include="Models\TaskDescription.cs" />
     <Compile Include="Utils\MethodInfoExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

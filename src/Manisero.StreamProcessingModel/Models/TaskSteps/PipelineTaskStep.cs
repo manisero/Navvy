@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps
+namespace Manisero.StreamProcessingModel.Models.TaskSteps
 {
     public class PipelineTaskStep<TData> : ITaskStep
     {

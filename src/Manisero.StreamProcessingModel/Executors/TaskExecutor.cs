@@ -1,9 +1,8 @@
-﻿using System;
-using System.Reflection;
-using Manisero.StreamProcessingModel.TaskExecution.Models;
+﻿using System.Reflection;
+using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Utils;
 
-namespace Manisero.StreamProcessingModel.TaskExecution.Executors
+namespace Manisero.StreamProcessingModel.Executors
 {
     public class TaskExecutor
     {

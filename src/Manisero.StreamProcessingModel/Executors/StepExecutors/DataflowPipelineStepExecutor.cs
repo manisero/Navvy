@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks.Dataflow;
-using Manisero.StreamProcessingModel.TaskExecution.Executors.StepExecutors.DataflowPipelineStepExecution;
-using Manisero.StreamProcessingModel.TaskExecution.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelineStepExecution;
+using Manisero.StreamProcessingModel.Models.TaskSteps;
 
-namespace Manisero.StreamProcessingModel.TaskExecution.Executors.StepExecutors
+namespace Manisero.StreamProcessingModel.Executors.StepExecutors
 {
     public class DataflowPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
     {
