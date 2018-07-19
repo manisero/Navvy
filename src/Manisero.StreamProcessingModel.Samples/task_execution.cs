@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.Executors;
 using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
@@ -60,11 +59,7 @@ namespace Manisero.StreamProcessingModel.Samples
                         {
                             new PipelineBlock<int>(
                                 "Sum",
-                                x =>
-                                {
-                                    sum += x;
-                                    Task.Delay(100).Wait();
-                                }),
+                                x => sum += x),
                             new PipelineBlock<int>(
                                 "Log",
                                 x => _output.WriteLine(x.ToString()))
