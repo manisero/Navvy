@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.Executors;
 using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
@@ -73,16 +74,18 @@ namespace Manisero.StreamProcessingModel.Samples
             };
 
             var progress = new Progress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
+            var cancellationSource = new CancellationTokenSource();
 
             var executor = new TaskExecutor(taskStepExecutorResolver);
 
             // Act
-            executor.Execute(taskDescription, progress);
+            var result = executor.Execute(taskDescription, progress, cancellationSource.Token);
 
             // Assert
             initialized.Should().Be(true);
             sum.Should().Be(21);
             completed.Should().Be(true);
+            result.Outcome.Should().Be(TaskOutcome.Finished);
         }
     }
 }

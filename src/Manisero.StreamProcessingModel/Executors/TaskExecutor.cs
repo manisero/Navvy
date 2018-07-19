@@ -19,18 +19,27 @@ namespace Manisero.StreamProcessingModel.Executors
             _taskStepExecutorResolver = taskStepExecutorResolver;
         }
 
-        public void Execute(
+        public TaskResult Execute(
             TaskDescription taskDescription,
             IProgress<TaskProgress> progress,
             CancellationToken cancellation)
         {
-            foreach (var step in taskDescription.Steps)
+            try
             {
-                ExecuteStepMethod.InvokeAsGeneric(
-                    this,
-                    new[] { step.GetType() },
-                    step, progress, cancellation);
+                foreach (var step in taskDescription.Steps)
+                {
+                    ExecuteStepMethod.InvokeAsGeneric(
+                        this,
+                        new[] { step.GetType() },
+                        step, progress, cancellation);
+                }
             }
+            catch (OperationCanceledException e)
+            {
+                return TaskResult.Canceled();
+            }
+
+            return TaskResult.Finished();
         }
 
         private void ExecuteStep<TStep>(

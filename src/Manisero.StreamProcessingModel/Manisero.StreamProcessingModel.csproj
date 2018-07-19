@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Executors\StepExecutors\StepExecutionUtils.cs" />
     <Compile Include="Models\TaskProgress.cs" />
+    <Compile Include="Models\TaskResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Executors\ITaskStepExecutorResolver.cs" />
     <Compile Include="Executors\StepExecutorResolvers\SequentialTaskExecutorResolver.cs" />
