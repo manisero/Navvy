@@ -3,25 +3,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelineStepExecution
 {
+    public class DataflowPipeline<TData>
+    {
+        public ITargetBlock<DataBatch<TData>> InputBlock { get; set; }
+        public Task Completion { get; set; }
+    }
+
     public class DataflowPipelineBuilder<TData>
     {
         private static readonly int DegreeOfParallelism = Environment.ProcessorCount - 1;
 
-        public Tuple<ITargetBlock<DataBatch<TData>>, Task> Build(PipelineTaskStep<TData> step)
+        public DataflowPipeline<TData> Build(
+            PipelineTaskStep<TData> step,
+            IProgress<byte> progress)
         {
             var firstBlock = ToTransformBlock(step.Blocks.First());
-
-            if (step.Blocks.Count == 1)
-            {
-                return new Tuple<ITargetBlock<DataBatch<TData>>, Task>(firstBlock, firstBlock.Completion);
-            }
-
             var previousBlock = firstBlock;
 
-            for (var i = 1; i < step.Blocks.Count - 1; i++)
+            for (var i = 1; i <= step.Blocks.Count - 1; i++)
             {
                 var currentBlock = ToTransformBlock(step.Blocks[i]);
                 previousBlock.LinkTo(currentBlock, new DataflowLinkOptions { PropagateCompletion = true });
@@ -29,15 +32,19 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
                 previousBlock = currentBlock;
             }
 
-            var lastBlock = ToActionBlock(step.Blocks.Last());
-            previousBlock.LinkTo(lastBlock, new DataflowLinkOptions { PropagateCompletion = true });
+            var progressBlock = CreateProgressBlock(step, progress);
+            previousBlock.LinkTo(progressBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
-            return new Tuple<ITargetBlock<DataBatch<TData>>, Task>(firstBlock, lastBlock.Completion);
+            return new DataflowPipeline<TData>
+            {
+                InputBlock = firstBlock,
+                Completion = progressBlock.Completion
+            };
         }
 
         private TransformBlock<DataBatch<TData>, DataBatch<TData>> ToTransformBlock(PipelineBlock<TData> block)
         {
-            var options = GetDataflowOptions(block);
+            var maxDegreeOfParallelism = block.Parallel ? DegreeOfParallelism : 1;
 
             return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
                 x =>
@@ -49,34 +56,31 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
 
                     return x;
                 },
-                options);
+                new ExecutionDataflowBlockOptions
+                {
+                    MaxDegreeOfParallelism = maxDegreeOfParallelism,
+                    BoundedCapacity = maxDegreeOfParallelism,
+                    EnsureOrdered = true
+                });
         }
 
-        private ActionBlock<DataBatch<TData>> ToActionBlock(PipelineBlock<TData> block)
+        private ActionBlock<DataBatch<TData>> CreateProgressBlock(
+            PipelineTaskStep<TData> step,
+            IProgress<byte> progress)
         {
-            var options = GetDataflowOptions(block);
+            var batchNumber = 0;
 
             return new ActionBlock<DataBatch<TData>>(
                 x =>
                 {
-                    foreach (var data in x.Data)
-                    {
-                        block.Body(data);
-                    }
+                    batchNumber++;
+                    StepExecutionUtils.ReportProgress(batchNumber, step.ExpectedInputBatchesCount, progress);
                 },
-                options);
-        }
-
-        private ExecutionDataflowBlockOptions GetDataflowOptions(PipelineBlock<TData> block)
-        {
-            var maxDegreeOfParallelism = block.Parallel ? DegreeOfParallelism : 1;
-
-            return new ExecutionDataflowBlockOptions
-            {
-                MaxDegreeOfParallelism = maxDegreeOfParallelism,
-                BoundedCapacity = maxDegreeOfParallelism,
-                EnsureOrdered = true
-            };
+                new ExecutionDataflowBlockOptions
+                {
+                    BoundedCapacity = 1,
+                    EnsureOrdered = true
+                });
         }
     }
 }

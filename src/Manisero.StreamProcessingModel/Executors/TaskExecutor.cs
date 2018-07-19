@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Utils;
 
@@ -17,19 +18,34 @@ namespace Manisero.StreamProcessingModel.Executors
             _taskStepExecutorResolver = taskStepExecutorResolver;
         }
 
-        public void Execute(TaskDescription taskDescription)
+        public void Execute(
+            TaskDescription taskDescription,
+            IProgress<TaskProgress> progress)
         {
             foreach (var step in taskDescription.Steps)
             {
-                ExecuteStepMethod.InvokeAsGeneric(this, new[] { step.GetType() }, step);
+                ExecuteStepMethod.InvokeAsGeneric(
+                    this,
+                    new[] { step.GetType() },
+                    step, progress);
             }
         }
 
-        private void ExecuteStep<TStep>(TStep step)
+        private void ExecuteStep<TStep>(
+            TStep step,
+            IProgress<TaskProgress> progress)
             where TStep : ITaskStep
         {
             var stepExecutor = _taskStepExecutorResolver.Resolve<TStep>();
-            stepExecutor.Execute(step);
+
+            var stepProgress = new Progress<byte>(
+                x => progress.Report(new TaskProgress
+                {
+                    StepName = step.Name,
+                    ProgressPercentage = x
+                }));
+
+            stepExecutor.Execute(step, stepProgress);
         }
     }
 }

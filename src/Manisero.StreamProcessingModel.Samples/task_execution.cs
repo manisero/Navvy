@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.Executors;
 using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
@@ -33,6 +35,7 @@ namespace Manisero.StreamProcessingModel.Samples
         
         private void test(ITaskStepExecutorResolver taskStepExecutorResolver)
         {
+            // Arrange
             var initialized = false;
             var sum = 0;
             var completed = false;
@@ -57,7 +60,11 @@ namespace Manisero.StreamProcessingModel.Samples
                         {
                             new PipelineBlock<int>(
                                 "Sum",
-                                x => sum += x),
+                                x =>
+                                {
+                                    sum += x;
+                                    Task.Delay(100).Wait();
+                                }),
                             new PipelineBlock<int>(
                                 "Log",
                                 x => _output.WriteLine(x.ToString()))
@@ -70,10 +77,14 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
 
+            var progress = new Progress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
+
             var executor = new TaskExecutor(taskStepExecutorResolver);
 
-            executor.Execute(taskDescription);
+            // Act
+            executor.Execute(taskDescription, progress);
 
+            // Assert
             initialized.Should().Be(true);
             sum.Should().Be(21);
             completed.Should().Be(true);

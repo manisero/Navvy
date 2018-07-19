@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks.Dataflow;
+﻿using System;
+using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelineStepExecution;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
 
@@ -8,9 +9,11 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
     {
         private readonly DataflowPipelineBuilder<TData> _dataflowPipelineBuilder = new DataflowPipelineBuilder<TData>();
 
-        public void Execute(PipelineTaskStep<TData> step)
+        public void Execute(
+            PipelineTaskStep<TData> step,
+            IProgress<byte> progress)
         {
-            var pipeline = _dataflowPipelineBuilder.Build(step);
+            var pipeline = _dataflowPipelineBuilder.Build(step, progress);
             var batchNumber = 1;
 
             foreach (var input in step.Input)
@@ -21,11 +24,11 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
                     Data = input
                 };
 
-                pipeline.Item1.SendAsync(batch).Wait();
+                pipeline.InputBlock.SendAsync(batch).Wait();
             }
 
-            pipeline.Item1.Complete();
-            pipeline.Item2.Wait();
+            pipeline.InputBlock.Complete();
+            pipeline.Completion.Wait();
         }
     }
 }
