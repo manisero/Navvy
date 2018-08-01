@@ -52,10 +52,7 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
             return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
                 x =>
                 {
-                    foreach (var data in x.Data)
-                    {
-                        block.Body(data);
-                    }
+                    block.Body(x.Data);
 
                     return x;
                 },

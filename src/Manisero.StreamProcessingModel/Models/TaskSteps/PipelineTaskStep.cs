@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.Models.TaskSteps
 {
@@ -40,18 +41,34 @@ namespace Manisero.StreamProcessingModel.Models.TaskSteps
     {
         public string Name { get; }
 
-        public Action<TData> Body { get; }
+        public Action<ICollection<TData>> Body { get; }
 
         public bool Parallel { get; }
 
         public PipelineBlock(
             string name,
-            Action<TData> body,
+            Action<ICollection<TData>> body,
             bool parallel = false)
         {
             Name = name;
             Body = body;
             Parallel = parallel;
+        }
+
+        public static PipelineBlock<TData> ItemBody(
+            string name,
+            Action<TData> body,
+            bool parallel = false)
+        {
+            return new PipelineBlock<TData>(name, x => x.ForEach(body), parallel);
+        }
+
+        public static PipelineBlock<TData> BatchBody(
+            string name,
+            Action<ICollection<TData>> body,
+            bool parallel = false)
+        {
+            return new PipelineBlock<TData>(name, body, parallel);
         }
     }
 }

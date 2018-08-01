@@ -92,7 +92,7 @@ namespace Manisero.StreamProcessingModel.Samples
                         },
                         new List<PipelineBlock<int>>
                         {
-                            new PipelineBlock<int>(
+                            PipelineBlock<int>.ItemBody(
                                 "Cancel",
                                 x =>
                                 {

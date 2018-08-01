@@ -58,12 +58,12 @@ namespace Manisero.StreamProcessingModel.Samples
                         },
                         new List<PipelineBlock<int>>
                         {
-                            new PipelineBlock<int>(
+                            PipelineBlock<int>.ItemBody(
                                 "Sum",
                                 x => sum += x),
-                            new PipelineBlock<int>(
+                            PipelineBlock<int>.BatchBody(
                                 "Log",
-                                x => _output.WriteLine(x.ToString()))
+                                x => _output.WriteLine(string.Join(", ", x)))
                         }),
                     new BasicTaskStep
                     {

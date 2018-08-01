@@ -60,6 +60,7 @@
     <Compile Include="Models\ITaskStep.cs" />
     <Compile Include="Models\TaskSteps\PipelineTaskStep.cs" />
     <Compile Include="Models\TaskDescription.cs" />
+    <Compile Include="Utils\EnumerableExtensions.cs" />
     <Compile Include="Utils\IntExtensions.cs" />
     <Compile Include="Utils\MethodInfoExtensions.cs" />
   </ItemGroup>

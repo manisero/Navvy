@@ -17,10 +17,7 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
             {
                 foreach (var block in step.Blocks)
                 {
-                    foreach (var data in input)
-                    {
-                        block.Body(data);
-                    }
+                    block.Body(input);
 
                     cancellation.ThrowIfCancellationRequested();
                 }
