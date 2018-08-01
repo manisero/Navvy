@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -37,7 +38,7 @@ namespace Manisero.StreamProcessingModel.Samples
             test(
                 new SequentialTaskExecutorResolver(),
                 GetPipelineStep(3, 2),
-                new[] { 50, 100, 100 });
+                new[] { 50, 100, 100 }); // TODO: Consider not reporting unexpected batches
         }
 
         [Fact]
@@ -46,7 +47,7 @@ namespace Manisero.StreamProcessingModel.Samples
             test(
                 new SequentialTaskExecutorResolver(),
                 GetPipelineStep(3, 4),
-                new[] { 25, 50, 75 });
+                new[] { 25, 50, 75 }); // TODO: Consider including step status in TaskProgress (and reporting finished when finished)
         }
 
         [Fact]
@@ -91,14 +92,14 @@ namespace Manisero.StreamProcessingModel.Samples
             ICollection<int> expectedProgressReports)
         {
             // Arrange
-            var progressReports = new List<byte>();
+            var progressReports = new ConcurrentBag<TaskProgress>();
 
             var taskDescription = new TaskDescription
             {
                 Steps = new List<ITaskStep> { taskStep }
             };
 
-            var progress = new Progress<TaskProgress>(x => progressReports.Add(x.ProgressPercentage));
+            var progress = new Progress<TaskProgress>(x => progressReports.Add(x));
 
             var cancellationSource = new CancellationTokenSource();
             var executor = new TaskExecutor(taskStepExecutorResolver);
@@ -107,7 +108,8 @@ namespace Manisero.StreamProcessingModel.Samples
             executor.Execute(taskDescription, progress, cancellationSource.Token);
 
             // Assert
-            progressReports.ShouldAllBeEquivalentTo(expectedProgressReports);
+            progressReports.Select(x => x.StepName).Should().OnlyContain(x => x == taskStep.Name);
+            progressReports.Select(x => x.ProgressPercentage).ShouldAllBeEquivalentTo(expectedProgressReports);
         }
 
         private ITaskStep GetBasicStep()
