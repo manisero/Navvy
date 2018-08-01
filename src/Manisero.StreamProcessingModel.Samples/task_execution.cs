@@ -44,11 +44,9 @@ namespace Manisero.StreamProcessingModel.Samples
             {
                 Steps = new List<ITaskStep>
                 {
-                    new BasicTaskStep
-                    {
-                        Name = "Initialize",
-                        Body = () => { initialized = true; }
-                    },
+                    new BasicTaskStep(
+                        "Initialize",
+                        () => { initialized = true; }),
                     new PipelineTaskStep<int>(
                         "Pipeline",
                         new[]
@@ -65,11 +63,9 @@ namespace Manisero.StreamProcessingModel.Samples
                                 "Log",
                                 x => _output.WriteLine(string.Join(", ", x)))
                         }),
-                    new BasicTaskStep
-                    {
-                        Name = "Complete",
-                        Body = () => { completed = true; }
-                    }
+                    new BasicTaskStep(
+                        "Complete",
+                        () => { completed = true; })
                 }
             };
 

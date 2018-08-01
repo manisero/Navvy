@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Manisero.StreamProcessingModel.Samples
 {
-    public class task_cancellation
+    public class cancellation
     {
         private bool _completed;
 
@@ -63,16 +63,12 @@ namespace Manisero.StreamProcessingModel.Samples
             {
                 Steps = new List<ITaskStep>
                 {
-                    new BasicTaskStep
-                    {
-                        Name = "Cancel",
-                        Body = () => cancellationSource.Cancel()
-                    },
-                    new BasicTaskStep
-                    {
-                        Name = "Complete",
-                        Body = () => { _completed = true; }
-                    }
+                    new BasicTaskStep(
+                        "Cancel",
+                        cancellationSource.Cancel),
+                    new BasicTaskStep(
+                        "Complete",
+                        () => { _completed = true; })
                 }
             };
         }
