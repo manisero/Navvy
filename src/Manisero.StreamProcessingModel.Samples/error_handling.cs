@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.Executors;
-using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
 using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
 using Manisero.StreamProcessingModel.Samples.Utils;
@@ -32,7 +31,39 @@ namespace Manisero.StreamProcessingModel.Samples
             };
 
             // Act
-            var result = test(taskDescription, TaskExecutorResolvers.Get(resolverType));
+            var result = test(taskDescription, resolverType);
+
+            // Assert
+            result.Error.Should().BeSameAs(exception);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline(ResolverType resolverType)
+        {
+            // Arrange
+            var exception = new Exception();
+
+            var taskDescription = new TaskDescription
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new PipelineTaskStep<int>(
+                        "Step",
+                        new[] { new[] { 0 } },
+                        new List<PipelineBlock<int>>
+                        {
+                            PipelineBlock<int>.BatchBody(
+                                "Block",
+                                _ => throw exception
+                            )
+                        })
+                }
+            };
+
+            // Act
+            var result = test(taskDescription, resolverType);
 
             // Assert
             result.Error.Should().BeSameAs(exception);
@@ -40,12 +71,12 @@ namespace Manisero.StreamProcessingModel.Samples
 
         private TaskResult test(
             TaskDescription taskDescription,
-            ITaskStepExecutorResolver taskStepExecutorResolver)
+            ResolverType resolverType)
         {
             // Arrange
             var progress = new Progress<TaskProgress>(_ => {});
             var cancellationSource = new CancellationTokenSource();
-            var executor = new TaskExecutor(taskStepExecutorResolver);
+            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
 
             // Act
             var result = executor.Execute(taskDescription, progress, cancellationSource.Token);

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.Executors;
-using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
 using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
 using Manisero.StreamProcessingModel.Samples.Utils;
@@ -21,7 +20,7 @@ namespace Manisero.StreamProcessingModel.Samples
         public void basic(ResolverType resolverType)
         {
             test(
-                TaskExecutorResolvers.Get(resolverType),
+                resolverType,
                 GetBasicStep(),
                 new[] { 100 });
         }
@@ -32,7 +31,7 @@ namespace Manisero.StreamProcessingModel.Samples
         public void pipeline(ResolverType resolverType)
         {
             test(
-                TaskExecutorResolvers.Get(resolverType),
+                resolverType,
                 GetPipelineStep(3),
                 new[] { 33, 66, 100 });
         }
@@ -43,7 +42,7 @@ namespace Manisero.StreamProcessingModel.Samples
         public void pipeline___more_batches_than_expected(ResolverType resolverType)
         {
             test(
-                TaskExecutorResolvers.Get(resolverType),
+                resolverType,
                 GetPipelineStep(3, 2),
                 new[] { 50, 100, 100 }); // TODO: Consider not reporting unexpected batches
         }
@@ -54,13 +53,13 @@ namespace Manisero.StreamProcessingModel.Samples
         public void pipeline___less_batches_than_expected(ResolverType resolverType)
         {
             test(
-                TaskExecutorResolvers.Get(resolverType),
+                resolverType,
                 GetPipelineStep(3, 4),
                 new[] { 25, 50, 75 }); // TODO: Consider including step status in TaskProgress (and reporting finished when finished)
         }
 
         private void test(
-            ITaskStepExecutorResolver taskStepExecutorResolver,
+            ResolverType resolverType,
             ITaskStep taskStep,
             ICollection<int> expectedProgressReports)
         {
@@ -75,7 +74,7 @@ namespace Manisero.StreamProcessingModel.Samples
             var progress = new Progress<TaskProgress>(x => progressReports.Add(x));
 
             var cancellationSource = new CancellationTokenSource();
-            var executor = new TaskExecutor(taskStepExecutorResolver);
+            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
 
             // Act
             executor.Execute(taskDescription, progress, cancellationSource.Token);

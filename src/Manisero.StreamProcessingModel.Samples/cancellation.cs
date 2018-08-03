@@ -19,7 +19,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void basic(ResolverType resolverType)
         {
-            test(GetBasicTask, TaskExecutorResolvers.Get(resolverType));
+            test(GetBasicTask, resolverType);
         }
 
         [Theory]
@@ -27,19 +27,19 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void pipeline(ResolverType resolverType)
         {
-            test(GetPipelineTask, TaskExecutorResolvers.Get(resolverType));
+            test(GetPipelineTask, resolverType);
         }
 
         private void test(
             Func<CancellationTokenSource, TaskDescription> taskFactory,
-            ITaskStepExecutorResolver taskStepExecutorResolver)
+            ResolverType resolverType)
         {
             // Arrange
             var cancellationSource = new CancellationTokenSource();
             var taskDescription = taskFactory(cancellationSource);
 
             var progress = new Progress<TaskProgress>(_ => {});
-            var executor = new TaskExecutor(taskStepExecutorResolver);
+            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
 
             // Act
             var result = executor.Execute(taskDescription, progress, cancellationSource.Token);
