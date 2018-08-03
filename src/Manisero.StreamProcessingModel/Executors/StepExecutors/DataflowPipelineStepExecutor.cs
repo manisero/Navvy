@@ -37,10 +37,14 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
             }
             catch (AggregateException e)
             {
-                if (e.InnerException is OperationCanceledException)
+                var flat = e.Flatten();
+
+                if (flat.InnerExceptions.Count == 1)
                 {
-                    throw e.InnerException;
+                    throw flat.InnerExceptions[0];
                 }
+
+                throw flat;
             }
         }
     }
