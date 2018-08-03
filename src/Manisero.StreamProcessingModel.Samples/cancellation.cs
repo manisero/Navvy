@@ -113,8 +113,8 @@ namespace Manisero.StreamProcessingModel.Samples
             var result = executor.Execute(taskDescription, progress, _cancellationSource.Token);
 
             // Assert
-            _completed.Should().Be(false);
             result.Outcome.Should().Be(TaskOutcome.Canceled);
+            _completed.Should().Be(false);
         }
     }
 }

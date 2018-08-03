@@ -69,10 +69,10 @@ namespace Manisero.StreamProcessingModel.Samples
             var result = executor.Execute(taskDescription, progress, cancellationSource.Token);
 
             // Assert
+            result.Outcome.Should().Be(TaskOutcome.Finished);
             initialized.Should().Be(true);
             sum.Should().Be(21);
             completed.Should().Be(true);
-            result.Outcome.Should().Be(TaskOutcome.Finished);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline(ResolverType resolverType)
+        public void pipeline___catches_error(ResolverType resolverType)
         {
             var taskDescription = new TaskDescription
             {
@@ -55,6 +55,79 @@ namespace Manisero.StreamProcessingModel.Samples
             };
             
             test(taskDescription, resolverType);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline___batch_following_invalid_batch_is_not_processed(ResolverType resolverType)
+        {
+            var completed = false;
+
+            var taskDescription = new TaskDescription
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new PipelineTaskStep<int>(
+                        "Step",
+                        new[]
+                        {
+                            new[] { 0 },
+                            new[] { 1 }
+                        },
+                        new List<PipelineBlock<int>>
+                        {
+                            PipelineBlock<int>.BatchBody(
+                                "Error / Complete",
+                                x =>
+                                {
+                                    if (x.Contains(0))
+                                    {
+                                        throw _exception;
+                                    }
+                                    else
+                                    {
+                                        completed = true;
+                                    }
+                                })
+                        })
+                }
+            };
+
+            test(taskDescription, resolverType);
+
+            completed.Should().Be(false);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline___invalid_batch_is_not_further_processed(ResolverType resolverType)
+        {
+            var completed = false;
+
+            var taskDescription = new TaskDescription
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new PipelineTaskStep<int>(
+                        "Step",
+                        new[] { new[] { 0 } },
+                        new List<PipelineBlock<int>>
+                        {
+                            PipelineBlock<int>.BatchBody(
+                                "Error",
+                                x => throw _exception),
+                            PipelineBlock<int>.BatchBody(
+                                "Complete",
+                                x => { completed = true; })
+                        })
+                }
+            };
+
+            test(taskDescription, resolverType);
+
+            completed.Should().Be(false);
         }
 
         private void test(
