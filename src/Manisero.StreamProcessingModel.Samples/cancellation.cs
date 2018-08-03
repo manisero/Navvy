@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.Executors;
-using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
 using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
 
 namespace Manisero.StreamProcessingModel.Samples
@@ -14,28 +14,20 @@ namespace Manisero.StreamProcessingModel.Samples
     {
         private bool _completed;
 
-        [Fact]
-        public void sequential_basic()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void basic(ResolverType resolverType)
         {
-            test(GetBasicTask, new SequentialTaskExecutorResolver());
+            test(GetBasicTask, TaskExecutorResolvers.Get(resolverType));
         }
 
-        [Fact]
-        public void sequential_pipeline()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline(ResolverType resolverType)
         {
-            test(GetPipelineTask, new SequentialTaskExecutorResolver());
-        }
-
-        [Fact]
-        public void streaming_basic()
-        {
-            test(GetBasicTask, new StreamingTaskExecutorResolver());
-        }
-
-        [Fact]
-        public void streaming_pipeline()
-        {
-            test(GetPipelineTask, new StreamingTaskExecutorResolver());
+            test(GetPipelineTask, TaskExecutorResolvers.Get(resolverType));
         }
 
         private void test(

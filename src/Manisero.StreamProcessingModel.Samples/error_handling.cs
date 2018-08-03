@@ -6,14 +6,17 @@ using Manisero.StreamProcessingModel.Executors;
 using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
 using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
 
 namespace Manisero.StreamProcessingModel.Samples
 {
     public class error_handling
     {
-        [Fact]
-        public void sequential_basic()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void basic(ResolverType resolverType)
         {
             // Arrange
             var exception = new Exception();
@@ -29,30 +32,7 @@ namespace Manisero.StreamProcessingModel.Samples
             };
 
             // Act
-            var result = test(taskDescription, new SequentialTaskExecutorResolver());
-
-            // Assert
-            result.Error.Should().BeSameAs(exception);
-        }
-
-        [Fact]
-        public void streaming_basic()
-        {
-            // Arrange
-            var exception = new Exception();
-
-            var taskDescription = new TaskDescription
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "Step",
-                        () => throw exception)
-                }
-            };
-
-            // Act
-            var result = test(taskDescription, new StreamingTaskExecutorResolver());
+            var result = test(taskDescription, TaskExecutorResolvers.Get(resolverType));
 
             // Assert
             result.Error.Should().BeSameAs(exception);

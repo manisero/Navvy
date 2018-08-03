@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.Executors;
-using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
 using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -21,19 +21,10 @@ namespace Manisero.StreamProcessingModel.Samples
             _output = output;
         }
 
-        [Fact]
-        public void sequential()
-        {
-            test(new SequentialTaskExecutorResolver());
-        }
-
-        [Fact]
-        public void streaming()
-        {
-            test(new StreamingTaskExecutorResolver());
-        }
-        
-        private void test(ITaskStepExecutorResolver taskStepExecutorResolver)
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void test(ResolverType resolverType)
         {
             // Arrange
             var initialized = false;
@@ -72,7 +63,7 @@ namespace Manisero.StreamProcessingModel.Samples
             var progress = new Progress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
             var cancellationSource = new CancellationTokenSource();
 
-            var executor = new TaskExecutor(taskStepExecutorResolver);
+            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
 
             // Act
             var result = executor.Execute(taskDescription, progress, cancellationSource.Token);

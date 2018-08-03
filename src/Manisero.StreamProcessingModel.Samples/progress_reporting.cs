@@ -8,82 +8,55 @@ using Manisero.StreamProcessingModel.Executors;
 using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
 using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
 
 namespace Manisero.StreamProcessingModel.Samples
 {
     public class progress_reporting
     {
-        [Fact]
-        public void sequential_basic()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void basic(ResolverType resolverType)
         {
             test(
-                new SequentialTaskExecutorResolver(),
+                TaskExecutorResolvers.Get(resolverType),
                 GetBasicStep(),
                 new[] { 100 });
         }
 
-        [Fact]
-        public void sequential_pipeline()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline(ResolverType resolverType)
         {
             test(
-                new SequentialTaskExecutorResolver(),
+                TaskExecutorResolvers.Get(resolverType),
                 GetPipelineStep(3),
                 new[] { 33, 66, 100 });
         }
 
-        [Fact]
-        public void sequential_pipeline___more_batches_than_expected()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline___more_batches_than_expected(ResolverType resolverType)
         {
             test(
-                new SequentialTaskExecutorResolver(),
+                TaskExecutorResolvers.Get(resolverType),
                 GetPipelineStep(3, 2),
                 new[] { 50, 100, 100 }); // TODO: Consider not reporting unexpected batches
         }
 
-        [Fact]
-        public void sequential_pipeline___less_batches_than_expected()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline___less_batches_than_expected(ResolverType resolverType)
         {
             test(
-                new SequentialTaskExecutorResolver(),
+                TaskExecutorResolvers.Get(resolverType),
                 GetPipelineStep(3, 4),
                 new[] { 25, 50, 75 }); // TODO: Consider including step status in TaskProgress (and reporting finished when finished)
-        }
-
-        [Fact]
-        public void streaming_basic()
-        {
-            test(
-                new StreamingTaskExecutorResolver(),
-                GetBasicStep(),
-                new[] { 100 });
-        }
-
-        [Fact]
-        public void streaming_pipeline()
-        {
-            test(
-                new StreamingTaskExecutorResolver(),
-                GetPipelineStep(3),
-                new[] { 33, 66, 100 });
-        }
-
-        [Fact]
-        public void streaming_pipeline___more_batches_than_expected()
-        {
-            test(
-                new StreamingTaskExecutorResolver(),
-                GetPipelineStep(3, 2),
-                new[] { 50, 100, 100 });
-        }
-
-        [Fact]
-        public void streaming_pipeline___less_batches_than_expected()
-        {
-            test(
-                new StreamingTaskExecutorResolver(),
-                GetPipelineStep(3, 4),
-                new[] { 25, 50, 75 });
         }
 
         private void test(

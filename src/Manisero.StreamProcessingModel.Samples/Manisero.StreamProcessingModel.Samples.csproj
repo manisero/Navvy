@@ -66,6 +66,7 @@
     <Compile Include="cancellation.cs" />
     <Compile Include="progress_reporting.cs" />
     <Compile Include="task_execution.cs" />
+    <Compile Include="Utils\TaskExecutorResolvers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
