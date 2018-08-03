@@ -12,29 +12,24 @@ namespace Manisero.StreamProcessingModel.Samples
 {
     public class error_handling
     {
+        private readonly Exception _exception = new Exception();
+
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
         public void basic(ResolverType resolverType)
         {
-            // Arrange
-            var exception = new Exception();
-
             var taskDescription = new TaskDescription
             {
                 Steps = new List<ITaskStep>
                 {
                     new BasicTaskStep(
                         "Step",
-                        () => throw exception)
+                        () => throw _exception)
                 }
             };
-
-            // Act
-            var result = test(taskDescription, resolverType);
-
-            // Assert
-            result.Error.Should().BeSameAs(exception);
+            
+            test(taskDescription, resolverType);
         }
 
         [Theory]
@@ -42,9 +37,6 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void pipeline(ResolverType resolverType)
         {
-            // Arrange
-            var exception = new Exception();
-
             var taskDescription = new TaskDescription
             {
                 Steps = new List<ITaskStep>
@@ -56,20 +48,16 @@ namespace Manisero.StreamProcessingModel.Samples
                         {
                             PipelineBlock<int>.BatchBody(
                                 "Block",
-                                _ => throw exception
+                                _ => throw _exception
                             )
                         })
                 }
             };
-
-            // Act
-            var result = test(taskDescription, resolverType);
-
-            // Assert
-            result.Error.Should().BeSameAs(exception);
+            
+            test(taskDescription, resolverType);
         }
 
-        private TaskResult test(
+        private void test(
             TaskDescription taskDescription,
             ResolverType resolverType)
         {
@@ -83,8 +71,7 @@ namespace Manisero.StreamProcessingModel.Samples
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);
-
-            return result;
+            result.Error.Should().BeSameAs(_exception);
         }
     }
 }
