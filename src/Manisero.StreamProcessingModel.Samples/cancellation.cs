@@ -12,6 +12,7 @@ namespace Manisero.StreamProcessingModel.Samples
 {
     public class cancellation
     {
+        private readonly CancellationTokenSource _cancellationSource = new CancellationTokenSource();
         private bool _completed;
 
         [Theory]
@@ -19,7 +20,20 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void basic(ResolverType resolverType)
         {
-            test(GetBasicTask, resolverType);
+            var taskDescription = new TaskDescription
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new BasicTaskStep(
+                        "Cancel",
+                        _cancellationSource.Cancel),
+                    new BasicTaskStep(
+                        "Complete",
+                        () => { _completed = true; })
+                }
+            };
+
+            test(taskDescription, resolverType);
         }
 
         [Theory]
@@ -27,47 +41,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void pipeline(ResolverType resolverType)
         {
-            test(GetPipelineTask, resolverType);
-        }
-
-        private void test(
-            Func<CancellationTokenSource, TaskDescription> taskFactory,
-            ResolverType resolverType)
-        {
-            // Arrange
-            var cancellationSource = new CancellationTokenSource();
-            var taskDescription = taskFactory(cancellationSource);
-
-            var progress = new Progress<TaskProgress>(_ => {});
-            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
-
-            // Act
-            var result = executor.Execute(taskDescription, progress, cancellationSource.Token);
-
-            // Assert
-            _completed.Should().Be(false);
-            result.Outcome.Should().Be(TaskOutcome.Canceled);
-        }
-
-        private TaskDescription GetBasicTask(CancellationTokenSource cancellationSource)
-        {
-            return new TaskDescription
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "Cancel",
-                        cancellationSource.Cancel),
-                    new BasicTaskStep(
-                        "Complete",
-                        () => { _completed = true; })
-                }
-            };
-        }
-
-        private TaskDescription GetPipelineTask(CancellationTokenSource cancellationSource)
-        {
-            return new TaskDescription
+            var taskDescription = new TaskDescription
             {
                 Steps = new List<ITaskStep>
                 {
@@ -86,7 +60,7 @@ namespace Manisero.StreamProcessingModel.Samples
                                 {
                                     if (x == 0)
                                     {
-                                        cancellationSource.Cancel();
+                                        _cancellationSource.Cancel();
                                     }
                                     else
                                     {
@@ -96,6 +70,24 @@ namespace Manisero.StreamProcessingModel.Samples
                         })
                 }
             };
+
+            test(taskDescription, resolverType);
+        }
+
+        private void test(
+            TaskDescription taskDescription,
+            ResolverType resolverType)
+        {
+            // Arrange
+            var progress = new Progress<TaskProgress>(_ => {});
+            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
+
+            // Act
+            var result = executor.Execute(taskDescription, progress, _cancellationSource.Token);
+
+            // Assert
+            _completed.Should().Be(false);
+            result.Outcome.Should().Be(TaskOutcome.Canceled);
         }
     }
 }

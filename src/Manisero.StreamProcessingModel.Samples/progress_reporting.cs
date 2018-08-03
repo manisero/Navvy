@@ -21,7 +21,7 @@ namespace Manisero.StreamProcessingModel.Samples
         {
             test(
                 resolverType,
-                GetBasicStep(),
+                BasicTaskStep.Empty("Step"),
                 new[] { 100 });
         }
 
@@ -82,11 +82,6 @@ namespace Manisero.StreamProcessingModel.Samples
             // Assert
             progressReports.Select(x => x.StepName).Should().OnlyContain(x => x == taskStep.Name);
             progressReports.Select(x => x.ProgressPercentage).ShouldAllBeEquivalentTo(expectedProgressReports);
-        }
-
-        private ITaskStep GetBasicStep()
-        {
-            return BasicTaskStep.Empty("Step");
         }
 
         private ITaskStep GetPipelineStep(int actualBatchesCount, int? expectedBatchesCount = null)
