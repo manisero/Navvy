@@ -130,6 +130,53 @@ namespace Manisero.StreamProcessingModel.Samples
             completed.Should().Be(false);
         }
 
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline___pipeline_stops_on_error_in_any_block(ResolverType resolverType)
+        {
+            var completed = false;
+
+            var taskDescription = new TaskDescription
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new PipelineTaskStep<int>(
+                        "Step",
+                        new[]
+                        {
+                            new[] { 0 },
+                            new[] { 1 }
+                        },
+                        new List<PipelineBlock<int>>
+                        {
+                            PipelineBlock<int>.BatchBody(
+                                "Error on last",
+                                x =>
+                                {
+                                    if (x.Contains(1))
+                                    {
+                                        throw _exception;
+                                    }
+                                }),
+                            PipelineBlock<int>.BatchBody(
+                                "Complete on first",
+                                x =>
+                                {
+                                    if (x.Contains(0))
+                                    {
+                                        completed = true;
+                                    }
+                                })
+                        })
+                }
+            };
+
+            test(taskDescription, resolverType);
+
+            completed.Should().Be(false);
+        }
+
         private void test(
             TaskDescription taskDescription,
             ResolverType resolverType)
