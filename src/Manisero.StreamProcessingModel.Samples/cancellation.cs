@@ -39,7 +39,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline(ResolverType resolverType)
+        public void pipeline___within_single_block_between_batches(ResolverType resolverType)
         {
             var taskDescription = new TaskDescription
             {
@@ -54,11 +54,11 @@ namespace Manisero.StreamProcessingModel.Samples
                         },
                         new List<PipelineBlock<int>>
                         {
-                            PipelineBlock<int>.ItemBody(
-                                "Cancel",
+                            PipelineBlock<int>.BatchBody(
+                                "Cancel / Complete",
                                 x =>
                                 {
-                                    if (x == 0)
+                                    if (x.Contains(0))
                                     {
                                         _cancellationSource.Cancel();
                                     }
@@ -67,6 +67,33 @@ namespace Manisero.StreamProcessingModel.Samples
                                         _completed = true;
                                     }
                                 })
+                        })
+                }
+            };
+
+            test(taskDescription, resolverType);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline___between_blocks(ResolverType resolverType)
+        {
+            var taskDescription = new TaskDescription
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new PipelineTaskStep<int>(
+                        "Step",
+                        new[] { new[] { 0 } },
+                        new List<PipelineBlock<int>>
+                        {
+                            PipelineBlock<int>.BatchBody(
+                                "Cancel",
+                                x => { _cancellationSource.Cancel(); }),
+                            PipelineBlock<int>.BatchBody(
+                                "Complete",
+                                x => { _completed = true; })
                         })
                 }
             };
