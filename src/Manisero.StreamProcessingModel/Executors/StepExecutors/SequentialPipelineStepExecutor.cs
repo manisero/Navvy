@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
 
 namespace Manisero.StreamProcessingModel.Executors.StepExecutors
@@ -17,7 +18,14 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
             {
                 foreach (var block in step.Blocks)
                 {
-                    block.Body(input);
+                    try
+                    {
+                        block.Body(input);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TaskExecutionException(e);
+                    }
 
                     cancellation.ThrowIfCancellationRequested();
                 }

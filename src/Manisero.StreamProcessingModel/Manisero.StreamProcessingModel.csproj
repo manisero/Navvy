@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Executors\StepExecutors\DataflowPipelineStepExecution\DataflowPipeline.cs" />
     <Compile Include="Executors\StepExecutors\StepExecutionUtils.cs" />
+    <Compile Include="Models\TaskExecutionException.cs" />
     <Compile Include="Models\TaskProgress.cs" />
     <Compile Include="Models\TaskResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

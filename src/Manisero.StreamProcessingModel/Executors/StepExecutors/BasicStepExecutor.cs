@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
 
 namespace Manisero.StreamProcessingModel.Executors.StepExecutors
@@ -11,7 +12,14 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            step.Body();
+            try
+            {
+                step.Body();
+            }
+            catch (Exception e)
+            {
+                throw new TaskExecutionException(e);
+            }
 
             progress.Report(100);
             cancellation.ThrowIfCancellationRequested();

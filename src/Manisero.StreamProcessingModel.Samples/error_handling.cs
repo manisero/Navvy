@@ -12,7 +12,7 @@ namespace Manisero.StreamProcessingModel.Samples
 {
     public class error_handling
     {
-        private readonly Exception _exception = new Exception();
+        private readonly Exception _error = new Exception();
 
         [Theory]
         [InlineData(ResolverType.Sequential)]
@@ -25,7 +25,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 {
                     new BasicTaskStep(
                         "Step",
-                        () => throw _exception)
+                        () => throw _error)
                 }
             };
             
@@ -48,7 +48,7 @@ namespace Manisero.StreamProcessingModel.Samples
                         {
                             PipelineBlock<int>.BatchBody(
                                 "Block",
-                                _ => throw _exception
+                                _ => throw _error
                             )
                         })
                 }
@@ -83,7 +83,7 @@ namespace Manisero.StreamProcessingModel.Samples
                                 {
                                     if (x.Contains(0))
                                     {
-                                        throw _exception;
+                                        throw _error;
                                     }
                                     else
                                     {
@@ -117,7 +117,7 @@ namespace Manisero.StreamProcessingModel.Samples
                         {
                             PipelineBlock<int>.BatchBody(
                                 "Error",
-                                x => throw _exception),
+                                x => throw _error),
                             PipelineBlock<int>.BatchBody(
                                 "Complete",
                                 x => { completed = true; })
@@ -144,7 +144,8 @@ namespace Manisero.StreamProcessingModel.Samples
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);
-            result.Error.Should().BeSameAs(_exception);
+            result.Error.Should().BeOfType<TaskExecutionException>();
+            result.Error.InnerException.Should().BeSameAs(_error);
         }
     }
 }

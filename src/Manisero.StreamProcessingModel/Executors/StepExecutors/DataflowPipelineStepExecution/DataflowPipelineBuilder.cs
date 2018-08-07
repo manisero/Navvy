@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using Manisero.StreamProcessingModel.Models;
 using Manisero.StreamProcessingModel.Models.TaskSteps;
 
 namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelineStepExecution
 {
-    public class DataflowPipeline<TData>
-    {
-        public ITargetBlock<DataBatch<TData>> InputBlock { get; set; }
-        public Task Completion { get; set; }
-    }
-
     public class DataflowPipelineBuilder<TData>
     {
         private static readonly int DegreeOfParallelism = Environment.ProcessorCount - 1;
@@ -52,7 +46,14 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
             return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
                 x =>
                 {
-                    block.Body(x.Data);
+                    try
+                    {
+                        block.Body(x.Data);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TaskExecutionException(e);
+                    }
 
                     return x;
                 },
