@@ -4,9 +4,18 @@ namespace Manisero.StreamProcessingModel.Models
 {
     public class TaskExecutionException : Exception
     {
-        public TaskExecutionException(Exception innerException) 
+        public string StepName { get; }
+
+        public object AdditionalData { get; }
+
+        public TaskExecutionException(
+            Exception innerException,
+            ITaskStep taskStep,
+            object additionalData = null)
             : base("Error while executing task. See inner exception.", innerException)
         {
+            StepName = taskStep.Name;
+            AdditionalData = additionalData;
         }
     }
 }

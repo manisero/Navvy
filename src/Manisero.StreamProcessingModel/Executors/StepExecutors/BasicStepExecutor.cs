@@ -18,7 +18,7 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors
             }
             catch (Exception e)
             {
-                throw new TaskExecutionException(e);
+                throw new TaskExecutionException(e, step);
             }
 
             progress.Report(100);

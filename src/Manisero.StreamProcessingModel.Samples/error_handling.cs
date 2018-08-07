@@ -12,6 +12,7 @@ namespace Manisero.StreamProcessingModel.Samples
 {
     public class error_handling
     {
+        private const string FailingStepName = "Failing Step";
         private readonly Exception _error = new Exception();
 
         [Theory]
@@ -24,7 +25,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 Steps = new List<ITaskStep>
                 {
                     new BasicTaskStep(
-                        "Step",
+                        FailingStepName,
                         () => throw _error)
                 }
             };
@@ -42,7 +43,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 Steps = new List<ITaskStep>
                 {
                     new PipelineTaskStep<int>(
-                        "Step",
+                        FailingStepName,
                         new[] { new[] { 0 } },
                         new List<PipelineBlock<int>>
                         {
@@ -69,7 +70,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 Steps = new List<ITaskStep>
                 {
                     new PipelineTaskStep<int>(
-                        "Step",
+                        FailingStepName,
                         new[]
                         {
                             new[] { 0 },
@@ -111,7 +112,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 Steps = new List<ITaskStep>
                 {
                     new PipelineTaskStep<int>(
-                        "Step",
+                        FailingStepName,
                         new[] { new[] { 0 } },
                         new List<PipelineBlock<int>>
                         {
@@ -144,7 +145,7 @@ namespace Manisero.StreamProcessingModel.Samples
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);
-            result.Error.Should().BeOfType<TaskExecutionException>();
+            result.Error.Should().BeOfType<TaskExecutionException>().Subject.StepName.ShouldBeEquivalentTo(FailingStepName);
             result.Error.InnerException.Should().BeSameAs(_error);
         }
     }

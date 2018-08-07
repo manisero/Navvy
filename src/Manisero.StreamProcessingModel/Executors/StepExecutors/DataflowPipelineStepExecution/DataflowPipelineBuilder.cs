@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Models;
@@ -16,12 +15,12 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var firstBlock = ToTransformBlock(step.Blocks.First(), cancellation);
+            var firstBlock = ToTransformBlock(step, 0, cancellation);
             var previousBlock = firstBlock;
 
             for (var i = 1; i <= step.Blocks.Count - 1; i++)
             {
-                var currentBlock = ToTransformBlock(step.Blocks[i], cancellation);
+                var currentBlock = ToTransformBlock(step, i, cancellation);
                 previousBlock.LinkTo(currentBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
                 previousBlock = currentBlock;
@@ -38,9 +37,11 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
         }
 
         private TransformBlock<DataBatch<TData>, DataBatch<TData>> ToTransformBlock(
-            PipelineBlock<TData> block,
+            PipelineTaskStep<TData> step,
+            int blockIndex,
             CancellationToken cancellation)
         {
+            var block = step.Blocks[blockIndex];
             var maxDegreeOfParallelism = block.Parallel ? DegreeOfParallelism : 1;
 
             return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
@@ -52,7 +53,7 @@ namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelin
                     }
                     catch (Exception e)
                     {
-                        throw new TaskExecutionException(e);
+                        throw new TaskExecutionException(e, step, block.GetExceptionData());
                     }
 
                     return x;

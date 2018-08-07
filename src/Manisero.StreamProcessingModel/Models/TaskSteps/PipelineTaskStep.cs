@@ -71,4 +71,19 @@ namespace Manisero.StreamProcessingModel.Models.TaskSteps
             return new PipelineBlock<TData>(name, body, parallel);
         }
     }
+
+    public class PipelineBlockExceptionData
+    {
+        public string BlockName { get; set; }
+    }
+
+    public static class PipelineBlockExtensions
+    {
+        public static PipelineBlockExceptionData GetExceptionData<TData>(
+            this PipelineBlock<TData> block)
+            => new PipelineBlockExceptionData
+            {
+                BlockName = block.Name
+            };
+    }
 }
