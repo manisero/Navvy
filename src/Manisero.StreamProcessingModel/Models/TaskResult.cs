@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Manisero.StreamProcessingModel.Models
+﻿namespace Manisero.StreamProcessingModel.Models
 {
     public class TaskResult
     {
         public TaskOutcome Outcome { get; set; }
-        public Exception Error { get; set; }
+        public TaskExecutionException Error { get; set; }
 
         public static TaskResult Finished()
             => new TaskResult
@@ -19,7 +17,7 @@ namespace Manisero.StreamProcessingModel.Models
                 Outcome = TaskOutcome.Canceled
             };
 
-        public static TaskResult Failed(Exception error)
+        public static TaskResult Failed(TaskExecutionException error)
             => new TaskResult
             {
                 Outcome = TaskOutcome.Failed,

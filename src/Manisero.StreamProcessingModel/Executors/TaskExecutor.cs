@@ -38,7 +38,7 @@ namespace Manisero.StreamProcessingModel.Executors
             {
                 return TaskResult.Canceled();
             }
-            catch (Exception e)
+            catch (TaskExecutionException e)
             {
                 return TaskResult.Failed(e);
             }

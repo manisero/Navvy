@@ -145,7 +145,8 @@ namespace Manisero.StreamProcessingModel.Samples
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);
-            result.Error.Should().BeOfType<TaskExecutionException>().Subject.StepName.ShouldBeEquivalentTo(FailingStepName);
+            result.Error.Should().NotBeNull();
+            result.Error.StepName.ShouldBeEquivalentTo(FailingStepName);
             result.Error.InnerException.Should().BeSameAs(_error);
         }
     }
