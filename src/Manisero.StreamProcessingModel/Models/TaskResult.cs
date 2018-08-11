@@ -5,10 +5,10 @@
         public TaskOutcome Outcome { get; set; }
         public TaskExecutionException Error { get; set; }
 
-        public static TaskResult Finished()
+        public static TaskResult Successful()
             => new TaskResult
             {
-                Outcome = TaskOutcome.Finished
+                Outcome = TaskOutcome.Successful
             };
 
         public static TaskResult Canceled()
@@ -27,7 +27,7 @@
 
     public enum TaskOutcome
     {
-        Finished,
+        Successful,
         Canceled,
         Failed
     }

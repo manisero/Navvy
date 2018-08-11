@@ -8,6 +8,8 @@ namespace Manisero.StreamProcessingModel.Models.TaskSteps
     {
         public string Name { get; }
 
+        public Func<TaskOutcome, bool> ExecutionCondition { get; }
+
         /// <summary>Batches of data to input to first block. After iterating, first block will be completed.</summary>
         public IEnumerable<ICollection<TData>> Input { get; }
 
@@ -19,8 +21,9 @@ namespace Manisero.StreamProcessingModel.Models.TaskSteps
         public PipelineTaskStep(
             string name,
             ICollection<ICollection<TData>> input,
-            IList<PipelineBlock<TData>> blocks)
-            : this(name, input, input.Count, blocks)
+            IList<PipelineBlock<TData>> blocks,
+            Func<TaskOutcome, bool> executionCondition = null)
+            : this(name, input, input.Count, blocks, executionCondition)
         {
         }
 
@@ -28,9 +31,11 @@ namespace Manisero.StreamProcessingModel.Models.TaskSteps
             string name,
             IEnumerable<ICollection<TData>> input,
             int expectedInputBatchesCount,
-            IList<PipelineBlock<TData>> blocks)
+            IList<PipelineBlock<TData>> blocks,
+            Func<TaskOutcome, bool> executionCondition = null)
         {
             Name = name;
+            ExecutionCondition = executionCondition ?? (x => x == TaskOutcome.Successful);
             Input = input;
             ExpectedInputBatchesCount = expectedInputBatchesCount;
             Blocks = blocks;

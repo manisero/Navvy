@@ -43,7 +43,7 @@ namespace Manisero.StreamProcessingModel.Executors
                 return TaskResult.Failed(e);
             }
 
-            return TaskResult.Finished();
+            return TaskResult.Successful();
         }
 
         private void ExecuteStep<TStep>(
