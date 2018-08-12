@@ -16,7 +16,7 @@ namespace Manisero.StreamProcessingModel.Samples
         private bool _testedStepExecuted;
 
         [Theory]
-        [InlineData(ResolverType.Sequential, TaskOutcome.Successful, TaskOutcome.Successful, TaskOutcome.Canceled)]
+        [InlineData(ResolverType.Sequential, TaskOutcome.Successful, TaskOutcome.Successful, TaskOutcome.Successful)]
         [InlineData(ResolverType.Sequential, TaskOutcome.Successful, TaskOutcome.Canceled, TaskOutcome.Canceled)]
         [InlineData(ResolverType.Sequential, TaskOutcome.Successful, TaskOutcome.Failed, TaskOutcome.Failed)]
         [InlineData(ResolverType.Sequential, TaskOutcome.Canceled, TaskOutcome.Successful, TaskOutcome.Canceled)]
@@ -25,7 +25,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Sequential, TaskOutcome.Failed, TaskOutcome.Successful, TaskOutcome.Failed)]
         [InlineData(ResolverType.Sequential, TaskOutcome.Failed, TaskOutcome.Canceled, TaskOutcome.Failed)]
         [InlineData(ResolverType.Sequential, TaskOutcome.Failed, TaskOutcome.Failed, TaskOutcome.Failed)]
-        [InlineData(ResolverType.Streaming, TaskOutcome.Successful, TaskOutcome.Successful, TaskOutcome.Canceled)]
+        [InlineData(ResolverType.Streaming, TaskOutcome.Successful, TaskOutcome.Successful, TaskOutcome.Successful)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Successful, TaskOutcome.Canceled, TaskOutcome.Canceled)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Successful, TaskOutcome.Failed, TaskOutcome.Failed)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Canceled, TaskOutcome.Successful, TaskOutcome.Canceled)]
@@ -48,7 +48,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 Steps = new List<ITaskStep>
                 {
                     GetStepForOutcome(firstStepOutcome),
-                    GetStepForOutcome(secondStepOutcome),
+                    GetStepForOutcome(secondStepOutcome, _ => true),
                     new BasicTaskStep(
                         "TestedStep",
                         () => { },

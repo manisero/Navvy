@@ -79,7 +79,7 @@ namespace Manisero.StreamProcessingModel.Samples
                         new List<PipelineBlock<int>>
                         {
                             PipelineBlock<int>.BatchBody(
-                                "Error / Complete",
+                                "Errors / Complete",
                                 x =>
                                 {
                                     if (x.Contains(0))
@@ -117,7 +117,7 @@ namespace Manisero.StreamProcessingModel.Samples
                         new List<PipelineBlock<int>>
                         {
                             PipelineBlock<int>.BatchBody(
-                                "Error",
+                                "Errors",
                                 x => throw _error),
                             PipelineBlock<int>.BatchBody(
                                 "Complete",
@@ -145,9 +145,9 @@ namespace Manisero.StreamProcessingModel.Samples
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);
-            result.Error.Should().NotBeNull();
-            result.Error.StepName.ShouldBeEquivalentTo(FailingStepName);
-            result.Error.InnerException.Should().BeSameAs(_error);
+            var error = result.Errors.Should().NotBeNull().And.ContainSingle().Subject;
+            error.StepName.ShouldBeEquivalentTo(FailingStepName);
+            error.InnerException.Should().BeSameAs(_error);
         }
     }
 }

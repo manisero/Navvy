@@ -1,28 +1,27 @@
-﻿namespace Manisero.StreamProcessingModel.Models
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Manisero.StreamProcessingModel.Models
 {
     public class TaskResult
     {
-        public TaskOutcome Outcome { get; set; }
-        public TaskExecutionException Error { get; set; }
+        public TaskOutcome Outcome { get; }
+        public IReadOnlyCollection<TaskExecutionException> Errors { get; }
 
-        public static TaskResult Successful()
-            => new TaskResult
-            {
-                Outcome = TaskOutcome.Successful
-            };
+        public TaskResult(
+            bool canceled,
+            IReadOnlyCollection<TaskExecutionException> errors = null)
+        {
+            Errors = errors?.Any() == true
+                ? errors
+                : null;
 
-        public static TaskResult Canceled()
-            => new TaskResult
-            {
-                Outcome = TaskOutcome.Canceled
-            };
-
-        public static TaskResult Failed(TaskExecutionException error)
-            => new TaskResult
-            {
-                Outcome = TaskOutcome.Failed,
-                Error = error
-            };
+            Outcome = Errors != null
+                ? TaskOutcome.Failed
+                : canceled
+                    ? TaskOutcome.Canceled
+                    : TaskOutcome.Successful;
+        }
     }
 
     public enum TaskOutcome

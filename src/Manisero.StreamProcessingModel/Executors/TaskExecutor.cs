@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using Manisero.StreamProcessingModel.Models;
@@ -24,31 +25,44 @@ namespace Manisero.StreamProcessingModel.Executors
             IProgress<TaskProgress> progress,
             CancellationToken cancellation)
         {
-            try
-            {
-                foreach (var step in taskDescription.Steps)
-                {
-                    if (!step.ExecutionCondition(TaskOutcome.Successful)) // TODO
-                    {
-                        continue;
-                    }
+            var currentOutcome = TaskOutcome.Successful;
+            var errors = new List<TaskExecutionException>();
 
+            foreach (var step in taskDescription.Steps)
+            {
+                if (!step.ExecutionCondition(currentOutcome))
+                {
+                    continue;
+                }
+
+                try
+                {
                     ExecuteStepMethod.InvokeAsGeneric(
                         this,
                         new[] { step.GetType() },
                         step, progress, cancellation);
                 }
-            }
-            catch (OperationCanceledException e)
-            {
-                return TaskResult.Canceled();
-            }
-            catch (TaskExecutionException e)
-            {
-                return TaskResult.Failed(e);
+                catch (OperationCanceledException e)
+                {
+                    if (currentOutcome < TaskOutcome.Canceled)
+                    {
+                        currentOutcome = TaskOutcome.Canceled;
+                    }
+                }
+                catch (TaskExecutionException e)
+                {
+                    errors.Add(e);
+
+                    if (currentOutcome < TaskOutcome.Failed)
+                    {
+                        currentOutcome = TaskOutcome.Failed;
+                    }
+                }
             }
 
-            return TaskResult.Successful();
+            return new TaskResult(
+                currentOutcome == TaskOutcome.Canceled,
+                errors);
         }
 
         private void ExecuteStep<TStep>(

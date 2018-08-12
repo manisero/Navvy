@@ -12,7 +12,7 @@ namespace Manisero.StreamProcessingModel.Models
             Exception innerException,
             ITaskStep taskStep,
             object additionalData = null)
-            : base("Error while executing task. See inner exception.", innerException)
+            : base("Errors while executing task. See inner exception.", innerException)
         {
             StepName = taskStep.Name;
             AdditionalData = additionalData;
