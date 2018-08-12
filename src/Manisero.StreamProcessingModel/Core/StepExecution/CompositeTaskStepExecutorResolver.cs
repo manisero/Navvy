@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Manisero.StreamProcessingModel.Models;
+using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Utils;
 
-namespace Manisero.StreamProcessingModel.Executors.StepExecutorResolvers
+namespace Manisero.StreamProcessingModel.Core.StepExecution
 {
     public class CompositeTaskStepExecutorResolver : ITaskStepExecutorResolver
     {

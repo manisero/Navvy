@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Manisero.StreamProcessingModel.Executors;
-using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
-using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.BasicProcessing;
+using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.StreamProcessingModel.PipelineProcessing;
+using Manisero.StreamProcessingModel.PipelineProcessing.Dataflow;
+using Manisero.StreamProcessingModel.PipelineProcessing.Sequential;
 
 namespace Manisero.StreamProcessingModel.Samples.Utils
 {

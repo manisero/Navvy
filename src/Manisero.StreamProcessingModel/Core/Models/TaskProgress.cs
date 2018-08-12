@@ -1,4 +1,4 @@
-﻿namespace Manisero.StreamProcessingModel.Models
+﻿namespace Manisero.StreamProcessingModel.Core.Models
 {
     public struct TaskProgress
     {

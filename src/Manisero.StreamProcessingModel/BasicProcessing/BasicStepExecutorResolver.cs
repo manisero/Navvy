@@ -1,7 +1,7 @@
-﻿using Manisero.StreamProcessingModel.Executors.StepExecutors;
-using Manisero.StreamProcessingModel.Models;
+﻿using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.StreamProcessingModel.Core.StepExecution;
 
-namespace Manisero.StreamProcessingModel.Executors.StepExecutorResolvers
+namespace Manisero.StreamProcessingModel.BasicProcessing
 {
     public class BasicStepExecutorResolver : ITaskStepExecutorResolver
     {

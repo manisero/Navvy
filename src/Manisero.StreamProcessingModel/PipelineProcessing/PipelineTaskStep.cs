@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Utils;
 
-namespace Manisero.StreamProcessingModel.Models.TaskSteps
+namespace Manisero.StreamProcessingModel.PipelineProcessing
 {
     public class PipelineTaskStep<TData> : ITaskStep
     {

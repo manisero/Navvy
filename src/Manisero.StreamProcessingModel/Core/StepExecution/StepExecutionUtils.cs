@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Manisero.StreamProcessingModel.Utils;
 
-namespace Manisero.StreamProcessingModel.Executors.StepExecutors
+namespace Manisero.StreamProcessingModel.Core.StepExecution
 {
     public static class StepExecutionUtils
     {

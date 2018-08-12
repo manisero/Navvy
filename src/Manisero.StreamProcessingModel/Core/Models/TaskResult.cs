@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Manisero.StreamProcessingModel.Models
+namespace Manisero.StreamProcessingModel.Core.Models
 {
     public class TaskResult
     {

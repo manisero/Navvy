@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
-using Manisero.StreamProcessingModel.Models;
-using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.StreamProcessingModel.Core.StepExecution;
 
-namespace Manisero.StreamProcessingModel.Executors.StepExecutors.DataflowPipelineStepExecution
+namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
 {
     public class DataflowPipelineBuilder<TData>
     {

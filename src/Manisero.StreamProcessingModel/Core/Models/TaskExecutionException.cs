@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Manisero.StreamProcessingModel.Models
+namespace Manisero.StreamProcessingModel.Core.Models
 {
     public class TaskExecutionException : Exception
     {

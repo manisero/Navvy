@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
-using Manisero.StreamProcessingModel.Models;
-using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.StreamProcessingModel.Core.StepExecution;
 
-namespace Manisero.StreamProcessingModel.Executors.StepExecutors
+namespace Manisero.StreamProcessingModel.BasicProcessing
 {
     public class BasicStepExecutor : ITaskStepExecutor<BasicTaskStep>
     {

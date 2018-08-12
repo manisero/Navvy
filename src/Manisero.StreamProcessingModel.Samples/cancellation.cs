@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
-using Manisero.StreamProcessingModel.Executors;
-using Manisero.StreamProcessingModel.Models;
-using Manisero.StreamProcessingModel.Models.TaskSteps;
+using Manisero.StreamProcessingModel.BasicProcessing;
+using Manisero.StreamProcessingModel.Core;
+using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.StreamProcessingModel.PipelineProcessing;
 using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
 

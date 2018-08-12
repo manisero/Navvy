@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using Manisero.StreamProcessingModel.Models;
+using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.StreamProcessingModel.Core.StepExecution;
 using Manisero.StreamProcessingModel.Utils;
 
-namespace Manisero.StreamProcessingModel.Executors
+namespace Manisero.StreamProcessingModel.Core
 {
     public class TaskExecutor
     {
