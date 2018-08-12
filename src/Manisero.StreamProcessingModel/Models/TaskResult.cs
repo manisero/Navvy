@@ -27,8 +27,8 @@
 
     public enum TaskOutcome
     {
-        Successful,
-        Canceled,
-        Failed
+        Successful = 1,
+        Canceled = 2,
+        Failed = 3
     }
 }

@@ -77,7 +77,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming, TaskOutcome.Successful, true)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Canceled, false)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Failed, false)]
-        public void default_condition_is_only_finished(
+        public void default_condition___executed_only_if_successful(
             ResolverType resolverType,
             TaskOutcome precedingStepOutcome,
             bool testedStepExecuted)
@@ -94,7 +94,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Sequential, TaskOutcome.Canceled, TaskOutcome.Successful, false)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Canceled, TaskOutcome.Canceled, true)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Canceled, TaskOutcome.Successful, false)]
-        public void conditon_specified(
+        public void custom_conditon(
             ResolverType resolverType,
             TaskOutcome precedingStepOutcome,
             TaskOutcome outcomeToExecuteOn,

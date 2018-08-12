@@ -28,6 +28,11 @@ namespace Manisero.StreamProcessingModel.Executors
             {
                 foreach (var step in taskDescription.Steps)
                 {
+                    if (!step.ExecutionCondition(TaskOutcome.Successful)) // TODO
+                    {
+                        continue;
+                    }
+
                     ExecuteStepMethod.InvokeAsGeneric(
                         this,
                         new[] { step.GetType() },
