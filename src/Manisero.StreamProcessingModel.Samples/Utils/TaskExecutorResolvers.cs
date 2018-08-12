@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Manisero.StreamProcessingModel.Executors;
 using Manisero.StreamProcessingModel.Executors.StepExecutorResolvers;
+using Manisero.StreamProcessingModel.Models.TaskSteps;
 
 namespace Manisero.StreamProcessingModel.Samples.Utils
 {
@@ -9,8 +11,18 @@ namespace Manisero.StreamProcessingModel.Samples.Utils
         private static readonly IDictionary<ResolverType, ITaskStepExecutorResolver> Resolvers
             = new Dictionary<ResolverType, ITaskStepExecutorResolver>
             {
-                [ResolverType.Sequential] = new SequentialTaskExecutorResolver(),
-                [ResolverType.Streaming] = new StreamingTaskExecutorResolver()
+                [ResolverType.Sequential] = new CompositeTaskStepExecutorResolver(
+                    new Dictionary<Type, ITaskStepExecutorResolver>
+                    {
+                        [typeof(BasicTaskStep)] = new BasicStepExecutorResolver(),
+                        [typeof(PipelineTaskStep<>)] = new SequentialPipelineStepExecutorResolver()
+                    }),
+                [ResolverType.Streaming] = new CompositeTaskStepExecutorResolver(
+                    new Dictionary<Type, ITaskStepExecutorResolver>
+                    {
+                        [typeof(BasicTaskStep)] = new BasicStepExecutorResolver(),
+                        [typeof(PipelineTaskStep<>)] = new DataflowPipelineStepExecutorResolver()
+                    })
             };
 
         public static ITaskStepExecutorResolver Get(ResolverType type) => Resolvers[type];

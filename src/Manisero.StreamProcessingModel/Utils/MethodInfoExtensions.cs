@@ -4,7 +4,7 @@ using System.Runtime.ExceptionServices;
 
 namespace Manisero.StreamProcessingModel.Utils
 {
-    public static class MethodInfoExtensions
+    internal static class MethodInfoExtensions
     {
         [System.Diagnostics.DebuggerStepThrough]
         public static void InvokeAsGeneric(

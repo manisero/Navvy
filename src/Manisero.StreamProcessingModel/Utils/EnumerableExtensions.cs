@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Manisero.StreamProcessingModel.Utils
 {
-    public static class EnumerableExtensions
+    internal static class EnumerableExtensions
     {
         public static void ForEach<TSource>(
             this IEnumerable<TSource> source,
