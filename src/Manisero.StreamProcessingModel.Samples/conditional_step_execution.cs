@@ -82,48 +82,49 @@ namespace Manisero.StreamProcessingModel.Samples
             TaskOutcome precedingStepOutcome,
             bool testedStepExecuted)
         {
-            var testedStep = new BasicTaskStep(
-                "TestedStep",
-                () => { _testedStepExecuted = true; });
-
-            test_conditional_execution(resolverType, precedingStepOutcome, testedStep, testedStepExecuted);
-        }
-
-        [Theory]
-        [InlineData(ResolverType.Sequential, TaskOutcome.Canceled, TaskOutcome.Canceled, true)]
-        [InlineData(ResolverType.Sequential, TaskOutcome.Canceled, TaskOutcome.Successful, false)]
-        [InlineData(ResolverType.Streaming, TaskOutcome.Canceled, TaskOutcome.Canceled, true)]
-        [InlineData(ResolverType.Streaming, TaskOutcome.Canceled, TaskOutcome.Successful, false)]
-        public void custom_conditon(
-            ResolverType resolverType,
-            TaskOutcome precedingStepOutcome,
-            TaskOutcome outcomeToExecuteOn,
-            bool testedStepExecuted)
-        {
-            var testedStep = new BasicTaskStep(
-                "TestedStep",
-                () => { _testedStepExecuted = true; },
-                x => x == outcomeToExecuteOn);
-
-            test_conditional_execution(resolverType, precedingStepOutcome, testedStep, testedStepExecuted);
-        }
-
-        private void test_conditional_execution(
-            ResolverType resolverType,
-            TaskOutcome precedingStepOutcome,
-            ITaskStep testedStep,
-            bool testedStepExecuted)
-        {
-            // Arrange
             var taskDescription = new TaskDescription
             {
                 Steps = new List<ITaskStep>
                 {
                     GetStepForOutcome(precedingStepOutcome),
-                    testedStep
+                    new BasicTaskStep(
+                        "TestedStep",
+                        () => { _testedStepExecuted = true; })
                 }
             };
 
+            test_conditional_execution(resolverType, taskDescription, testedStepExecuted);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential, true)]
+        [InlineData(ResolverType.Sequential, false)]
+        [InlineData(ResolverType.Streaming, true)]
+        [InlineData(ResolverType.Streaming, false)]
+        public void custom_conditon(
+            ResolverType resolverType,
+            bool shouldExecute)
+        {
+            var taskDescription = new TaskDescription
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new BasicTaskStep(
+                        "TestedStep",
+                        () => { _testedStepExecuted = true; },
+                        _ => shouldExecute)
+                }
+            };
+
+            test_conditional_execution(resolverType, taskDescription, shouldExecute);
+        }
+
+        private void test_conditional_execution(
+            ResolverType resolverType,
+            TaskDescription taskDescription,
+            bool testedStepExecuted)
+        {
+            // Arrange
             var progress = new Progress<TaskProgress>(_ => { });
             var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
 
