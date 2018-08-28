@@ -15,11 +15,14 @@ namespace Manisero.StreamProcessingModel.Core
             = typeof(TaskExecutor).GetMethod(nameof(ExecuteStep), BindingFlags.Instance | BindingFlags.NonPublic);
 
         private readonly ITaskStepExecutorResolver _taskStepExecutorResolver;
+        private readonly ExecutionEventsBag _executionEventsBag;
 
         public TaskExecutor(
-            ITaskStepExecutorResolver taskStepExecutorResolver)
+            ITaskStepExecutorResolver taskStepExecutorResolver,
+            ExecutionEventsBag executionEventsBag)
         {
             _taskStepExecutorResolver = taskStepExecutorResolver;
+            _executionEventsBag = executionEventsBag;
         }
 
         public TaskResult Execute(
@@ -78,7 +81,8 @@ namespace Manisero.StreamProcessingModel.Core
 
             var context = new TaskStepExecutionContext
             {
-                TaskDescription = taskDescription
+                TaskDescription = taskDescription,
+                EventsBag = _executionEventsBag
             };
 
             var stepProgress = new Progress<byte>(

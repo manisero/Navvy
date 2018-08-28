@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicProcessing\BasicStepExecutorResolver.cs" />
+    <Compile Include="Core\Models\ExecutionEventsBag.cs" />
+    <Compile Include="Core\Models\IExecutionEvents.cs" />
     <Compile Include="Core\StepExecution\CompositeTaskStepExecutorResolver.cs" />
     <Compile Include="Core\StepExecution\TaskStepExecutionContext.cs" />
     <Compile Include="Core\TaskExecutionEvents.cs" />

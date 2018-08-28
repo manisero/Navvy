@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.BasicProcessing;
-using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
@@ -61,7 +60,7 @@ namespace Manisero.StreamProcessingModel.Samples
             };
 
             var progress = new Progress<TaskProgress>(_ => { });
-            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
+            var executor = TaskExecutorFactory.Create(resolverType);
 
             // Act
             executor.Execute(taskDescription, progress, _cancellationSource.Token);
@@ -126,7 +125,7 @@ namespace Manisero.StreamProcessingModel.Samples
         {
             // Arrange
             var progress = new Progress<TaskProgress>(_ => { });
-            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
+            var executor = TaskExecutorFactory.Create(resolverType);
 
             // Act
             executor.Execute(taskDescription, progress, _cancellationSource.Token);

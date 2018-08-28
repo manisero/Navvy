@@ -3,7 +3,7 @@ using Manisero.StreamProcessingModel.Core.Models;
 
 namespace Manisero.StreamProcessingModel.Core
 {
-    public class TaskExecutionEvents
+    public class TaskExecutionEvents : IExecutionEvents
     {
         public static void StepStarted(ITaskStep step, TaskDescription task, DateTime timestamp)
         {

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.BasicProcessing;
-using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.PipelineProcessing;
 using Manisero.StreamProcessingModel.Samples.Utils;
@@ -75,7 +74,7 @@ namespace Manisero.StreamProcessingModel.Samples
             var progress = new Progress<TaskProgress>(x => progressReports.Add(x));
 
             var cancellationSource = new CancellationTokenSource();
-            var executor = new TaskExecutor(TaskExecutorResolvers.Get(resolverType));
+            var executor = TaskExecutorFactory.Create(resolverType);
 
             // Act
             executor.Execute(taskDescription, progress, cancellationSource.Token);

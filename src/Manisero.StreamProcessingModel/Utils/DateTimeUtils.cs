@@ -2,7 +2,7 @@
 
 namespace Manisero.StreamProcessingModel.Utils
 {
-    public static class DateTimeUtils
+    internal static class DateTimeUtils
     {
         public static DateTime Now => DateTime.UtcNow;
     }

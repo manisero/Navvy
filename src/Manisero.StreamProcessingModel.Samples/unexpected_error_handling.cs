@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.BasicProcessing;
-using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
 
 namespace Manisero.StreamProcessingModel.Samples
@@ -42,7 +42,7 @@ namespace Manisero.StreamProcessingModel.Samples
             
             var progress = new Progress<TaskProgress>(_ => { });
             var cancellationSource = new CancellationTokenSource();
-            var executor = new TaskExecutor(new ThrowingStepExecutorResolver());
+            var executor = TaskExecutorFactory.Create(new ThrowingStepExecutorResolver());
 
             // Act
             Action act = () => executor.Execute(taskDescription, progress, cancellationSource.Token);

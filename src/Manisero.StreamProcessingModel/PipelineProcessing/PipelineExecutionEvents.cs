@@ -4,7 +4,7 @@ using Manisero.StreamProcessingModel.Core.Models;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing
 {
-    public class PipelineExecutionEvents
+    public class PipelineExecutionEvents : IExecutionEvents
     {
         public static void BatchStarted(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, DateTime timestamp)
         {
