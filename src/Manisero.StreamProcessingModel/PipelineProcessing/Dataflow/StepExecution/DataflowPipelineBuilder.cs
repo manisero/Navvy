@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
 {
@@ -47,6 +49,14 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
                 x =>
                 {
+                    PipelineExecutionEvents.BlockStarted(
+                        new BlockStartedEvent
+                        {
+                            Timestamp = DateTimeUtils.Now
+                        });
+
+                    var sw = Stopwatch.StartNew();
+
                     try
                     {
                         block.Body(x.Data);
@@ -55,6 +65,15 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
                     {
                         throw new TaskExecutionException(e, step, block.GetExceptionData());
                     }
+
+                    sw.Stop();
+
+                    PipelineExecutionEvents.BlockEnded(
+                        new BlockEndedEvent
+                        {
+                            Timestamp = DateTimeUtils.Now,
+                            Duration = sw.Elapsed
+                        });
 
                     return x;
                 },

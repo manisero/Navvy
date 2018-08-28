@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
 {
@@ -18,6 +20,14 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
             {
                 foreach (var block in step.Blocks)
                 {
+                    PipelineExecutionEvents.BlockStarted(
+                        new BlockStartedEvent
+                        {
+                            Timestamp = DateTimeUtils.Now
+                        });
+
+                    var sw = Stopwatch.StartNew();
+
                     try
                     {
                         block.Body(input);
@@ -26,6 +36,15 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
                     {
                         throw new TaskExecutionException(e, step, block.GetExceptionData());
                     }
+
+                    sw.Stop();
+
+                    PipelineExecutionEvents.BlockEnded(
+                        new BlockEndedEvent
+                        {
+                            Timestamp = DateTimeUtils.Now,
+                            Duration = sw.Elapsed
+                        });
 
                     cancellation.ThrowIfCancellationRequested();
                 }

@@ -45,6 +45,7 @@
     <Compile Include="BasicProcessing\BasicStepExecutorResolver.cs" />
     <Compile Include="Core\StepExecution\CompositeTaskStepExecutorResolver.cs" />
     <Compile Include="PipelineProcessing\Dataflow\DataflowPipelineStepExecutorResolver.cs" />
+    <Compile Include="PipelineProcessing\PipelineExecutionEvents.cs" />
     <Compile Include="PipelineProcessing\Sequential\SequentialPipelineStepExecutorResolver.cs" />
     <Compile Include="PipelineProcessing\Dataflow\StepExecution\DataflowPipeline.cs" />
     <Compile Include="Core\StepExecution\StepExecutionUtils.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Core\Models\ITaskStep.cs" />
     <Compile Include="PipelineProcessing\PipelineTaskStep.cs" />
     <Compile Include="Core\Models\TaskDescription.cs" />
+    <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\DictionaryExtensions.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
     <Compile Include="Utils\IntExtensions.cs" />
