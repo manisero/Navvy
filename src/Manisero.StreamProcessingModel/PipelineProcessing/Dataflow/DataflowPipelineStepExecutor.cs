@@ -20,11 +20,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
         {
             var pipeline = _dataflowPipelineBuilder.Build(step, context, progress, cancellation);
             var batchNumber = 0;
+            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
             foreach (var input in step.Input)
             {
                 batchNumber++;
-                PipelineExecutionEvents.BatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
+                events?.BatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
 
                 var batch = new DataBatch<TData>
                 {

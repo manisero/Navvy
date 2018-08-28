@@ -16,16 +16,17 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
             CancellationToken cancellation)
         {
             var batchNumber = 0;
+            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
             foreach (var input in step.Input)
             {
                 batchNumber++;
-                PipelineExecutionEvents.BatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
+                events?.BatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
                 var batchSw = Stopwatch.StartNew();
 
                 foreach (var block in step.Blocks)
                 {
-                    PipelineExecutionEvents.BlockStarted(batchNumber, input, block, step, context.TaskDescription, DateTimeUtils.Now);
+                    events?.BlockStarted(batchNumber, input, block, step, context.TaskDescription, DateTimeUtils.Now);
                     var blockSw = Stopwatch.StartNew();
 
                     try
@@ -38,12 +39,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
                     }
 
                     blockSw.Stop();
-                    PipelineExecutionEvents.BlockEnded(batchNumber, input, block, step, context.TaskDescription, blockSw.Elapsed, DateTimeUtils.Now);
+                    events?.BlockEnded(batchNumber, input, block, step, context.TaskDescription, blockSw.Elapsed, DateTimeUtils.Now);
                     cancellation.ThrowIfCancellationRequested();
                 }
 
                 batchSw.Stop();
-                PipelineExecutionEvents.BatchEnded(batchNumber, input, step, context.TaskDescription, batchSw.Elapsed, DateTimeUtils.Now);
+                events?.BatchEnded(batchNumber, input, step, context.TaskDescription, batchSw.Elapsed, DateTimeUtils.Now);
                 StepExecutionUtils.ReportProgress(batchNumber, step.ExpectedInputBatchesCount, progress);
             }
         }

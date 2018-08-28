@@ -92,13 +92,15 @@ namespace Manisero.StreamProcessingModel.Core
                     ProgressPercentage = x
                 }));
 
-            TaskExecutionEvents.StepStarted(step, taskDescription, DateTimeUtils.Now);
+            var events = _executionEventsBag.TryGetEvents<TaskExecutionEvents>();
+
+            events?.StepStarted(step, taskDescription, DateTimeUtils.Now);
             var sw = Stopwatch.StartNew();
             
             stepExecutor.Execute(step, context, stepProgress, cancellation);
 
             sw.Stop();
-            TaskExecutionEvents.StepEnded(step, taskDescription, sw.Elapsed, DateTimeUtils.Now);
+            events?.StepEnded(step, taskDescription, sw.Elapsed, DateTimeUtils.Now);
         }
     }
 }

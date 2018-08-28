@@ -18,18 +18,20 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var firstBlock = ToTransformBlock(step, context, 0, cancellation);
+            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
+
+            var firstBlock = ToTransformBlock(step, 0, context, events, cancellation);
             var previousBlock = firstBlock;
 
             for (var i = 1; i <= step.Blocks.Count - 1; i++)
             {
-                var currentBlock = ToTransformBlock(step, context, i, cancellation);
+                var currentBlock = ToTransformBlock(step, i, context, events, cancellation);
                 previousBlock.LinkTo(currentBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
                 previousBlock = currentBlock;
             }
 
-            var progressBlock = CreateProgressBlock(step, context, progress, cancellation);
+            var progressBlock = CreateProgressBlock(step, context, events, progress, cancellation);
             previousBlock.LinkTo(progressBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
             return new DataflowPipeline<TData>
@@ -41,8 +43,9 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
 
         private TransformBlock<DataBatch<TData>, DataBatch<TData>> ToTransformBlock(
             PipelineTaskStep<TData> step,
-            TaskStepExecutionContext context,
             int blockIndex,
+            TaskStepExecutionContext context,
+            PipelineExecutionEvents events,
             CancellationToken cancellation)
         {
             var block = step.Blocks[blockIndex];
@@ -51,7 +54,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
                 x =>
                 {
-                    PipelineExecutionEvents.BlockStarted(x.Number, x.Data, block, step, context.TaskDescription, DateTimeUtils.Now);
+                    events?.BlockStarted(x.Number, x.Data, block, step, context.TaskDescription, DateTimeUtils.Now);
                     var sw = Stopwatch.StartNew();
 
                     try
@@ -64,7 +67,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
                     }
 
                     sw.Stop();
-                    PipelineExecutionEvents.BlockEnded(x.Number, x.Data, block, step, context.TaskDescription, sw.Elapsed, DateTimeUtils.Now);
+                    events?.BlockEnded(x.Number, x.Data, block, step, context.TaskDescription, sw.Elapsed, DateTimeUtils.Now);
 
                     return x;
                 },
@@ -81,6 +84,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
         private ActionBlock<DataBatch<TData>> CreateProgressBlock(
             PipelineTaskStep<TData> step,
             TaskStepExecutionContext context,
+            PipelineExecutionEvents events,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
@@ -88,7 +92,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
                 x =>
                 {
                     x.ProcessingStopwatch.Stop();
-                    PipelineExecutionEvents.BatchEnded(x.Number, x.Data, step, context.TaskDescription, x.ProcessingStopwatch.Elapsed, DateTimeUtils.Now);
+                    events?.BatchEnded(x.Number, x.Data, step, context.TaskDescription, x.ProcessingStopwatch.Elapsed, DateTimeUtils.Now);
                     StepExecutionUtils.ReportProgress(x.Number, step.ExpectedInputBatchesCount, progress);
                 },
                 new ExecutionDataflowBlockOptions
