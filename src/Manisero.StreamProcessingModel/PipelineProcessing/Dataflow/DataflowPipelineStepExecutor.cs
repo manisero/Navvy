@@ -16,10 +16,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
             CancellationToken cancellation)
         {
             var pipeline = _dataflowPipelineBuilder.Build(step, progress, cancellation);
-            var batchNumber = 1;
+            var batchNumber = 0;
 
             foreach (var input in step.Input)
             {
+                batchNumber++;
+
                 var batch = new DataBatch<TData>
                 {
                     Number = batchNumber,

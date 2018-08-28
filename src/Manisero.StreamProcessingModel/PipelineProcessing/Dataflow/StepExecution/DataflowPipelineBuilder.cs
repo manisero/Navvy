@@ -73,14 +73,8 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var batchNumber = 0;
-
             return new ActionBlock<DataBatch<TData>>(
-                x =>
-                {
-                    batchNumber++;
-                    StepExecutionUtils.ReportProgress(batchNumber, step.ExpectedInputBatchesCount, progress);
-                },
+                x => StepExecutionUtils.ReportProgress(x.Number, step.ExpectedInputBatchesCount, progress),
                 new ExecutionDataflowBlockOptions
                 {
                     NameFormat = "Progress",
