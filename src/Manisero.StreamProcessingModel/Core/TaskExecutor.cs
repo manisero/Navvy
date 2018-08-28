@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using Manisero.StreamProcessingModel.Core.Models;
@@ -81,7 +82,13 @@ namespace Manisero.StreamProcessingModel.Core
                     ProgressPercentage = x
                 }));
 
+            TaskExecutionEvents.StepStarted(DateTimeUtils.Now);
+            var sw = Stopwatch.StartNew();
+
             stepExecutor.Execute(step, stepProgress, cancellation);
+
+            sw.Stop();
+            TaskExecutionEvents.StepEnded(DateTimeUtils.Now, sw.Elapsed);
         }
     }
 }
