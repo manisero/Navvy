@@ -4,23 +4,20 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing
 {
     public class PipelineExecutionEvents
     {
-        public static void BlockStarted(BlockStartedEvent e)
+        public static void BatchStarted(DateTime timestamp)
         {
         }
 
-        public static void BlockEnded(BlockEndedEvent e)
+        public static void BatchEnded(DateTime timestamp, TimeSpan duration)
         {
         }
-    }
 
-    public class BlockStartedEvent
-    {
-        public DateTime Timestamp { get; set; }
-    }
+        public static void BlockStarted(DateTime timestamp)
+        {
+        }
 
-    public class BlockEndedEvent
-    {
-        public DateTime Timestamp { get; set; }
-        public TimeSpan Duration { get; set; }
+        public static void BlockEnded(DateTime timestamp, TimeSpan duration)
+        {
+        }
     }
 }

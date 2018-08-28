@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
 {
@@ -7,5 +8,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
         public int Number { get; set; }
 
         public ICollection<TData> Data { get; set; }
+
+        public Stopwatch ProcessingStopwatch { get; set; }
     }
 }

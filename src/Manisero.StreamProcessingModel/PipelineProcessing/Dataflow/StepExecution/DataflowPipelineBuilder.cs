@@ -49,12 +49,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
                 x =>
                 {
-                    PipelineExecutionEvents.BlockStarted(
-                        new BlockStartedEvent
-                        {
-                            Timestamp = DateTimeUtils.Now
-                        });
-
+                    PipelineExecutionEvents.BlockStarted(DateTimeUtils.Now);
                     var sw = Stopwatch.StartNew();
 
                     try
@@ -67,13 +62,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
                     }
 
                     sw.Stop();
-
-                    PipelineExecutionEvents.BlockEnded(
-                        new BlockEndedEvent
-                        {
-                            Timestamp = DateTimeUtils.Now,
-                            Duration = sw.Elapsed
-                        });
+                    PipelineExecutionEvents.BlockEnded(DateTimeUtils.Now, sw.Elapsed);
 
                     return x;
                 },
@@ -93,7 +82,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             CancellationToken cancellation)
         {
             return new ActionBlock<DataBatch<TData>>(
-                x => StepExecutionUtils.ReportProgress(x.Number, step.ExpectedInputBatchesCount, progress),
+                x =>
+                {
+                    x.ProcessingStopwatch.Stop();
+                    PipelineExecutionEvents.BatchEnded(DateTimeUtils.Now, x.ProcessingStopwatch.Elapsed);
+                    StepExecutionUtils.ReportProgress(x.Number, step.ExpectedInputBatchesCount, progress);
+                },
                 new ExecutionDataflowBlockOptions
                 {
                     NameFormat = "Progress",
