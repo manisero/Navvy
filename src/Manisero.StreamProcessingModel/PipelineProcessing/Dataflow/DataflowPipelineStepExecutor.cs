@@ -29,8 +29,8 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
                 var batch = new DataBatch<TData>
                 {
                     Number = batchNumber,
-                    ProcessingStopwatch = Stopwatch.StartNew(),
-                    Data = input
+                    Data = input,
+                    ProcessingStopwatch = Stopwatch.StartNew()
                 };
 
                 pipeline.InputBlock.SendAsync(batch).Wait();
