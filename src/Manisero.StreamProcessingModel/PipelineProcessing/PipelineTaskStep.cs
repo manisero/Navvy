@@ -43,7 +43,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing
         }
     }
 
-    public class PipelineBlock<TData>
+    public interface IPipelineBlock
+    {
+        string Name { get; }
+    }
+
+    public class PipelineBlock<TData> : IPipelineBlock
     {
         public string Name { get; }
 

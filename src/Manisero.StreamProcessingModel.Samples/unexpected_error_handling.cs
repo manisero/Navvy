@@ -24,7 +24,7 @@ namespace Manisero.StreamProcessingModel.Samples
         private class ThrowingStepExecutor<TTaskStep> : ITaskStepExecutor<TTaskStep>
             where TTaskStep : ITaskStep
         {
-            public void Execute(TTaskStep step, IProgress<byte> progress, CancellationToken cancellation)
+            public void Execute(TTaskStep step, TaskStepExecutionContext context, IProgress<byte> progress, CancellationToken cancellation)
                 => throw Error;
         }
 

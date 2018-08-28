@@ -14,16 +14,17 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
 
         public void Execute(
             PipelineTaskStep<TData> step,
+            TaskStepExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var pipeline = _dataflowPipelineBuilder.Build(step, progress, cancellation);
+            var pipeline = _dataflowPipelineBuilder.Build(step, context, progress, cancellation);
             var batchNumber = 0;
 
             foreach (var input in step.Input)
             {
                 batchNumber++;
-                PipelineExecutionEvents.BatchStarted(DateTimeUtils.Now);
+                PipelineExecutionEvents.BatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
 
                 var batch = new DataBatch<TData>
                 {

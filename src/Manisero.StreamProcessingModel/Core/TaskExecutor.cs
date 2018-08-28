@@ -42,7 +42,7 @@ namespace Manisero.StreamProcessingModel.Core
                     ExecuteStepMethod.InvokeAsGeneric(
                         this,
                         new[] { step.GetType() },
-                        step, progress, cancellation);
+                        step, taskDescription, progress, cancellation);
                 }
                 catch (OperationCanceledException e)
                 {
@@ -69,11 +69,17 @@ namespace Manisero.StreamProcessingModel.Core
 
         private void ExecuteStep<TStep>(
             TStep step,
+            TaskDescription taskDescription,
             IProgress<TaskProgress> progress,
             CancellationToken cancellation)
             where TStep : ITaskStep
         {
             var stepExecutor = _taskStepExecutorResolver.Resolve<TStep>();
+
+            var context = new TaskStepExecutionContext
+            {
+                TaskDescription = taskDescription
+            };
 
             var stepProgress = new Progress<byte>(
                 x => progress.Report(new TaskProgress
@@ -82,13 +88,13 @@ namespace Manisero.StreamProcessingModel.Core
                     ProgressPercentage = x
                 }));
 
-            TaskExecutionEvents.StepStarted(DateTimeUtils.Now);
+            TaskExecutionEvents.StepStarted(step, taskDescription, DateTimeUtils.Now);
             var sw = Stopwatch.StartNew();
-
-            stepExecutor.Execute(step, stepProgress, cancellation);
+            
+            stepExecutor.Execute(step, context, stepProgress, cancellation);
 
             sw.Stop();
-            TaskExecutionEvents.StepEnded(DateTimeUtils.Now, sw.Elapsed);
+            TaskExecutionEvents.StepEnded(step, taskDescription, sw.Elapsed, DateTimeUtils.Now);
         }
     }
 }

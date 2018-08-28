@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BasicProcessing\BasicStepExecutorResolver.cs" />
     <Compile Include="Core\StepExecution\CompositeTaskStepExecutorResolver.cs" />
+    <Compile Include="Core\StepExecution\TaskStepExecutionContext.cs" />
     <Compile Include="Core\TaskExecutionEvents.cs" />
     <Compile Include="PipelineProcessing\Dataflow\DataflowPipelineStepExecutorResolver.cs" />
     <Compile Include="PipelineProcessing\PipelineExecutionEvents.cs" />

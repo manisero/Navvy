@@ -9,6 +9,7 @@ namespace Manisero.StreamProcessingModel.BasicProcessing
     {
         public void Execute(
             BasicTaskStep step,
+            TaskStepExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
