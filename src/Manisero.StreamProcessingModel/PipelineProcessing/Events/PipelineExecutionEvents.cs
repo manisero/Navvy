@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Utils;
 
@@ -130,5 +131,13 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
                 Timestamp = DateTimeUtils.Now
             });
         }
+    }
+
+    public static class TaskExecutorBuilderExtensions
+    {
+        public static void RegisterPipelineExecutionEvents(
+            this ITaskExecutorBuilder builder,
+            PipelineExecutionEvents events)
+            => builder.RegisterEvents(events);
     }
 }

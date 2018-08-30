@@ -10,7 +10,15 @@ using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.Core
 {
-    public class TaskExecutor
+    public interface ITaskExecutor
+    {
+        TaskResult Execute(
+            TaskDescription taskDescription,
+            IProgress<TaskProgress> progress = null,
+            CancellationToken? cancellation = null);
+    }
+
+    public class TaskExecutor : ITaskExecutor
     {
         private static readonly MethodInfo ExecuteStepMethod
             = typeof(TaskExecutor).GetMethod(nameof(ExecuteStep), BindingFlags.Instance | BindingFlags.NonPublic);
