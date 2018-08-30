@@ -54,9 +54,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Manisero.StreamProcessingModel\Manisero.StreamProcessingModel.csproj">
+    <ProjectReference Include="..\Manisero.StreamProcessingModel\Manisero.Navvy.csproj">
       <Project>{48c44692-d70b-42fd-9d18-835209a46357}</Project>
-      <Name>Manisero.StreamProcessingModel</Name>
+      <Name>Manisero.Navvy</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
