@@ -26,7 +26,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
 
                 foreach (var block in step.Blocks)
                 {
-                    events?.OnBlockStarted(batchNumber, input, block, step, context.TaskDescription);
+                    events?.OnBlockStarted(block, batchNumber, input, step, context.TaskDescription);
                     var blockSw = Stopwatch.StartNew();
 
                     try
@@ -39,7 +39,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
                     }
 
                     blockSw.Stop();
-                    events?.OnBlockEnded(batchNumber, input, block, step, context.TaskDescription, blockSw.Elapsed);
+                    events?.OnBlockEnded(block, batchNumber, input, step, context.TaskDescription, blockSw.Elapsed);
                     cancellation.ThrowIfCancellationRequested();
                 }
 

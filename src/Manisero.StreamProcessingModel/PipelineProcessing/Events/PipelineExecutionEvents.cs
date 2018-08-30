@@ -26,9 +26,9 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
 
     public struct BlockStartedEvent
     {
+        public IPipelineBlock Block;
         public int BatchNumber;
         public IEnumerable Batch;
-        public IPipelineBlock Block;
         public ITaskStep Step;
         public TaskDescription Task;
         public DateTime Timestamp;
@@ -36,9 +36,9 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
 
     public struct BlockEndedEvent
     {
+        public IPipelineBlock Block;
         public int BatchNumber;
         public IEnumerable Batch;
-        public IPipelineBlock Block;
         public ITaskStep Step;
         public TaskDescription Task;
         public TimeSpan Duration;
@@ -104,26 +104,26 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
             });
         }
 
-        internal void OnBlockStarted(int batchNumber, IEnumerable batch, IPipelineBlock block, ITaskStep step, TaskDescription task)
+        internal void OnBlockStarted(IPipelineBlock block, int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task)
         {
             BlockStarted?.Invoke(new BlockStartedEvent
             {
+                Block = block,
                 BatchNumber = batchNumber,
                 Batch = batch,
-                Block = block,
                 Step = step,
                 Task = task,
                 Timestamp = DateTimeUtils.Now
             });
         }
 
-        internal void OnBlockEnded(int batchNumber, IEnumerable batch, IPipelineBlock block, ITaskStep step, TaskDescription task, TimeSpan duration)
+        internal void OnBlockEnded(IPipelineBlock block, int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, TimeSpan duration)
         {
             BlockEnded?.Invoke(new BlockEndedEvent
             {
+                Block = block,
                 BatchNumber = batchNumber,
                 Batch = batch,
-                Block = block,
                 Step = step,
                 Task = task,
                 Duration = duration,
