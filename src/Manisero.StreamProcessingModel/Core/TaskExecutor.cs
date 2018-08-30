@@ -41,11 +41,11 @@ namespace Manisero.StreamProcessingModel.Core
             {
                 if (!step.ExecutionCondition(currentOutcome))
                 {
-                    events?.OnStepSkipped(step, taskDescription, DateTimeUtils.Now);
+                    events?.OnStepSkipped(step, taskDescription);
                     continue;
                 }
 
-                events?.OnStepStarted(step, taskDescription, DateTimeUtils.Now);
+                events?.OnStepStarted(step, taskDescription);
                 var stepSw = Stopwatch.StartNew();
 
                 try
@@ -62,7 +62,7 @@ namespace Manisero.StreamProcessingModel.Core
                         currentOutcome = TaskOutcome.Canceled;
                     }
 
-                    events?.OnStepCanceled(step, taskDescription, DateTimeUtils.Now);
+                    events?.OnStepCanceled(step, taskDescription);
                 }
                 catch (TaskExecutionException e)
                 {
@@ -73,11 +73,11 @@ namespace Manisero.StreamProcessingModel.Core
                         currentOutcome = TaskOutcome.Failed;
                     }
 
-                    events?.OnStepFailed(step, taskDescription, DateTimeUtils.Now);
+                    events?.OnStepFailed(step, taskDescription);
                 }
 
                 stepSw.Stop();
-                events?.OnStepEnded(step, taskDescription, stepSw.Elapsed, DateTimeUtils.Now);
+                events?.OnStepEnded(step, taskDescription, stepSw.Elapsed);
             }
 
             var result = new TaskResult(
@@ -85,7 +85,7 @@ namespace Manisero.StreamProcessingModel.Core
                 errors);
 
             taskSw.Stop();
-            events?.OnTaskEnded(taskDescription, result, taskSw.Elapsed, DateTimeUtils.Now);
+            events?.OnTaskEnded(taskDescription, result, taskSw.Elapsed);
             
             return result;
         }
