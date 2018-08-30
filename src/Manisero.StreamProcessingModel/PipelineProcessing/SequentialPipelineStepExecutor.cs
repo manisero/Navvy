@@ -21,12 +21,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing
             foreach (var input in step.Input)
             {
                 batchNumber++;
-                events?.OnBatchStarted(batchNumber, input, step, context.TaskDescription);
+                events?.OnBatchStarted(batchNumber, input, step, context.Task);
                 var batchSw = Stopwatch.StartNew();
 
                 foreach (var block in step.Blocks)
                 {
-                    events?.OnBlockStarted(block, batchNumber, input, step, context.TaskDescription);
+                    events?.OnBlockStarted(block, batchNumber, input, step, context.Task);
                     var blockSw = Stopwatch.StartNew();
 
                     try
@@ -39,12 +39,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing
                     }
 
                     blockSw.Stop();
-                    events?.OnBlockEnded(block, batchNumber, input, step, context.TaskDescription, blockSw.Elapsed);
+                    events?.OnBlockEnded(block, batchNumber, input, step, context.Task, blockSw.Elapsed);
                     cancellation.ThrowIfCancellationRequested();
                 }
 
                 batchSw.Stop();
-                events?.OnBatchEnded(batchNumber, input, step, context.TaskDescription, batchSw.Elapsed);
+                events?.OnBatchEnded(batchNumber, input, step, context.Task, batchSw.Elapsed);
                 PipelineProcessingUtils.ReportProgress(batchNumber, step.ExpectedInputBatchesCount, progress);
             }
         }

@@ -23,7 +23,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             events.TaskStarted += x => startedEvent = x;
             events.TaskEnded += x => endedEvent = x;
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -32,14 +32,14 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(events: events);
+            task.Execute(events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
-            startedEvent.Value.Task.ShouldBeEquivalentTo(taskDescription);
+            startedEvent.Value.Task.ShouldBeEquivalentTo(task);
 
             endedEvent.Should().NotBeNull();
-            endedEvent.Value.Task.ShouldBeEquivalentTo(taskDescription);
+            endedEvent.Value.Task.ShouldBeEquivalentTo(task);
             endedEvent.Value.Duration.Ticks.Should().BePositive();
         }
 
@@ -54,7 +54,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             events.StepStarted += x => startedEvent = x;
             events.StepEnded += x => endedEvent = x;
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -63,14 +63,14 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(events: events);
+            task.Execute(events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
-            startedEvent.Value.Step.ShouldBeEquivalentTo(taskDescription.Steps[0]);
+            startedEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
 
             endedEvent.Should().NotBeNull();
-            endedEvent.Value.Step.ShouldBeEquivalentTo(taskDescription.Steps[0]);
+            endedEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
             endedEvent.Value.Duration.Ticks.Should().BePositive();
         }
 
@@ -83,7 +83,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             var events = new TaskExecutionEvents();
             events.StepSkipped += x => skippedEvent = x;
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -95,11 +95,11 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(events: events);
+            task.Execute(events: events);
 
             // Assert
             skippedEvent.Should().NotBeNull();
-            skippedEvent.Value.Step.ShouldBeEquivalentTo(taskDescription.Steps[0]);
+            skippedEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
 
             var cancellationSource = new CancellationTokenSource();
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -124,11 +124,11 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(cancellation: cancellationSource, events: events);
+            task.Execute(cancellation: cancellationSource, events: events);
 
             // Assert
             canceledEvent.Should().NotBeNull();
-            canceledEvent.Value.Step.ShouldBeEquivalentTo(taskDescription.Steps[0]);
+            canceledEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
 
             var exception = new Exception();
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -153,12 +153,12 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(events: events);
+            task.Execute(events: events);
 
             // Assert
             failedEvent.Should().NotBeNull();
             failedEvent.Value.Exception.InnerException.ShouldBeEquivalentTo(exception);
-            failedEvent.Value.Step.ShouldBeEquivalentTo(taskDescription.Steps[0]);
+            failedEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
 
             var batch = new[] { 0 };
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -37,7 +37,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(resolverType, events: events);
+            task.Execute(resolverType, events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -67,7 +67,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
                 "Block",
                 x => { });
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -79,7 +79,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(resolverType, events: events);
+            task.Execute(resolverType, events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();

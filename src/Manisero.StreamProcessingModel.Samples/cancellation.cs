@@ -19,7 +19,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void basic(ResolverType resolverType)
         {
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -32,7 +32,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
 
-            test(taskDescription, resolverType);
+            test(task, resolverType);
         }
 
         [Theory]
@@ -40,7 +40,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void pipeline___within_single_block_between_batches(ResolverType resolverType)
         {
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -70,7 +70,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
 
-            test(taskDescription, resolverType);
+            test(task, resolverType);
         }
 
         [Theory]
@@ -78,7 +78,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void pipeline___between_blocks(ResolverType resolverType)
         {
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -97,15 +97,15 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
 
-            test(taskDescription, resolverType);
+            test(task, resolverType);
         }
 
         private void test(
-            TaskDescription taskDescription,
+            TaskDefinition task,
             ResolverType resolverType)
         {
             // Act
-            var result = taskDescription.Execute(resolverType, cancellation: _cancellationSource);
+            var result = task.Execute(resolverType, cancellation: _cancellationSource);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Canceled);

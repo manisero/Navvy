@@ -2,7 +2,7 @@
 
 namespace Manisero.StreamProcessingModel.Core.Models
 {
-    public class TaskDescription
+    public class TaskDefinition
     {
         public IList<ITaskStep> Steps { get; set; }
     }

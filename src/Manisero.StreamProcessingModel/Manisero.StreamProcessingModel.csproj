@@ -61,7 +61,7 @@
     <Compile Include="BasicProcessing\BasicTaskStep.cs" />
     <Compile Include="Core\Models\ITaskStep.cs" />
     <Compile Include="PipelineProcessing\PipelineTaskStep.cs" />
-    <Compile Include="Core\Models\TaskDescription.cs" />
+    <Compile Include="Core\Models\TaskDefinition.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\DictionaryExtensions.cs" />
     <Compile Include="Utils\EmptyProgress.cs" />

@@ -33,7 +33,7 @@ namespace Manisero.StreamProcessingModel.Samples
             var sum = 0;
             var completed = false;
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -78,7 +78,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing batch {x.BatchNumber} after {x.Duration.Ticks} ticks."));
 
             // Act
-            var result = taskDescription.Execute(resolverType, progress, cancellationSource, taskEvents, pipelineEvents);
+            var result = task.Execute(resolverType, progress, cancellationSource, taskEvents, pipelineEvents);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Successful);

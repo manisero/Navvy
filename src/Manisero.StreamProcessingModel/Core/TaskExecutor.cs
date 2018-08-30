@@ -13,7 +13,7 @@ namespace Manisero.StreamProcessingModel.Core
     public interface ITaskExecutor
     {
         TaskResult Execute(
-            TaskDescription taskDescription,
+            TaskDefinition task,
             IProgress<TaskProgress> progress = null,
             CancellationToken? cancellation = null);
     }
@@ -35,7 +35,7 @@ namespace Manisero.StreamProcessingModel.Core
         }
 
         public TaskResult Execute(
-            TaskDescription taskDescription,
+            TaskDefinition task,
             IProgress<TaskProgress> progress = null,
             CancellationToken? cancellation = null)
         {
@@ -53,18 +53,18 @@ namespace Manisero.StreamProcessingModel.Core
             var errors = new List<TaskExecutionException>();
             var events = _executionEventsBag.TryGetEvents<TaskExecutionEvents>();
 
-            events?.OnTaskStarted(taskDescription);
+            events?.OnTaskStarted(task);
             var taskSw = Stopwatch.StartNew();
             
-            foreach (var step in taskDescription.Steps)
+            foreach (var step in task.Steps)
             {
                 if (!step.ExecutionCondition(currentOutcome))
                 {
-                    events?.OnStepSkipped(step, taskDescription);
+                    events?.OnStepSkipped(step, task);
                     continue;
                 }
 
-                events?.OnStepStarted(step, taskDescription);
+                events?.OnStepStarted(step, task);
                 var stepSw = Stopwatch.StartNew();
 
                 try
@@ -72,7 +72,7 @@ namespace Manisero.StreamProcessingModel.Core
                     ExecuteStepMethod.InvokeAsGeneric(
                         this,
                         new[] { step.GetType() },
-                        step, taskDescription, progress, cancellation);
+                        step, task, progress, cancellation);
                 }
                 catch (OperationCanceledException e)
                 {
@@ -81,7 +81,7 @@ namespace Manisero.StreamProcessingModel.Core
                         currentOutcome = TaskOutcome.Canceled;
                     }
 
-                    events?.OnStepCanceled(step, taskDescription);
+                    events?.OnStepCanceled(step, task);
                 }
                 catch (TaskExecutionException e)
                 {
@@ -92,11 +92,11 @@ namespace Manisero.StreamProcessingModel.Core
                         currentOutcome = TaskOutcome.Failed;
                     }
 
-                    events?.OnStepFailed(e, step, taskDescription);
+                    events?.OnStepFailed(e, step, task);
                 }
 
                 stepSw.Stop();
-                events?.OnStepEnded(step, taskDescription, stepSw.Elapsed);
+                events?.OnStepEnded(step, task, stepSw.Elapsed);
             }
 
             var result = new TaskResult(
@@ -104,14 +104,14 @@ namespace Manisero.StreamProcessingModel.Core
                 errors);
 
             taskSw.Stop();
-            events?.OnTaskEnded(taskDescription, result, taskSw.Elapsed);
+            events?.OnTaskEnded(task, result, taskSw.Elapsed);
             
             return result;
         }
 
         private void ExecuteStep<TStep>(
             TStep step,
-            TaskDescription taskDescription,
+            TaskDefinition task,
             IProgress<TaskProgress> progress,
             CancellationToken cancellation)
             where TStep : ITaskStep
@@ -120,7 +120,7 @@ namespace Manisero.StreamProcessingModel.Core
 
             var context = new TaskStepExecutionContext
             {
-                TaskDescription = taskDescription,
+                Task = task,
                 EventsBag = _executionEventsBag
             };
 

@@ -19,7 +19,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void basic(ResolverType resolverType)
         {
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -29,7 +29,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
             
-            test(taskDescription, resolverType);
+            test(task, resolverType);
         }
 
         [Theory]
@@ -37,7 +37,7 @@ namespace Manisero.StreamProcessingModel.Samples
         [InlineData(ResolverType.Streaming)]
         public void pipeline___catches_error(ResolverType resolverType)
         {
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -54,7 +54,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
             
-            test(taskDescription, resolverType);
+            test(task, resolverType);
         }
 
         [Theory]
@@ -64,7 +64,7 @@ namespace Manisero.StreamProcessingModel.Samples
         {
             var completed = false;
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -94,7 +94,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
 
-            test(taskDescription, resolverType);
+            test(task, resolverType);
 
             completed.Should().Be(false);
         }
@@ -106,7 +106,7 @@ namespace Manisero.StreamProcessingModel.Samples
         {
             var completed = false;
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -125,17 +125,17 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
 
-            test(taskDescription, resolverType);
+            test(task, resolverType);
 
             completed.Should().Be(false);
         }
 
         private void test(
-            TaskDescription taskDescription,
+            TaskDefinition task,
             ResolverType resolverType)
         {
             // Act
-            var result = taskDescription.Execute(resolverType);
+            var result = task.Execute(resolverType);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);

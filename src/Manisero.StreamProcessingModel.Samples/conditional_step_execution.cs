@@ -42,7 +42,7 @@ namespace Manisero.StreamProcessingModel.Samples
             // Arrange
             var actualOutcomePassedToCondition = (TaskOutcome?)null;
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -60,7 +60,7 @@ namespace Manisero.StreamProcessingModel.Samples
             };
 
             // Act
-            taskDescription.Execute(resolverType, cancellation: _cancellationSource);
+            task.Execute(resolverType, cancellation: _cancellationSource);
 
             // Assert
             actualOutcomePassedToCondition.Should().Be(outcomePassedToThirdStepCondition);
@@ -78,7 +78,7 @@ namespace Manisero.StreamProcessingModel.Samples
             TaskOutcome precedingStepOutcome,
             bool testedStepExecuted)
         {
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -89,7 +89,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
 
-            test_conditional_execution(resolverType, taskDescription, testedStepExecuted);
+            test_conditional_execution(resolverType, task, testedStepExecuted);
         }
 
         [Theory]
@@ -101,7 +101,7 @@ namespace Manisero.StreamProcessingModel.Samples
             ResolverType resolverType,
             bool shouldExecute)
         {
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -112,16 +112,16 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
 
-            test_conditional_execution(resolverType, taskDescription, shouldExecute);
+            test_conditional_execution(resolverType, task, shouldExecute);
         }
 
         private void test_conditional_execution(
             ResolverType resolverType,
-            TaskDescription taskDescription,
+            TaskDefinition task,
             bool testedStepExecuted)
         {
             // Act
-            taskDescription.Execute(resolverType, cancellation: _cancellationSource);
+            task.Execute(resolverType, cancellation: _cancellationSource);
 
             // Assert
             _testedStepExecuted.Should().Be(testedStepExecuted);

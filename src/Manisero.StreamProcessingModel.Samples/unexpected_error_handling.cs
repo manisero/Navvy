@@ -31,7 +31,7 @@ namespace Manisero.StreamProcessingModel.Samples
         public void test()
         {
             // Arrange
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
@@ -44,7 +44,7 @@ namespace Manisero.StreamProcessingModel.Samples
                 .Build();
 
             // Act
-            Action act = () => executor.Execute(taskDescription);
+            Action act = () => executor.Execute(task);
 
             // Assert
             act.ShouldThrow<Exception>().Which.Should().BeSameAs(Error);

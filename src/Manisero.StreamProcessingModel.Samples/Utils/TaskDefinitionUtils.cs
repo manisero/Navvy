@@ -4,10 +4,10 @@ using Manisero.StreamProcessingModel.Core.Models;
 
 namespace Manisero.StreamProcessingModel.Samples.Utils
 {
-    public static class TaskDescriptionUtils
+    public static class TaskDefinitionUtils
     {
         public static TaskResult Execute(
-            this TaskDescription task,
+            this TaskDefinition task,
             ResolverType resolverType = ResolverType.Sequential,
             IProgress<TaskProgress> progress = null,
             CancellationTokenSource cancellation = null,

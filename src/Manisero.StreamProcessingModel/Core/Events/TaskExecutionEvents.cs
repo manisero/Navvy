@@ -6,13 +6,13 @@ namespace Manisero.StreamProcessingModel.Core.Events
 {
     public struct TaskStartedEvent
     {
-        public TaskDescription Task;
+        public TaskDefinition Task;
         public DateTime Timestamp;
     }
 
     public struct TaskEndedEvent
     {
-        public TaskDescription Task;
+        public TaskDefinition Task;
         public TaskResult Result;
         public TimeSpan Duration;
         public DateTime Timestamp;
@@ -21,14 +21,14 @@ namespace Manisero.StreamProcessingModel.Core.Events
     public struct StepStartedEvent
     {
         public ITaskStep Step;
-        public TaskDescription Task;
+        public TaskDefinition Task;
         public DateTime Timestamp;
     }
 
     public struct StepEndedEvent
     {
         public ITaskStep Step;
-        public TaskDescription Task;
+        public TaskDefinition Task;
         public TimeSpan Duration;
         public DateTime Timestamp;
     }
@@ -36,14 +36,14 @@ namespace Manisero.StreamProcessingModel.Core.Events
     public struct StepSkippedEvent
     {
         public ITaskStep Step;
-        public TaskDescription Task;
+        public TaskDefinition Task;
         public DateTime Timestamp;
     }
 
     public struct StepCanceledEvent
     {
         public ITaskStep Step;
-        public TaskDescription Task;
+        public TaskDefinition Task;
         public DateTime Timestamp;
     }
 
@@ -51,7 +51,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
     {
         public TaskExecutionException Exception;
         public ITaskStep Step;
-        public TaskDescription Task;
+        public TaskDefinition Task;
         public DateTime Timestamp;
     }
 
@@ -110,7 +110,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             }
         }
 
-        public void OnTaskStarted(TaskDescription task)
+        public void OnTaskStarted(TaskDefinition task)
         {
             TaskStarted?.Invoke(new TaskStartedEvent
             {
@@ -119,7 +119,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        public void OnTaskEnded(TaskDescription task, TaskResult result, TimeSpan duration)
+        public void OnTaskEnded(TaskDefinition task, TaskResult result, TimeSpan duration)
         {
             TaskEnded?.Invoke(new TaskEndedEvent
             {
@@ -130,7 +130,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        public void OnStepStarted(ITaskStep step, TaskDescription task)
+        public void OnStepStarted(ITaskStep step, TaskDefinition task)
         {
             StepStarted?.Invoke(new StepStartedEvent
             {
@@ -140,7 +140,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        public void OnStepEnded(ITaskStep step, TaskDescription task, TimeSpan duration)
+        public void OnStepEnded(ITaskStep step, TaskDefinition task, TimeSpan duration)
         {
             StepEnded?.Invoke(new StepEndedEvent
             {
@@ -151,7 +151,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        public void OnStepSkipped(ITaskStep step, TaskDescription task)
+        public void OnStepSkipped(ITaskStep step, TaskDefinition task)
         {
             StepSkipped?.Invoke(new StepSkippedEvent
             {
@@ -161,7 +161,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        public void OnStepCanceled(ITaskStep step, TaskDescription task)
+        public void OnStepCanceled(ITaskStep step, TaskDefinition task)
         {
             StepCanceled?.Invoke(new StepCanceledEvent
             {
@@ -171,7 +171,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        public void OnStepFailed(TaskExecutionException exception, ITaskStep step, TaskDescription task)
+        public void OnStepFailed(TaskExecutionException exception, ITaskStep step, TaskDefinition task)
         {
             StepFailed?.Invoke(new StepFailedEvent
             {

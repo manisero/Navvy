@@ -65,7 +65,7 @@ namespace Manisero.StreamProcessingModel.Samples
             // Arrange
             var progressReports = new ConcurrentBag<TaskProgress>();
 
-            var taskDescription = new TaskDescription
+            var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep> { taskStep }
             };
@@ -73,7 +73,7 @@ namespace Manisero.StreamProcessingModel.Samples
             var progress = new Progress<TaskProgress>(x => progressReports.Add(x));
 
             // Act
-            taskDescription.Execute(resolverType, progress);
+            task.Execute(resolverType, progress);
 
             // Assert
             progressReports.Select(x => x.StepName).Should().OnlyContain(x => x == taskStep.Name);
