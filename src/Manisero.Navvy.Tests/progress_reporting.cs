@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Models;
@@ -72,6 +73,8 @@ namespace Manisero.Navvy.Tests
 
             // Act
             task.Execute(resolverType, progress);
+
+            Thread.Sleep(100); // TODO: Remove once AppVeyor issue resolved
 
             // Assert
             progressReports.Select(x => x.StepName).Should().OnlyContain(x => x == taskStep.Name);
