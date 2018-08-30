@@ -1,2 +1,2 @@
-# StreamProcessingModel
-Abstract model of stream-processing pipeline.
+# Navvy
+A long-running tasks execution framework.
