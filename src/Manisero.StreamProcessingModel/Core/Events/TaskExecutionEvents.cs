@@ -65,6 +65,51 @@ namespace Manisero.StreamProcessingModel.Core.Events
         public event ExecutionEventHandler<StepCanceledEvent> StepCanceled;
         public event ExecutionEventHandler<StepFailedEvent> StepFailed;
 
+        public TaskExecutionEvents(
+            ExecutionEventHandler<TaskStartedEvent> taskStarted = null,
+            ExecutionEventHandler<TaskEndedEvent> taskEnded = null,
+            ExecutionEventHandler<StepStartedEvent> stepStarted = null,
+            ExecutionEventHandler<StepEndedEvent> stepEnded = null,
+            ExecutionEventHandler<StepSkippedEvent> stepSkipped = null,
+            ExecutionEventHandler<StepCanceledEvent> stepCanceled = null,
+            ExecutionEventHandler<StepFailedEvent> stepFailed = null)
+        {
+            if (taskStarted != null)
+            {
+                TaskStarted += taskStarted;
+            }
+
+            if (taskEnded != null)
+            {
+                TaskEnded += taskEnded;
+            }
+
+            if (stepStarted != null)
+            {
+                StepStarted += stepStarted;
+            }
+
+            if (stepEnded != null)
+            {
+                StepEnded += stepEnded;
+            }
+
+            if (stepSkipped != null)
+            {
+                StepSkipped += stepSkipped;
+            }
+
+            if (stepCanceled != null)
+            {
+                StepCanceled += stepCanceled;
+            }
+
+            if (stepFailed != null)
+            {
+                StepFailed += stepFailed;
+            }
+        }
+
         internal void OnTaskStarted(TaskDescription task)
         {
             TaskStarted?.Invoke(new TaskStartedEvent

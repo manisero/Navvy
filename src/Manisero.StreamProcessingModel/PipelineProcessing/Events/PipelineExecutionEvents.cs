@@ -52,6 +52,33 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
         public event ExecutionEventHandler<BlockStartedEvent> BlockStarted;
         public event ExecutionEventHandler<BlockEndedEvent> BlockEnded;
 
+        public PipelineExecutionEvents(
+            ExecutionEventHandler<BatchStartedEvent> batchStarted = null,
+            ExecutionEventHandler<BatchEndedEvent> batchEnded = null,
+            ExecutionEventHandler<BlockStartedEvent> blockStarted = null,
+            ExecutionEventHandler<BlockEndedEvent> blockEnded = null)
+        {
+            if (batchStarted != null)
+            {
+                BatchStarted += batchStarted;
+            }
+
+            if (batchEnded != null)
+            {
+                BatchEnded += batchEnded;
+            }
+
+            if (blockStarted != null)
+            {
+                BlockStarted += blockStarted;
+            }
+
+            if (blockEnded != null)
+            {
+                BlockEnded += blockEnded;
+            }
+        }
+
         internal void OnBatchStarted(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task)
         {
             BatchStarted?.Invoke(new BatchStartedEvent

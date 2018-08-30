@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.BasicProcessing;
+using Manisero.StreamProcessingModel.Core.Events;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.PipelineProcessing;
+using Manisero.StreamProcessingModel.PipelineProcessing.Events;
 using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
 using Xunit.Abstractions;
@@ -63,8 +65,20 @@ namespace Manisero.StreamProcessingModel.Samples
             var progress = new Progress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
             var cancellationSource = new CancellationTokenSource();
 
+            var taskEvents = new TaskExecutionEvents(
+                taskStarted: x => _output.WriteLine("Task started."),
+                taskEnded: x => _output.WriteLine($"Task ended after {x.Duration.Ticks} ticks."),
+                stepStarted: x => _output.WriteLine($"Step '{x.Step.Name}' started."),
+                stepEnded: x => _output.WriteLine($"Step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."));
+
+            var pipelineEvents = new PipelineExecutionEvents(
+                batchStarted: x => _output.WriteLine($"Batch {x.BatchNumber} of step '{x.Step.Name}' started."),
+                batchEnded: x => _output.WriteLine($"Batch {x.BatchNumber} of step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."),
+                blockStarted: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' started processing batch {x.BatchNumber}."),
+                blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing batch {x.BatchNumber} after {x.Duration.Ticks} ticks."));
+
             // Act
-            var result = taskDescription.Execute(resolverType, progress, cancellationSource);
+            var result = taskDescription.Execute(resolverType, progress, cancellationSource, taskEvents, pipelineEvents);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Successful);
