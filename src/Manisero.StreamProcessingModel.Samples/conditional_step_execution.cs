@@ -58,12 +58,11 @@ namespace Manisero.StreamProcessingModel.Samples
                         })
                 }
             };
-
-            var progress = new Progress<TaskProgress>(_ => { });
+            
             var executor = TaskExecutorFactory.Create(resolverType);
 
             // Act
-            executor.Execute(taskDescription, progress, _cancellationSource.Token);
+            executor.Execute(taskDescription, cancellation: _cancellationSource.Token);
 
             // Assert
             actualOutcomePassedToCondition.Should().Be(outcomePassedToThirdStepCondition);
@@ -124,11 +123,10 @@ namespace Manisero.StreamProcessingModel.Samples
             bool testedStepExecuted)
         {
             // Arrange
-            var progress = new Progress<TaskProgress>(_ => { });
             var executor = TaskExecutorFactory.Create(resolverType);
 
             // Act
-            executor.Execute(taskDescription, progress, _cancellationSource.Token);
+            executor.Execute(taskDescription, cancellation: _cancellationSource.Token);
 
             // Assert
             _testedStepExecuted.Should().Be(testedStepExecuted);

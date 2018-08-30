@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.BasicProcessing;
 using Manisero.StreamProcessingModel.Core.Events;
@@ -31,12 +29,10 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
                 }
             };
             
-            var progress = new Progress<TaskProgress>(_ => { });
-            var cancellationSource = new CancellationTokenSource();
             var executor = TaskExecutorFactory.Create(ResolverType.Sequential, events);
 
             // Act
-            executor.Execute(taskDescription, progress, cancellationSource.Token);
+            executor.Execute(taskDescription);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -65,13 +61,11 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
                     BasicTaskStep.Empty("Step")
                 }
             };
-
-            var progress = new Progress<TaskProgress>(_ => { });
-            var cancellationSource = new CancellationTokenSource();
+            
             var executor = TaskExecutorFactory.Create(ResolverType.Sequential, events);
 
             // Act
-            executor.Execute(taskDescription, progress, cancellationSource.Token);
+            executor.Execute(taskDescription);
 
             // Assert
             startedEvent.Should().NotBeNull();

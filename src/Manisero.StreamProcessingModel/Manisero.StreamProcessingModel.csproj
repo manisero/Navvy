@@ -71,6 +71,7 @@
     <Compile Include="Core\Models\TaskDescription.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\DictionaryExtensions.cs" />
+    <Compile Include="Utils\EmptyProgress.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
     <Compile Include="Utils\IntExtensions.cs" />
     <Compile Include="Utils\MethodInfoExtensions.cs" />

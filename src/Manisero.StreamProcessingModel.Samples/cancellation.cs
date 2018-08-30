@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.BasicProcessing;
@@ -106,11 +105,10 @@ namespace Manisero.StreamProcessingModel.Samples
             ResolverType resolverType)
         {
             // Arrange
-            var progress = new Progress<TaskProgress>(_ => {});
             var executor = TaskExecutorFactory.Create(resolverType);
 
             // Act
-            var result = executor.Execute(taskDescription, progress, _cancellationSource.Token);
+            var result = executor.Execute(taskDescription, cancellation: _cancellationSource.Token);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Canceled);

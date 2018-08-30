@@ -28,9 +28,19 @@ namespace Manisero.StreamProcessingModel.Core
 
         public TaskResult Execute(
             TaskDescription taskDescription,
-            IProgress<TaskProgress> progress,
-            CancellationToken cancellation)
+            IProgress<TaskProgress> progress = null,
+            CancellationToken? cancellation = null)
         {
+            if (progress == null)
+            {
+                progress = new EmptyProgress<TaskProgress>();
+            }
+
+            if (cancellation == null)
+            {
+                cancellation = CancellationToken.None;
+            }
+
             var currentOutcome = TaskOutcome.Successful;
             var errors = new List<TaskExecutionException>();
             var events = _executionEventsBag.TryGetEvents<TaskExecutionEvents>();

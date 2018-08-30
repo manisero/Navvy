@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.BasicProcessing;
 using Manisero.StreamProcessingModel.Core.Models;
@@ -72,12 +71,11 @@ namespace Manisero.StreamProcessingModel.Samples
             };
 
             var progress = new Progress<TaskProgress>(x => progressReports.Add(x));
-
-            var cancellationSource = new CancellationTokenSource();
+            
             var executor = TaskExecutorFactory.Create(resolverType);
 
             // Act
-            executor.Execute(taskDescription, progress, cancellationSource.Token);
+            executor.Execute(taskDescription, progress);
 
             // Assert
             progressReports.Select(x => x.StepName).Should().OnlyContain(x => x == taskStep.Name);

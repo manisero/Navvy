@@ -40,12 +40,10 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
             
-            var progress = new Progress<TaskProgress>(_ => { });
-            var cancellationSource = new CancellationTokenSource();
             var executor = TaskExecutorFactory.Create(new ThrowingStepExecutorResolver());
 
             // Act
-            Action act = () => executor.Execute(taskDescription, progress, cancellationSource.Token);
+            Action act = () => executor.Execute(taskDescription);
 
             // Assert
             act.ShouldThrow<Exception>().Which.Should().BeSameAs(Error);
