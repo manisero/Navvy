@@ -49,6 +49,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
 
     public struct StepFailedEvent
     {
+        public TaskExecutionException Exception;
         public ITaskStep Step;
         public TaskDescription Task;
         public DateTime Timestamp;
@@ -125,10 +126,11 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        internal void OnStepFailed(ITaskStep step, TaskDescription task)
+        internal void OnStepFailed(TaskExecutionException exception, ITaskStep step, TaskDescription task)
         {
             StepFailed?.Invoke(new StepFailedEvent
             {
+                Exception = exception,
                 Step = step,
                 Task = task,
                 Timestamp = DateTimeUtils.Now

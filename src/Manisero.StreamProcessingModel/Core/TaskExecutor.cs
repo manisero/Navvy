@@ -84,7 +84,7 @@ namespace Manisero.StreamProcessingModel.Core
                         currentOutcome = TaskOutcome.Failed;
                     }
 
-                    events?.OnStepFailed(step, taskDescription);
+                    events?.OnStepFailed(e, step, taskDescription);
                 }
 
                 stepSw.Stop();
