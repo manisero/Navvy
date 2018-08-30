@@ -7,15 +7,16 @@ namespace Manisero.StreamProcessingModel.Core.Models
 {
     public class ExecutionEventsBag
     {
+        /// <summary>Events type -> Events</summary>
         private readonly IDictionary<Type, IExecutionEvents> _events;
 
         public ExecutionEventsBag()
+            : this(Enumerable.Empty<IExecutionEvents>())
         {
-            _events = new Dictionary<Type, IExecutionEvents>();
         }
 
         public ExecutionEventsBag(
-            ICollection<IExecutionEvents> events)
+            IEnumerable<IExecutionEvents> events)
         {
             _events = events.ToDictionary(x => x.GetType());
         }

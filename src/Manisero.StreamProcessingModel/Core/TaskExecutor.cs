@@ -32,13 +32,21 @@ namespace Manisero.StreamProcessingModel.Core
         {
             var currentOutcome = TaskOutcome.Successful;
             var errors = new List<TaskExecutionException>();
+            var events = _executionEventsBag.TryGetEvents<TaskExecutionEvents>();
+
+            events?.TaskStarted(taskDescription, DateTimeUtils.Now);
+            var taskSw = Stopwatch.StartNew();
 
             foreach (var step in taskDescription.Steps)
             {
                 if (!step.ExecutionCondition(currentOutcome))
                 {
+                    events?.StepSkipped(step, taskDescription, DateTimeUtils.Now);
                     continue;
                 }
+
+                events?.StepStarted(step, taskDescription, DateTimeUtils.Now);
+                var stepSw = Stopwatch.StartNew();
 
                 try
                 {
@@ -53,6 +61,8 @@ namespace Manisero.StreamProcessingModel.Core
                     {
                         currentOutcome = TaskOutcome.Canceled;
                     }
+
+                    events?.StepCanceled(step, taskDescription, DateTimeUtils.Now);
                 }
                 catch (TaskExecutionException e)
                 {
@@ -62,12 +72,22 @@ namespace Manisero.StreamProcessingModel.Core
                     {
                         currentOutcome = TaskOutcome.Failed;
                     }
+
+                    events?.StepFailed(step, taskDescription, DateTimeUtils.Now);
                 }
+
+                stepSw.Stop();
+                events?.StepEnded(step, taskDescription, stepSw.Elapsed, DateTimeUtils.Now);
             }
 
-            return new TaskResult(
+            var result = new TaskResult(
                 currentOutcome == TaskOutcome.Canceled,
                 errors);
+
+            taskSw.Stop();
+            events?.TaskEnded(taskDescription, result, taskSw.Elapsed, DateTimeUtils.Now);
+            
+            return result;
         }
 
         private void ExecuteStep<TStep>(
@@ -91,16 +111,8 @@ namespace Manisero.StreamProcessingModel.Core
                     StepName = step.Name,
                     ProgressPercentage = x
                 }));
-
-            var events = _executionEventsBag.TryGetEvents<TaskExecutionEvents>();
-
-            events?.StepStarted(step, taskDescription, DateTimeUtils.Now);
-            var sw = Stopwatch.StartNew();
             
             stepExecutor.Execute(step, context, stepProgress, cancellation);
-
-            sw.Stop();
-            events?.StepEnded(step, taskDescription, sw.Elapsed, DateTimeUtils.Now);
         }
     }
 }
