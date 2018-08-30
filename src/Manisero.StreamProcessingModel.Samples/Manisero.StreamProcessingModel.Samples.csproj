@@ -67,7 +67,7 @@
     <Compile Include="cancellation.cs" />
     <Compile Include="progress_reporting.cs" />
     <Compile Include="task_execution.cs" />
-    <Compile Include="telemetry.cs" />
+    <Compile Include="Telemetry\task_execution_telemetry.cs" />
     <Compile Include="unexpected_error_handling.cs" />
     <Compile Include="Utils\TaskExecutorFactory.cs" />
     <Compile Include="Utils\TaskExecutorResolvers.cs" />
