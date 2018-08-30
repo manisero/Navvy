@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.StreamProcessingModel.PipelineProcessing.Events;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
 {

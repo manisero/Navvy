@@ -3,7 +3,7 @@ using System.Collections;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Utils;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing
+namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
 {
     public struct BatchStartedEvent
     {

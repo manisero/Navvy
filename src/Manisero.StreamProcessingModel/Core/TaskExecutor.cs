@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using Manisero.StreamProcessingModel.Core.Events;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
 using Manisero.StreamProcessingModel.Utils;
@@ -36,7 +37,7 @@ namespace Manisero.StreamProcessingModel.Core
 
             events?.OnTaskStarted(taskDescription);
             var taskSw = Stopwatch.StartNew();
-
+            
             foreach (var step in taskDescription.Steps)
             {
                 if (!step.ExecutionCondition(currentOutcome))

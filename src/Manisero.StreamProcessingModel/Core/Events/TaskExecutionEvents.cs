@@ -2,7 +2,7 @@
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Utils;
 
-namespace Manisero.StreamProcessingModel.Core
+namespace Manisero.StreamProcessingModel.Core.Events
 {
     public struct TaskStartedEvent
     {
