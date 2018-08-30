@@ -4,9 +4,10 @@ using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.StreamProcessingModel.PipelineProcessing;
 using Manisero.StreamProcessingModel.PipelineProcessing.Events;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
+namespace Manisero.StreamProcessingModel.Dataflow.StepExecution
 {
     internal class DataflowPipelineBuilder<TData>
     {

@@ -80,7 +80,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
             }
         }
 
-        internal void OnBatchStarted(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task)
+        public void OnBatchStarted(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task)
         {
             BatchStarted?.Invoke(new BatchStartedEvent
             {
@@ -92,7 +92,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
             });
         }
 
-        internal void OnBatchEnded(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, TimeSpan duration)
+        public void OnBatchEnded(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, TimeSpan duration)
         {
             BatchEnded?.Invoke(new BatchEndedEvent
             {
@@ -105,7 +105,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
             });
         }
 
-        internal void OnBlockStarted(IPipelineBlock block, int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task)
+        public void OnBlockStarted(IPipelineBlock block, int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task)
         {
             BlockStarted?.Invoke(new BlockStartedEvent
             {
@@ -118,7 +118,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
             });
         }
 
-        internal void OnBlockEnded(IPipelineBlock block, int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, TimeSpan duration)
+        public void OnBlockEnded(IPipelineBlock block, int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, TimeSpan duration)
         {
             BlockEnded?.Invoke(new BlockEndedEvent
             {

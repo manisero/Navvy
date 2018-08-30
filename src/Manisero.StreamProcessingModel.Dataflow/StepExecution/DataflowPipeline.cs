@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
+namespace Manisero.StreamProcessingModel.Dataflow.StepExecution
 {
     internal class DataflowPipeline<TData>
     {

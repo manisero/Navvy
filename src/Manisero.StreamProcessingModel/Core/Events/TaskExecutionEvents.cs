@@ -110,7 +110,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             }
         }
 
-        internal void OnTaskStarted(TaskDescription task)
+        public void OnTaskStarted(TaskDescription task)
         {
             TaskStarted?.Invoke(new TaskStartedEvent
             {
@@ -119,7 +119,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        internal void OnTaskEnded(TaskDescription task, TaskResult result, TimeSpan duration)
+        public void OnTaskEnded(TaskDescription task, TaskResult result, TimeSpan duration)
         {
             TaskEnded?.Invoke(new TaskEndedEvent
             {
@@ -130,7 +130,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        internal void OnStepStarted(ITaskStep step, TaskDescription task)
+        public void OnStepStarted(ITaskStep step, TaskDescription task)
         {
             StepStarted?.Invoke(new StepStartedEvent
             {
@@ -140,7 +140,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        internal void OnStepEnded(ITaskStep step, TaskDescription task, TimeSpan duration)
+        public void OnStepEnded(ITaskStep step, TaskDescription task, TimeSpan duration)
         {
             StepEnded?.Invoke(new StepEndedEvent
             {
@@ -151,7 +151,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        internal void OnStepSkipped(ITaskStep step, TaskDescription task)
+        public void OnStepSkipped(ITaskStep step, TaskDescription task)
         {
             StepSkipped?.Invoke(new StepSkippedEvent
             {
@@ -161,7 +161,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        internal void OnStepCanceled(ITaskStep step, TaskDescription task)
+        public void OnStepCanceled(ITaskStep step, TaskDescription task)
         {
             StepCanceled?.Invoke(new StepCanceledEvent
             {
@@ -171,7 +171,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
             });
         }
 
-        internal void OnStepFailed(TaskExecutionException exception, ITaskStep step, TaskDescription task)
+        public void OnStepFailed(TaskExecutionException exception, ITaskStep step, TaskDescription task)
         {
             StepFailed?.Invoke(new StepFailedEvent
             {

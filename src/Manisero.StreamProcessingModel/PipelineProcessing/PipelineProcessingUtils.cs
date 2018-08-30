@@ -3,7 +3,7 @@ using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing
 {
-    internal static class PipelineProcessingUtils
+    public static class PipelineProcessingUtils
     {
         public static void ReportProgress(
             int batchNumber,

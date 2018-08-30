@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
+namespace Manisero.StreamProcessingModel.Dataflow.StepExecution
 {
     internal class DataBatch<TData>
     {

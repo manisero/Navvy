@@ -3,10 +3,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution;
+using Manisero.StreamProcessingModel.Dataflow.StepExecution;
+using Manisero.StreamProcessingModel.PipelineProcessing;
 using Manisero.StreamProcessingModel.PipelineProcessing.Events;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
+namespace Manisero.StreamProcessingModel.Dataflow
 {
     internal class DataflowPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
     {

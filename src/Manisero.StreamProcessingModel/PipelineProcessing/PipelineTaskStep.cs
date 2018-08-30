@@ -88,7 +88,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing
         public string BlockName { get; set; }
     }
 
-    internal static class PipelineBlockExtensions
+    public static class PipelineBlockExtensions
     {
         public static PipelineBlockExceptionData GetExceptionData<TData>(
             this PipelineBlock<TData> block)

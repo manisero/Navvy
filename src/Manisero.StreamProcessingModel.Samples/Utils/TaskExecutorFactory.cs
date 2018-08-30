@@ -1,6 +1,6 @@
 ﻿using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.PipelineProcessing.Dataflow;
+using Manisero.StreamProcessingModel.Dataflow;
 
 namespace Manisero.StreamProcessingModel.Samples.Utils
 {

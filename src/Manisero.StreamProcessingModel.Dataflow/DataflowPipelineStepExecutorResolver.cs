@@ -2,8 +2,9 @@
 using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.StreamProcessingModel.PipelineProcessing;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
+namespace Manisero.StreamProcessingModel.Dataflow
 {
     public class DataflowPipelineStepExecutorResolver : ITaskStepExecutorResolver
     {

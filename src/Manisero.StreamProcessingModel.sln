@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.StreamProcessingMo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.StreamProcessingModel.Samples", "Manisero.StreamProcessingModel.Samples\Manisero.StreamProcessingModel.Samples.csproj", "{D00B0649-549C-47E0-B72D-7BB2F03B94A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.StreamProcessingModel.Dataflow", "Manisero.StreamProcessingModel.Dataflow\Manisero.StreamProcessingModel.Dataflow.csproj", "{69123F93-4CA6-4A7F-8DF6-5325783722C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{D00B0649-549C-47E0-B72D-7BB2F03B94A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D00B0649-549C-47E0-B72D-7BB2F03B94A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D00B0649-549C-47E0-B72D-7BB2F03B94A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69123F93-4CA6-4A7F-8DF6-5325783722C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69123F93-4CA6-4A7F-8DF6-5325783722C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69123F93-4CA6-4A7F-8DF6-5325783722C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69123F93-4CA6-4A7F-8DF6-5325783722C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
