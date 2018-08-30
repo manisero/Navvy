@@ -5,7 +5,7 @@ using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
 using Manisero.StreamProcessingModel.PipelineProcessing.Events;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
+namespace Manisero.StreamProcessingModel.PipelineProcessing
 {
     internal class SequentialPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
     {

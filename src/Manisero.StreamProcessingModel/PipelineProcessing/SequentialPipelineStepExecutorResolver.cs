@@ -2,7 +2,7 @@
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
+namespace Manisero.StreamProcessingModel.PipelineProcessing
 {
     public class SequentialPipelineStepExecutorResolver : ITaskStepExecutorResolver
     {
