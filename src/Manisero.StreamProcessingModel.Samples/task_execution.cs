@@ -63,10 +63,8 @@ namespace Manisero.StreamProcessingModel.Samples
             var progress = new Progress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
             var cancellationSource = new CancellationTokenSource();
 
-            var executor = TaskExecutorFactory.Create(resolverType);
-
             // Act
-            var result = executor.Execute(taskDescription, progress, cancellationSource.Token);
+            var result = taskDescription.Execute(resolverType, progress, cancellationSource);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Successful);

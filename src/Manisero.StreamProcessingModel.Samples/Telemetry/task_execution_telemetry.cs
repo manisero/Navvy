@@ -30,11 +30,9 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
                     BasicTaskStep.Empty("Step")
                 }
             };
-            
-            var executor = TaskExecutorFactory.Create(ResolverType.Sequential, events);
 
             // Act
-            executor.Execute(taskDescription);
+            taskDescription.Execute(events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -63,11 +61,9 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
                     BasicTaskStep.Empty("Step")
                 }
             };
-            
-            var executor = TaskExecutorFactory.Create(ResolverType.Sequential, events);
 
             // Act
-            executor.Execute(taskDescription);
+            taskDescription.Execute(events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -98,10 +94,8 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
                 }
             };
 
-            var executor = TaskExecutorFactory.Create(ResolverType.Sequential, events);
-
             // Act
-            executor.Execute(taskDescription);
+            taskDescription.Execute(events: events);
 
             // Assert
             skippedEvent.Should().NotBeNull();
@@ -129,10 +123,8 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
                 }
             };
 
-            var executor = TaskExecutorFactory.Create(ResolverType.Sequential, events);
-
             // Act
-            executor.Execute(taskDescription, cancellation: cancellationSource.Token);
+            taskDescription.Execute(cancellation: cancellationSource, events: events);
 
             // Assert
             canceledEvent.Should().NotBeNull();
@@ -160,10 +152,8 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
                 }
             };
 
-            var executor = TaskExecutorFactory.Create(ResolverType.Sequential, events);
-
             // Act
-            executor.Execute(taskDescription);
+            taskDescription.Execute(events: events);
 
             // Assert
             failedEvent.Should().NotBeNull();

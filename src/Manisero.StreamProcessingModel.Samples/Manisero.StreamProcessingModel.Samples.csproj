@@ -69,6 +69,7 @@
     <Compile Include="task_execution.cs" />
     <Compile Include="Telemetry\task_execution_telemetry.cs" />
     <Compile Include="unexpected_error_handling.cs" />
+    <Compile Include="Utils\TaskDescriptionUtils.cs" />
     <Compile Include="Utils\TaskExecutorFactory.cs" />
     <Compile Include="Utils\TaskExecutorResolvers.cs" />
   </ItemGroup>

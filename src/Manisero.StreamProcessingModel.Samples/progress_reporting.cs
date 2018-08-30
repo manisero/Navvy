@@ -71,11 +71,9 @@ namespace Manisero.StreamProcessingModel.Samples
             };
 
             var progress = new Progress<TaskProgress>(x => progressReports.Add(x));
-            
-            var executor = TaskExecutorFactory.Create(resolverType);
 
             // Act
-            executor.Execute(taskDescription, progress);
+            taskDescription.Execute(resolverType, progress);
 
             // Assert
             progressReports.Select(x => x.StepName).Should().OnlyContain(x => x == taskStep.Name);

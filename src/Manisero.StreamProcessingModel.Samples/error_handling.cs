@@ -134,11 +134,8 @@ namespace Manisero.StreamProcessingModel.Samples
             TaskDescription taskDescription,
             ResolverType resolverType)
         {
-            // Arrange
-            var executor = TaskExecutorFactory.Create(resolverType);
-
             // Act
-            var result = executor.Execute(taskDescription);
+            var result = taskDescription.Execute(resolverType);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);
