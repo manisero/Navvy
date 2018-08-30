@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
@@ -62,7 +61,7 @@ namespace Manisero.Navvy.Tests
             ICollection<int> expectedProgressReports)
         {
             // Arrange
-            var progressReports = new ConcurrentBag<TaskProgress>();
+            var progressReports = new List<TaskProgress>();
 
             var task = new TaskDefinition
             {
