@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
@@ -70,7 +69,7 @@ namespace Manisero.Navvy.Tests
                 Steps = new List<ITaskStep> { taskStep }
             };
 
-            var progress = new Progress<TaskProgress>(x => progressReports.Add(x));
+            var progress = new SynchronousProgress<TaskProgress>(x => progressReports.Add(x));
 
             // Act
             task.Execute(resolverType, progress);
