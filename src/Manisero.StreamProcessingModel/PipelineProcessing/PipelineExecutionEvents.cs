@@ -6,19 +6,19 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing
 {
     public class PipelineExecutionEvents : IExecutionEvents
     {
-        public void BatchStarted(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, DateTime timestamp)
+        internal void OnBatchStarted(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, DateTime timestamp)
         {
         }
 
-        public void BatchEnded(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, TimeSpan duration, DateTime timestamp)
+        internal void OnBatchEnded(int batchNumber, IEnumerable batch, ITaskStep step, TaskDescription task, TimeSpan duration, DateTime timestamp)
         {
         }
 
-        public void BlockStarted(int batchNumber, IEnumerable batch, IPipelineBlock block, ITaskStep step, TaskDescription task, DateTime timestamp)
+        internal void OnBlockStarted(int batchNumber, IEnumerable batch, IPipelineBlock block, ITaskStep step, TaskDescription task, DateTime timestamp)
         {
         }
 
-        public void BlockEnded(int batchNumber, IEnumerable batch, IPipelineBlock block, ITaskStep step, TaskDescription task, TimeSpan duration, DateTime timestamp)
+        internal void OnBlockEnded(int batchNumber, IEnumerable batch, IPipelineBlock block, ITaskStep step, TaskDescription task, TimeSpan duration, DateTime timestamp)
         {
         }
     }

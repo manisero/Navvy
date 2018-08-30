@@ -1,35 +1,49 @@
 ﻿using System;
 using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.Core
 {
+    public struct TaskStartedEvent
+    {
+        public TaskDescription Task;
+        public DateTime Timestamp;
+    }
+
     public class TaskExecutionEvents : IExecutionEvents
     {
-        public void TaskStarted(TaskDescription task, DateTime timestamp)
+        public event ExecutionEventHandler<TaskStartedEvent> TaskStarted;
+
+        internal void OnTaskStarted(TaskDescription task)
+        {
+            TaskStarted?.Invoke(new TaskStartedEvent
+            {
+                Task = task,
+                Timestamp = DateTimeUtils.Now
+            });
+        }
+
+        internal void OnTaskEnded(TaskDescription task, TaskResult result, TimeSpan duration, DateTime timestamp)
         {
         }
 
-        public void TaskEnded(TaskDescription task, TaskResult result, TimeSpan duration, DateTime timestamp)
+        internal void OnStepStarted(ITaskStep step, TaskDescription task, DateTime timestamp)
         {
         }
 
-        public void StepStarted(ITaskStep step, TaskDescription task, DateTime timestamp)
+        internal void OnStepEnded(ITaskStep step, TaskDescription task, TimeSpan duration, DateTime timestamp)
         {
         }
 
-        public void StepEnded(ITaskStep step, TaskDescription task, TimeSpan duration, DateTime timestamp)
+        internal void OnStepSkipped(ITaskStep step, TaskDescription task, DateTime timestamp)
         {
         }
 
-        public void StepSkipped(ITaskStep step, TaskDescription task, DateTime timestamp)
+        internal void OnStepCanceled(ITaskStep step, TaskDescription task, DateTime timestamp)
         {
         }
 
-        public void StepCanceled(ITaskStep step, TaskDescription task, DateTime timestamp)
-        {
-        }
-
-        public void StepFailed(ITaskStep step, TaskDescription task, DateTime timestamp)
+        internal void OnStepFailed(ITaskStep step, TaskDescription task, DateTime timestamp)
         {
         }
     }

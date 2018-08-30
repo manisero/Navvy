@@ -25,7 +25,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
             foreach (var input in step.Input)
             {
                 batchNumber++;
-                events?.BatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
+                events?.OnBatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
 
                 var batch = new DataBatch<TData>
                 {

@@ -34,18 +34,18 @@ namespace Manisero.StreamProcessingModel.Core
             var errors = new List<TaskExecutionException>();
             var events = _executionEventsBag.TryGetEvents<TaskExecutionEvents>();
 
-            events?.TaskStarted(taskDescription, DateTimeUtils.Now);
+            events?.OnTaskStarted(taskDescription);
             var taskSw = Stopwatch.StartNew();
 
             foreach (var step in taskDescription.Steps)
             {
                 if (!step.ExecutionCondition(currentOutcome))
                 {
-                    events?.StepSkipped(step, taskDescription, DateTimeUtils.Now);
+                    events?.OnStepSkipped(step, taskDescription, DateTimeUtils.Now);
                     continue;
                 }
 
-                events?.StepStarted(step, taskDescription, DateTimeUtils.Now);
+                events?.OnStepStarted(step, taskDescription, DateTimeUtils.Now);
                 var stepSw = Stopwatch.StartNew();
 
                 try
@@ -62,7 +62,7 @@ namespace Manisero.StreamProcessingModel.Core
                         currentOutcome = TaskOutcome.Canceled;
                     }
 
-                    events?.StepCanceled(step, taskDescription, DateTimeUtils.Now);
+                    events?.OnStepCanceled(step, taskDescription, DateTimeUtils.Now);
                 }
                 catch (TaskExecutionException e)
                 {
@@ -73,11 +73,11 @@ namespace Manisero.StreamProcessingModel.Core
                         currentOutcome = TaskOutcome.Failed;
                     }
 
-                    events?.StepFailed(step, taskDescription, DateTimeUtils.Now);
+                    events?.OnStepFailed(step, taskDescription, DateTimeUtils.Now);
                 }
 
                 stepSw.Stop();
-                events?.StepEnded(step, taskDescription, stepSw.Elapsed, DateTimeUtils.Now);
+                events?.OnStepEnded(step, taskDescription, stepSw.Elapsed, DateTimeUtils.Now);
             }
 
             var result = new TaskResult(
@@ -85,7 +85,7 @@ namespace Manisero.StreamProcessingModel.Core
                 errors);
 
             taskSw.Stop();
-            events?.TaskEnded(taskDescription, result, taskSw.Elapsed, DateTimeUtils.Now);
+            events?.OnTaskEnded(taskDescription, result, taskSw.Elapsed, DateTimeUtils.Now);
             
             return result;
         }
