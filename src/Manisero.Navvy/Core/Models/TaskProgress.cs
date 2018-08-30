@@ -1,4 +1,4 @@
-﻿namespace Manisero.StreamProcessingModel.Core.Models
+﻿namespace Manisero.Navvy.Core.Models
 {
     public struct TaskProgress
     {

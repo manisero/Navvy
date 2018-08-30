@@ -1,8 +1,8 @@
 ﻿using System;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Utils;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Utils;
 
-namespace Manisero.StreamProcessingModel.Core.Events
+namespace Manisero.Navvy.Core.Events
 {
     public struct TaskStartedEvent
     {

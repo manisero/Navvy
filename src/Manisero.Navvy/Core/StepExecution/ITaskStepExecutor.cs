@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.Navvy.Core.Models;
 
-namespace Manisero.StreamProcessingModel.Core.StepExecution
+namespace Manisero.Navvy.Core.StepExecution
 {
     public interface ITaskStepExecutor<TTaskStep>
         where TTaskStep : ITaskStep

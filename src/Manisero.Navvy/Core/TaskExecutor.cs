@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
-using Manisero.StreamProcessingModel.Core.Events;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.Utils;
+using Manisero.Navvy.Core.Events;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Core.StepExecution;
+using Manisero.Navvy.Utils;
 
-namespace Manisero.StreamProcessingModel.Core
+namespace Manisero.Navvy.Core
 {
     public interface ITaskExecutor
     {

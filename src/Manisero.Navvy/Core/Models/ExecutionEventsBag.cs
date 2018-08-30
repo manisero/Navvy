@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Manisero.StreamProcessingModel.Utils;
+using Manisero.Navvy.Utils;
 
-namespace Manisero.StreamProcessingModel.Core.Models
+namespace Manisero.Navvy.Core.Models
 {
     public class ExecutionEventsBag
     {

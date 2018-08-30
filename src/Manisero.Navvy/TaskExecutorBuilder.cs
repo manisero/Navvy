@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Manisero.StreamProcessingModel.BasicProcessing;
-using Manisero.StreamProcessingModel.Core;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.PipelineProcessing;
+using Manisero.Navvy.BasicProcessing;
+using Manisero.Navvy.Core;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Core.StepExecution;
+using Manisero.Navvy.PipelineProcessing;
 
-namespace Manisero.StreamProcessingModel
+namespace Manisero.Navvy
 {
     public interface ITaskExecutorBuilder
     {

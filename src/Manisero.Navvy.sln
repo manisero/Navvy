@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy", "Manisero.StreamProcessingModel\Manisero.Navvy.csproj", "{48C44692-D70B-42FD-9D18-835209A46357}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy", "Manisero.Navvy\Manisero.Navvy.csproj", "{48C44692-D70B-42FD-9D18-835209A46357}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy.Samples", "Manisero.StreamProcessingModel.Samples\Manisero.Navvy.Samples.csproj", "{D00B0649-549C-47E0-B72D-7BB2F03B94A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy.Samples", "Manisero.Navvy.Samples\Manisero.Navvy.Samples.csproj", "{D00B0649-549C-47E0-B72D-7BB2F03B94A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy.Dataflow", "Manisero.StreamProcessingModel.Dataflow\Manisero.Navvy.Dataflow.csproj", "{69123F93-4CA6-4A7F-8DF6-5325783722C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy.Dataflow", "Manisero.Navvy.Dataflow\Manisero.Navvy.Dataflow.csproj", "{69123F93-4CA6-4A7F-8DF6-5325783722C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

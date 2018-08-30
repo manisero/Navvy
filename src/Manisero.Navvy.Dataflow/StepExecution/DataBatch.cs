@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Manisero.StreamProcessingModel.Dataflow.StepExecution
+namespace Manisero.Navvy.Dataflow.StepExecution
 {
     internal class DataBatch<TData>
     {

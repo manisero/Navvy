@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Manisero.StreamProcessingModel.Utils
+namespace Manisero.Navvy.Utils
 {
     internal static class EnumerableExtensions
     {

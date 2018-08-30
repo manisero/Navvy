@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Utils;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Utils;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing
+namespace Manisero.Navvy.PipelineProcessing
 {
     public class PipelineTaskStep<TData> : ITaskStep
     {

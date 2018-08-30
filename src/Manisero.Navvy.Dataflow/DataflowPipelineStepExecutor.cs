@@ -2,12 +2,12 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
-using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.Dataflow.StepExecution;
-using Manisero.StreamProcessingModel.PipelineProcessing;
-using Manisero.StreamProcessingModel.PipelineProcessing.Events;
+using Manisero.Navvy.Core.StepExecution;
+using Manisero.Navvy.Dataflow.StepExecution;
+using Manisero.Navvy.PipelineProcessing;
+using Manisero.Navvy.PipelineProcessing.Events;
 
-namespace Manisero.StreamProcessingModel.Dataflow
+namespace Manisero.Navvy.Dataflow
 {
     internal class DataflowPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
     {

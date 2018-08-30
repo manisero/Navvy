@@ -1,7 +1,7 @@
 using System;
-using Manisero.StreamProcessingModel.Utils;
+using Manisero.Navvy.Utils;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing
+namespace Manisero.Navvy.PipelineProcessing
 {
     public static class PipelineProcessingUtils
     {

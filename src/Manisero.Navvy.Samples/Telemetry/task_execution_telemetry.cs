@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
-using Manisero.StreamProcessingModel.BasicProcessing;
-using Manisero.StreamProcessingModel.Core.Events;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Samples.Utils;
+using Manisero.Navvy.BasicProcessing;
+using Manisero.Navvy.Core.Events;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Samples.Utils;
 using Xunit;
 
-namespace Manisero.StreamProcessingModel.Samples.Telemetry
+namespace Manisero.Navvy.Samples.Telemetry
 {
     public class task_execution_telemetry
     {

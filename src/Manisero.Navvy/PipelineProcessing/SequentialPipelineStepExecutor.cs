@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.PipelineProcessing.Events;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Core.StepExecution;
+using Manisero.Navvy.PipelineProcessing.Events;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing
+namespace Manisero.Navvy.PipelineProcessing
 {
     internal class SequentialPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
     {

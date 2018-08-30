@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
-namespace Manisero.StreamProcessingModel.Utils
+namespace Manisero.Navvy.Utils
 {
     internal static class MethodInfoExtensions
     {

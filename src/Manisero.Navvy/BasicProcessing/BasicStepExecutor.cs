@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Core.StepExecution;
 
-namespace Manisero.StreamProcessingModel.BasicProcessing
+namespace Manisero.Navvy.BasicProcessing
 {
     internal class BasicStepExecutor : ITaskStepExecutor<BasicTaskStep>
     {

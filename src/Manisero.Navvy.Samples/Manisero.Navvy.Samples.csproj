@@ -8,8 +8,8 @@
     <ProjectGuid>{D00B0649-549C-47E0-B72D-7BB2F03B94A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Manisero.StreamProcessingModel.Samples</RootNamespace>
-    <AssemblyName>Manisero.StreamProcessingModel.Samples</AssemblyName>
+    <RootNamespace>Manisero.Navvy.Samples</RootNamespace>
+    <AssemblyName>Manisero.Navvy.Samples</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -80,11 +80,11 @@
     <Analyzer Include="..\packages\xunit.analyzers.0.7.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Manisero.StreamProcessingModel.Dataflow\Manisero.Navvy.Dataflow.csproj">
+    <ProjectReference Include="..\Manisero.Navvy.Dataflow\Manisero.Navvy.Dataflow.csproj">
       <Project>{69123f93-4ca6-4a7f-8df6-5325783722c6}</Project>
       <Name>Manisero.Navvy.Dataflow</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Manisero.StreamProcessingModel\Manisero.Navvy.csproj">
+    <ProjectReference Include="..\Manisero.Navvy\Manisero.Navvy.csproj">
       <Project>{48c44692-d70b-42fd-9d18-835209a46357}</Project>
       <Name>Manisero.Navvy</Name>
     </ProjectReference>

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.PipelineProcessing;
-using Manisero.StreamProcessingModel.PipelineProcessing.Events;
-using Manisero.StreamProcessingModel.Samples.Utils;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.PipelineProcessing;
+using Manisero.Navvy.PipelineProcessing.Events;
+using Manisero.Navvy.Samples.Utils;
 using Xunit;
 
-namespace Manisero.StreamProcessingModel.Samples.Telemetry
+namespace Manisero.Navvy.Samples.Telemetry
 {
     public class pipeline_execution_telemetry
     {

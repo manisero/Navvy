@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.Navvy.Core.Models;
 
-namespace Manisero.StreamProcessingModel.Samples.Utils
+namespace Manisero.Navvy.Samples.Utils
 {
     public static class TaskDefinitionUtils
     {

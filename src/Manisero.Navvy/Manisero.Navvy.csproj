@@ -7,8 +7,8 @@
     <ProjectGuid>{48C44692-D70B-42FD-9D18-835209A46357}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Manisero.StreamProcessingModel</RootNamespace>
-    <AssemblyName>Manisero.StreamProcessingModel</AssemblyName>
+    <RootNamespace>Manisero.Navvy</RootNamespace>
+    <AssemblyName>Manisero.Navvy</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

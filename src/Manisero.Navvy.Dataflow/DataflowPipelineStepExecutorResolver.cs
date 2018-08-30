@@ -1,9 +1,9 @@
 ﻿using System;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.PipelineProcessing;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Core.StepExecution;
+using Manisero.Navvy.PipelineProcessing;
 
-namespace Manisero.StreamProcessingModel.Dataflow
+namespace Manisero.Navvy.Dataflow
 {
     public class DataflowPipelineStepExecutorResolver : ITaskStepExecutorResolver
     {

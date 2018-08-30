@@ -1,7 +1,7 @@
 ﻿using System;
-using Manisero.StreamProcessingModel.Core.Models;
+using Manisero.Navvy.Core.Models;
 
-namespace Manisero.StreamProcessingModel.BasicProcessing
+namespace Manisero.Navvy.BasicProcessing
 {
     public class BasicTaskStep : ITaskStep
     {

@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
-using Manisero.StreamProcessingModel.BasicProcessing;
-using Manisero.StreamProcessingModel.Core.Events;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.PipelineProcessing;
-using Manisero.StreamProcessingModel.PipelineProcessing.Events;
-using Manisero.StreamProcessingModel.Samples.Utils;
+using Manisero.Navvy.BasicProcessing;
+using Manisero.Navvy.Core.Events;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.PipelineProcessing;
+using Manisero.Navvy.PipelineProcessing.Events;
+using Manisero.Navvy.Samples.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Manisero.StreamProcessingModel.Samples
+namespace Manisero.Navvy.Samples
 {
     public class task_execution
     {

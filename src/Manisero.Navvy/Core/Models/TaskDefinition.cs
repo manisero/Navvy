@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Manisero.StreamProcessingModel.Core.Models
+namespace Manisero.Navvy.Core.Models
 {
     public class TaskDefinition
     {

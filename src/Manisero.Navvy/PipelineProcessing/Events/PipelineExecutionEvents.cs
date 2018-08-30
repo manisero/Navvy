@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Utils;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Utils;
 
-namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
+namespace Manisero.Navvy.PipelineProcessing.Events
 {
     public struct BatchStartedEvent
     {

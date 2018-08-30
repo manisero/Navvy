@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
-using Manisero.StreamProcessingModel.BasicProcessing;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.Navvy.BasicProcessing;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Core.StepExecution;
 using Xunit;
 
-namespace Manisero.StreamProcessingModel.Samples
+namespace Manisero.Navvy.Samples
 {
     public class unexpected_error_handling
     {

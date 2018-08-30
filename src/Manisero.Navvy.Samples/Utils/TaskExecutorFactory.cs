@@ -1,8 +1,8 @@
-﻿using Manisero.StreamProcessingModel.Core;
-using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Dataflow;
+﻿using Manisero.Navvy.Core;
+using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.Dataflow;
 
-namespace Manisero.StreamProcessingModel.Samples.Utils
+namespace Manisero.Navvy.Samples.Utils
 {
     public enum ResolverType
     {
