@@ -18,8 +18,19 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
+            return step.Blocks.Count != 0
+                ? BuildNotEmpty(step, context, progress, cancellation)
+                : BuildEmpty(step, context, progress, cancellation);
+        }
 
+        private DataflowPipeline<TData> BuildNotEmpty(
+            PipelineTaskStep<TData> step,
+            TaskStepExecutionContext context,
+            IProgress<byte> progress,
+            CancellationToken cancellation)
+        {
+            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
+            
             var firstBlock = ToTransformBlock(step, 0, context, events, cancellation);
             var previousBlock = firstBlock;
 
@@ -37,6 +48,23 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             return new DataflowPipeline<TData>
             {
                 InputBlock = firstBlock,
+                Completion = progressBlock.Completion
+            };
+        }
+
+        private DataflowPipeline<TData> BuildEmpty(
+            PipelineTaskStep<TData> step,
+            TaskStepExecutionContext context,
+            IProgress<byte> progress,
+            CancellationToken cancellation)
+        {
+            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
+
+            var progressBlock = CreateProgressBlock(step, context, events, progress, cancellation);
+
+            return new DataflowPipeline<TData>
+            {
+                InputBlock = progressBlock,
                 Completion = progressBlock.Completion
             };
         }

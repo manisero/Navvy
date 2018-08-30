@@ -10,8 +10,10 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
 {
     public class pipeline_execution_telemetry
     {
-        [Fact]
-        public void batch_start_and_end_is_reported()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void batch_start_and_end_is_reported(ResolverType resolverType)
         {
             // Arrange
             BatchStartedEvent? startedEvent = null;
@@ -35,7 +37,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(events: events);
+            taskDescription.Execute(resolverType, events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -48,8 +50,10 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             endedEvent.Value.Duration.Ticks.Should().BePositive();
         }
 
-        [Fact]
-        public void block_start_and_end_is_reported()
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void block_start_and_end_is_reported(ResolverType resolverType)
         {
             // Arrange
             BlockStartedEvent? startedEvent = null;
@@ -75,7 +79,7 @@ namespace Manisero.StreamProcessingModel.Samples.Telemetry
             };
 
             // Act
-            taskDescription.Execute(events: events);
+            taskDescription.Execute(resolverType, events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
