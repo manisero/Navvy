@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
 {
@@ -54,7 +53,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
             return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
                 x =>
                 {
-                    events?.OnBlockStarted(x.Number, x.Data, block, step, context.TaskDescription, DateTimeUtils.Now);
+                    events?.OnBlockStarted(x.Number, x.Data, block, step, context.TaskDescription);
                     var sw = Stopwatch.StartNew();
 
                     try
@@ -67,7 +66,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
                     }
 
                     sw.Stop();
-                    events?.OnBlockEnded(x.Number, x.Data, block, step, context.TaskDescription, sw.Elapsed, DateTimeUtils.Now);
+                    events?.OnBlockEnded(x.Number, x.Data, block, step, context.TaskDescription, sw.Elapsed);
 
                     return x;
                 },
@@ -92,7 +91,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
                 x =>
                 {
                     x.ProcessingStopwatch.Stop();
-                    events?.OnBatchEnded(x.Number, x.Data, step, context.TaskDescription, x.ProcessingStopwatch.Elapsed, DateTimeUtils.Now);
+                    events?.OnBatchEnded(x.Number, x.Data, step, context.TaskDescription, x.ProcessingStopwatch.Elapsed);
                     PipelineProcessingUtils.ReportProgress(x.Number, step.ExpectedInputBatchesCount, progress);
                 },
                 new ExecutionDataflowBlockOptions

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.StreamProcessingModel.Core.StepExecution;
 using Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution;
-using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
 {
@@ -25,7 +24,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
             foreach (var input in step.Input)
             {
                 batchNumber++;
-                events?.OnBatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
+                events?.OnBatchStarted(batchNumber, input, step, context.TaskDescription);
 
                 var batch = new DataBatch<TData>
                 {

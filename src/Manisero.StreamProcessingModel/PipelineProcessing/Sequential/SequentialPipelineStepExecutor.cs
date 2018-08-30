@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Threading;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
 {
@@ -21,12 +20,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
             foreach (var input in step.Input)
             {
                 batchNumber++;
-                events?.OnBatchStarted(batchNumber, input, step, context.TaskDescription, DateTimeUtils.Now);
+                events?.OnBatchStarted(batchNumber, input, step, context.TaskDescription);
                 var batchSw = Stopwatch.StartNew();
 
                 foreach (var block in step.Blocks)
                 {
-                    events?.OnBlockStarted(batchNumber, input, block, step, context.TaskDescription, DateTimeUtils.Now);
+                    events?.OnBlockStarted(batchNumber, input, block, step, context.TaskDescription);
                     var blockSw = Stopwatch.StartNew();
 
                     try
@@ -39,12 +38,12 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
                     }
 
                     blockSw.Stop();
-                    events?.OnBlockEnded(batchNumber, input, block, step, context.TaskDescription, blockSw.Elapsed, DateTimeUtils.Now);
+                    events?.OnBlockEnded(batchNumber, input, block, step, context.TaskDescription, blockSw.Elapsed);
                     cancellation.ThrowIfCancellationRequested();
                 }
 
                 batchSw.Stop();
-                events?.OnBatchEnded(batchNumber, input, step, context.TaskDescription, batchSw.Elapsed, DateTimeUtils.Now);
+                events?.OnBatchEnded(batchNumber, input, step, context.TaskDescription, batchSw.Elapsed);
                 PipelineProcessingUtils.ReportProgress(batchNumber, step.ExpectedInputBatchesCount, progress);
             }
         }
