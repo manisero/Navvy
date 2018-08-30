@@ -10,7 +10,7 @@ namespace Manisero.StreamProcessingModel.Core
 {
     public interface ITaskExecutorBuilder
     {
-        ITaskExecutorBuilder RegisterStepExecutorResolver(
+        ITaskExecutorBuilder RegisterStepExecution(
             Type stepType,
             ITaskStepExecutorResolver resolver);
 
@@ -34,7 +34,7 @@ namespace Manisero.StreamProcessingModel.Core
             _stepExecutorResolvers.Add(typeof(PipelineTaskStep<>), new SequentialPipelineStepExecutorResolver());
         }
 
-        public ITaskExecutorBuilder RegisterStepExecutorResolver(
+        public ITaskExecutorBuilder RegisterStepExecution(
             Type stepType,
             ITaskStepExecutorResolver resolver)
         {

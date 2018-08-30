@@ -20,7 +20,7 @@ namespace Manisero.StreamProcessingModel.Samples.Utils
 
             if (resolverType == ResolverType.Streaming)
             {
-                builder.RegisterDataflowPipelineStepExecutorResolver();
+                builder.RegisterDataflowExecution();
             }
 
             foreach (var e in events)

@@ -41,7 +41,7 @@ namespace Manisero.StreamProcessingModel.Samples
             };
             
             var executor = new TaskExecutorBuilder()
-                .RegisterStepExecutorResolver(typeof(BasicTaskStep), new ThrowingStepExecutorResolver())
+                .RegisterStepExecution(typeof(BasicTaskStep), new ThrowingStepExecutorResolver())
                 .Build();
 
             // Act
