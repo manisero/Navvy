@@ -1,5 +1,4 @@
 ﻿using System;
-using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
 using Manisero.StreamProcessingModel.PipelineProcessing;

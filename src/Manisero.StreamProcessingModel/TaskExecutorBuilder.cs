@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Manisero.StreamProcessingModel.BasicProcessing;
+using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
 using Manisero.StreamProcessingModel.PipelineProcessing;
 using Manisero.StreamProcessingModel.PipelineProcessing.Sequential;
 
-namespace Manisero.StreamProcessingModel.Core
+namespace Manisero.StreamProcessingModel
 {
     public interface ITaskExecutorBuilder
     {

@@ -45,7 +45,7 @@
     <Compile Include="Core\StepExecution\CompositeTaskStepExecutorResolver.cs" />
     <Compile Include="Core\StepExecution\TaskStepExecutionContext.cs" />
     <Compile Include="Core\Events\TaskExecutionEvents.cs" />
-    <Compile Include="Core\TaskExecutorBuilder.cs" />
+    <Compile Include="TaskExecutorBuilder.cs" />
     <Compile Include="PipelineProcessing\Events\PipelineExecutionEvents.cs" />
     <Compile Include="PipelineProcessing\Sequential\SequentialPipelineStepExecutorResolver.cs" />
     <Compile Include="Core\Models\TaskExecutionException.cs" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Utils;
 
