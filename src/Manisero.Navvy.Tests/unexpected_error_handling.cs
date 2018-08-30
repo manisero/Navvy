@@ -7,7 +7,7 @@ using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Core.StepExecution;
 using Xunit;
 
-namespace Manisero.Navvy.Samples
+namespace Manisero.Navvy.Tests
 {
     public class unexpected_error_handling
     {

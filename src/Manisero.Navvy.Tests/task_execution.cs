@@ -7,11 +7,11 @@ using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
-using Manisero.Navvy.Samples.Utils;
+using Manisero.Navvy.Tests.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Manisero.Navvy.Samples
+namespace Manisero.Navvy.Tests
 {
     public class task_execution
     {

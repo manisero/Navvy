@@ -5,10 +5,10 @@ using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.Models;
-using Manisero.Navvy.Samples.Utils;
+using Manisero.Navvy.Tests.Utils;
 using Xunit;
 
-namespace Manisero.Navvy.Samples.Telemetry
+namespace Manisero.Navvy.Tests.Telemetry
 {
     public class task_execution_telemetry
     {

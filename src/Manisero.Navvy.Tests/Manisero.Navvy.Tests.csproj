@@ -8,8 +8,8 @@
     <ProjectGuid>{D00B0649-549C-47E0-B72D-7BB2F03B94A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Manisero.Navvy.Samples</RootNamespace>
-    <AssemblyName>Manisero.Navvy.Samples</AssemblyName>
+    <RootNamespace>Manisero.Navvy.Tests</RootNamespace>
+    <AssemblyName>Manisero.Navvy.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

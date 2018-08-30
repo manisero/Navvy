@@ -2,7 +2,7 @@
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Dataflow;
 
-namespace Manisero.Navvy.Samples.Utils
+namespace Manisero.Navvy.Tests.Utils
 {
     public enum ResolverType
     {

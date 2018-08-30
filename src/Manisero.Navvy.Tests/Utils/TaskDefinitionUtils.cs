@@ -2,7 +2,7 @@
 using System.Threading;
 using Manisero.Navvy.Core.Models;
 
-namespace Manisero.Navvy.Samples.Utils
+namespace Manisero.Navvy.Tests.Utils
 {
     public static class TaskDefinitionUtils
     {

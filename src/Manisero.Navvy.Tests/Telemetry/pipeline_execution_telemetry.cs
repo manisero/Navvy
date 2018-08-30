@@ -3,10 +3,10 @@ using FluentAssertions;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
-using Manisero.Navvy.Samples.Utils;
+using Manisero.Navvy.Tests.Utils;
 using Xunit;
 
-namespace Manisero.Navvy.Samples.Telemetry
+namespace Manisero.Navvy.Tests.Telemetry
 {
     public class pipeline_execution_telemetry
     {

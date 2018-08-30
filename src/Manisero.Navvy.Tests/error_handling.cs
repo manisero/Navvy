@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing;
-using Manisero.Navvy.Samples.Utils;
+using Manisero.Navvy.Tests.Utils;
 using Xunit;
 
-namespace Manisero.Navvy.Samples
+namespace Manisero.Navvy.Tests
 {
-    public class cancellation
+    public class error_handling
     {
-        private readonly CancellationTokenSource _cancellationSource = new CancellationTokenSource();
-        private bool _completed;
+        private const string FailingStepName = "Failing Step";
+        private readonly Exception _error = new Exception();
 
         [Theory]
         [InlineData(ResolverType.Sequential)]
@@ -24,28 +24,52 @@ namespace Manisero.Navvy.Samples
                 Steps = new List<ITaskStep>
                 {
                     new BasicTaskStep(
-                        "Cancel",
-                        _cancellationSource.Cancel),
-                    new BasicTaskStep(
-                        "Complete",
-                        () => { _completed = true; })
+                        FailingStepName,
+                        () => throw _error)
                 }
             };
-
+            
             test(task, resolverType);
         }
 
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___within_single_block_between_batches(ResolverType resolverType)
+        public void pipeline___catches_error(ResolverType resolverType)
         {
             var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
                     new PipelineTaskStep<int>(
-                        "Step",
+                        FailingStepName,
+                        new[] { new[] { 0 } },
+                        new List<PipelineBlock<int>>
+                        {
+                            PipelineBlock<int>.BatchBody(
+                                "Block",
+                                _ => throw _error
+                            )
+                        })
+                }
+            };
+            
+            test(task, resolverType);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline___batch_following_invalid_batch_is_not_processed(ResolverType resolverType)
+        {
+            var completed = false;
+
+            var task = new TaskDefinition
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new PipelineTaskStep<int>(
+                        FailingStepName,
                         new[]
                         {
                             new[] { 0 },
@@ -54,16 +78,16 @@ namespace Manisero.Navvy.Samples
                         new List<PipelineBlock<int>>
                         {
                             PipelineBlock<int>.BatchBody(
-                                "Cancel / Complete",
+                                "Errors / Complete",
                                 x =>
                                 {
                                     if (x.Contains(0))
                                     {
-                                        _cancellationSource.Cancel();
+                                        throw _error;
                                     }
                                     else
                                     {
-                                        _completed = true;
+                                        completed = true;
                                     }
                                 })
                         })
@@ -71,33 +95,39 @@ namespace Manisero.Navvy.Samples
             };
 
             test(task, resolverType);
+
+            completed.Should().Be(false);
         }
 
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___between_blocks(ResolverType resolverType)
+        public void pipeline___invalid_batch_is_not_further_processed(ResolverType resolverType)
         {
+            var completed = false;
+
             var task = new TaskDefinition
             {
                 Steps = new List<ITaskStep>
                 {
                     new PipelineTaskStep<int>(
-                        "Step",
+                        FailingStepName,
                         new[] { new[] { 0 } },
                         new List<PipelineBlock<int>>
                         {
                             PipelineBlock<int>.BatchBody(
-                                "Cancel",
-                                x => { _cancellationSource.Cancel(); }),
+                                "Errors",
+                                x => throw _error),
                             PipelineBlock<int>.BatchBody(
                                 "Complete",
-                                x => { _completed = true; })
+                                x => { completed = true; })
                         })
                 }
             };
 
             test(task, resolverType);
+
+            completed.Should().Be(false);
         }
 
         private void test(
@@ -105,11 +135,13 @@ namespace Manisero.Navvy.Samples
             ResolverType resolverType)
         {
             // Act
-            var result = task.Execute(resolverType, cancellation: _cancellationSource);
+            var result = task.Execute(resolverType);
 
             // Assert
-            result.Outcome.Should().Be(TaskOutcome.Canceled);
-            _completed.Should().Be(false);
+            result.Outcome.Should().Be(TaskOutcome.Failed);
+            var error = result.Errors.Should().NotBeNull().And.ContainSingle().Subject;
+            error.StepName.ShouldBeEquivalentTo(FailingStepName);
+            error.InnerException.Should().BeSameAs(_error);
         }
     }
 }

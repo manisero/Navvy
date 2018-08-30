@@ -6,10 +6,10 @@ using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing;
-using Manisero.Navvy.Samples.Utils;
+using Manisero.Navvy.Tests.Utils;
 using Xunit;
 
-namespace Manisero.Navvy.Samples
+namespace Manisero.Navvy.Tests
 {
     public class progress_reporting
     {
