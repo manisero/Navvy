@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
 {
-    public class DataBatch<TData>
+    internal class DataBatch<TData>
     {
         public int Number { get; set; }
 

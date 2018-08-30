@@ -8,7 +8,7 @@ using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecution
 {
-    public class DataflowPipelineBuilder<TData>
+    internal class DataflowPipelineBuilder<TData>
     {
         private static readonly int DegreeOfParallelism = Environment.ProcessorCount - 1;
 

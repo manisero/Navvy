@@ -8,7 +8,7 @@ using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
 {
-    public class DataflowPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
+    internal class DataflowPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
     {
         private readonly DataflowPipelineBuilder<TData> _dataflowPipelineBuilder = new DataflowPipelineBuilder<TData>();
 

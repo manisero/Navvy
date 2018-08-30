@@ -5,7 +5,7 @@ using Manisero.StreamProcessingModel.Core.StepExecution;
 
 namespace Manisero.StreamProcessingModel.BasicProcessing
 {
-    public class BasicStepExecutor : ITaskStepExecutor<BasicTaskStep>
+    internal class BasicStepExecutor : ITaskStepExecutor<BasicTaskStep>
     {
         public void Execute(
             BasicTaskStep step,

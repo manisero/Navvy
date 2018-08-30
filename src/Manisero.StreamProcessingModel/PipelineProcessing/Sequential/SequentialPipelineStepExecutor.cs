@@ -7,7 +7,7 @@ using Manisero.StreamProcessingModel.Utils;
 
 namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
 {
-    public class SequentialPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
+    internal class SequentialPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
     {
         public void Execute(
             PipelineTaskStep<TData> step,
