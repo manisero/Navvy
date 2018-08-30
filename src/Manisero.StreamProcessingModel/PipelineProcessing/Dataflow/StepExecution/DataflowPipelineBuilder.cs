@@ -93,7 +93,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow.StepExecuti
                 {
                     x.ProcessingStopwatch.Stop();
                     events?.BatchEnded(x.Number, x.Data, step, context.TaskDescription, x.ProcessingStopwatch.Elapsed, DateTimeUtils.Now);
-                    StepExecutionUtils.ReportProgress(x.Number, step.ExpectedInputBatchesCount, progress);
+                    PipelineProcessingUtils.ReportProgress(x.Number, step.ExpectedInputBatchesCount, progress);
                 },
                 new ExecutionDataflowBlockOptions
                 {

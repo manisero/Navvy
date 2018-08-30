@@ -1,9 +1,9 @@
 using System;
 using Manisero.StreamProcessingModel.Utils;
 
-namespace Manisero.StreamProcessingModel.Core.StepExecution
+namespace Manisero.StreamProcessingModel.PipelineProcessing
 {
-    internal static class StepExecutionUtils
+    internal static class PipelineProcessingUtils
     {
         public static void ReportProgress(
             int batchNumber,

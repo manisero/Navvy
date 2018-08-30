@@ -45,7 +45,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Sequential
 
                 batchSw.Stop();
                 events?.BatchEnded(batchNumber, input, step, context.TaskDescription, batchSw.Elapsed, DateTimeUtils.Now);
-                StepExecutionUtils.ReportProgress(batchNumber, step.ExpectedInputBatchesCount, progress);
+                PipelineProcessingUtils.ReportProgress(batchNumber, step.ExpectedInputBatchesCount, progress);
             }
         }
     }
