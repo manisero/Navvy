@@ -185,7 +185,7 @@ namespace Manisero.StreamProcessingModel.Core.Events
 
     public static class TaskExecutorBuilderExtensions
     {
-        public static void RegisterTaskExecutionEvents(
+        public static ITaskExecutorBuilder RegisterTaskExecutionEvents(
             this ITaskExecutorBuilder builder,
             TaskExecutionEvents events)
             => builder.RegisterEvents(events);

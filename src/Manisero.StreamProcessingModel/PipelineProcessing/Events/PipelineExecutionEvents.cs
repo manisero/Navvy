@@ -135,7 +135,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Events
 
     public static class TaskExecutorBuilderExtensions
     {
-        public static void RegisterPipelineExecutionEvents(
+        public static ITaskExecutorBuilder RegisterPipelineExecutionEvents(
             this ITaskExecutorBuilder builder,
             PipelineExecutionEvents events)
             => builder.RegisterEvents(events);

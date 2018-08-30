@@ -1,21 +1,34 @@
 ﻿using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
-using Manisero.StreamProcessingModel.Core.StepExecution;
+using Manisero.StreamProcessingModel.PipelineProcessing.Dataflow;
 
 namespace Manisero.StreamProcessingModel.Samples.Utils
 {
+    public enum ResolverType
+    {
+        Sequential,
+        Streaming
+    }
+
     public static class TaskExecutorFactory
     {
-        public static TaskExecutor Create(
+        public static ITaskExecutor Create(
             ResolverType resolverType,
             params IExecutionEvents[] events)
-            => Create(TaskExecutorResolvers.Get(resolverType), events);
+        {
+            var builder = new TaskExecutorBuilder();
 
-        public static TaskExecutor Create(
-            ITaskStepExecutorResolver taskStepExecutorResolver,
-            params IExecutionEvents[] events)
-            => new TaskExecutor(
-                taskStepExecutorResolver,
-                new ExecutionEventsBag(events));
+            if (resolverType == ResolverType.Streaming)
+            {
+                builder.RegisterDataflowPipelineStepExecutorResolver();
+            }
+
+            foreach (var e in events)
+            {
+                builder.RegisterEvents(e);
+            }
+
+            return builder.Build();
+        }
     }
 }

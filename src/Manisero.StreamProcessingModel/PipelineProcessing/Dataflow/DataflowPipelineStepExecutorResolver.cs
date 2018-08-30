@@ -19,7 +19,7 @@ namespace Manisero.StreamProcessingModel.PipelineProcessing.Dataflow
 
     public static class TaskExecutorBuilderExtensions
     {
-        public static void RegisterDataflowPipelineStepExecutorResolver(
+        public static ITaskExecutorBuilder RegisterDataflowPipelineStepExecutorResolver(
             this ITaskExecutorBuilder builder)
             => builder.RegisterStepExecutorResolver(typeof(PipelineTaskStep<>), new DataflowPipelineStepExecutorResolver());
     }

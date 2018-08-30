@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.StreamProcessingModel.BasicProcessing;
+using Manisero.StreamProcessingModel.Core;
 using Manisero.StreamProcessingModel.Core.Models;
 using Manisero.StreamProcessingModel.Core.StepExecution;
-using Manisero.StreamProcessingModel.Samples.Utils;
 using Xunit;
 
 namespace Manisero.StreamProcessingModel.Samples
@@ -40,7 +40,9 @@ namespace Manisero.StreamProcessingModel.Samples
                 }
             };
             
-            var executor = TaskExecutorFactory.Create(new ThrowingStepExecutorResolver());
+            var executor = new TaskExecutorBuilder()
+                .RegisterStepExecutorResolver(typeof(BasicTaskStep), new ThrowingStepExecutorResolver())
+                .Build();
 
             // Act
             Action act = () => executor.Execute(taskDescription);
