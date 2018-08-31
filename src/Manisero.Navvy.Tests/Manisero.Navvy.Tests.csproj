@@ -61,7 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="benchmarks.cs" />
     <Compile Include="conditional_step_execution.cs" />
     <Compile Include="error_handling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
