@@ -74,7 +74,7 @@ namespace Manisero.Navvy.Tests
             // Act
             task.Execute(resolverType, progress);
 
-            Thread.Sleep(5); // TODO: Remove once AppVeyor issue resolved
+            Thread.Sleep(10); // TODO: Remove once AppVeyor issue resolved
 
             // Assert
             progressReports.Select(x => x.StepName).Should().OnlyContain(x => x == taskStep.Name);
