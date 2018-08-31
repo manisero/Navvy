@@ -43,7 +43,36 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___sequential()
+        public long pipeline_processing___sequential___update_per_item()
+        {
+            var sum = 0L;
+
+            var taskExecutor = new TaskExecutorBuilder().Build();
+
+            var task = new TaskDefinition
+            {
+                Steps = new List<ITaskStep>
+                {
+                    new PipelineTaskStep<long>(
+                        "Sum",
+                        GetInput(),
+                        BatchesCount,
+                        new List<PipelineBlock<long>>
+                        {
+                            PipelineBlock<long>.ItemBody(
+                                "Update Sum",
+                                x => sum += x)
+                        })
+                }
+            };
+
+            taskExecutor.Execute(task);
+
+            return sum;
+        }
+
+        [Benchmark]
+        public long pipeline_processing___sequential___update_per_batch()
         {
             var sum = 0L;
             
@@ -72,7 +101,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___Dataflow___not_parallel_update_per_item()
+        public long pipeline_processing___Dataflow___not_parallel___update_per_item()
         {
             var sum = 0L;
 
@@ -103,7 +132,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___Dataflow___not_parallel_update_per_batch()
+        public long pipeline_processing___Dataflow___not_parallel___update_per_batch()
         {
             var sum = 0L;
 
