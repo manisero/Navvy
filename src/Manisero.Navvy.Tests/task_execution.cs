@@ -53,7 +53,7 @@ namespace Manisero.Navvy.Tests
                     "Complete",
                     () => { completed = true; }));
 
-            var progress = new Progress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
+            var progress = new SynchronousProgress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
             var cancellationSource = new CancellationTokenSource();
 
             var taskEvents = new TaskExecutionEvents(

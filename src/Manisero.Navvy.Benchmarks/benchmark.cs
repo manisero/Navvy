@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using BenchmarkDotNet.Attributes;
 using Manisero.Navvy.BasicProcessing;
+using Manisero.Navvy.Core;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Dataflow;
 using Manisero.Navvy.PipelineProcessing;
@@ -22,7 +22,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long basic_processing()
+        public TaskResult basic_processing()
         {
             var sum = 0L;
 
@@ -33,163 +33,73 @@ namespace Manisero.Navvy.Benchmarks
                     "Sum",
                     () => sum = GetInput_NotBatched().Sum()));
 
-            taskExecutor.Execute(task);
-
-            return sum;
+            return taskExecutor.Execute(task);
         }
 
         [Benchmark]
-        public long pipeline_processing___sequential___not_batched()
+        public TaskResult pipeline_processing___sequential___not_batched()
         {
-            var sum = 0L;
-
             var taskExecutor = new TaskExecutorBuilder().Build();
+            var task = GetPipelineTask_NotBatched(false);
 
-            var task = new TaskDefinition(
-                new PipelineTaskStep<long>(
-                    "Sum",
-                    GetInput_NotBatched(),
-                    TotalCount,
-                    new List<PipelineBlock<long>>
-                    {
-                        new PipelineBlock<long>(
-                            "Update Sum",
-                            x => sum += x)
-                    }));
-
-            taskExecutor.Execute(task);
-
-            return sum;
+            return taskExecutor.Execute(task);
         }
 
         [Benchmark]
-        public long pipeline_processing___sequential___batched()
+        public TaskResult pipeline_processing___sequential___batched()
         {
-            var sum = 0L;
-            
             var taskExecutor = new TaskExecutorBuilder().Build();
+            var task = GetPipelineTask_Batched(false);
 
-            var task = new TaskDefinition(
-                new PipelineTaskStep<ICollection<long>>(
-                    "Sum",
-                    GetInput_Batched(),
-                    BatchesCount,
-                    new List<PipelineBlock<ICollection<long>>>
-                    {
-                        new PipelineBlock<ICollection<long>>(
-                            "Update Sum",
-                            x => sum += x.Sum())
-                    }));
-
-            taskExecutor.Execute(task);
-
-            return sum;
+            return taskExecutor.Execute(task);
         }
 
         [Benchmark]
-        public long pipeline_processing___Dataflow___not_parallel___not_batched()
-        {
-            var sum = 0L;
-
-            var taskExecutor = new TaskExecutorBuilder()
-                .RegisterDataflowExecution()
-                .Build();
-
-            var task = new TaskDefinition(
-                new PipelineTaskStep<long>(
-                    "Sum",
-                    GetInput_NotBatched(),
-                    TotalCount,
-                    new List<PipelineBlock<long>>
-                    {
-                        new PipelineBlock<long>(
-                            "Update Sum",
-                            x => sum += x)
-                    }));
-
-            taskExecutor.Execute(task);
-
-            return sum;
-        }
-
-        [Benchmark]
-        public long pipeline_processing___Dataflow___not_parallel___batched()
-        {
-            var sum = 0L;
-
-            var taskExecutor = new TaskExecutorBuilder()
-                .RegisterDataflowExecution()
-                .Build();
-
-            var task = new TaskDefinition(
-                new PipelineTaskStep<ICollection<long>>(
-                    "Sum",
-                    GetInput_Batched(),
-                    BatchesCount,
-                    new List<PipelineBlock<ICollection<long>>>
-                    {
-                        new PipelineBlock<ICollection<long>>(
-                            "Update Sum",
-                            x => sum += x.Sum())
-                    }));
-
-            taskExecutor.Execute(task);
-
-            return sum;
-        }
-
-        [Benchmark]
-        public long pipeline_processing___Dataflow___parallel___not_batched()
+        public TaskResult pipeline_processing___Dataflow___not_parallel___not_batched()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
                 .Build();
 
-            var sum = 0L;
+            var task = GetPipelineTask_NotBatched(false);
 
-            var task = new TaskDefinition(
-                new PipelineTaskStep<long>(
-                    "Sum",
-                    GetInput_NotBatched(),
-                    TotalCount,
-                    new List<PipelineBlock<long>>
-                    {
-                        new PipelineBlock<long>(
-                            "Update Sum",
-                            x => Interlocked.Add(ref sum, x),
-                            true)
-                    }));
-
-            taskExecutor.Execute(task);
-
-            return sum;
+            return taskExecutor.Execute(task);
         }
 
         [Benchmark]
-        public long pipeline_processing___Dataflow___parallel___batched()
+        public TaskResult pipeline_processing___Dataflow___not_parallel___batched()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
                 .Build();
 
-            var sum = 0L;
+            var task = GetPipelineTask_Batched(false);
 
-            var task = new TaskDefinition(
-                new PipelineTaskStep<ICollection<long>>(
-                    "Sum",
-                    GetInput_Batched(),
-                    BatchesCount,
-                    new List<PipelineBlock<ICollection<long>>>
-                    {
-                        new PipelineBlock<ICollection<long>>(
-                            "Update Sum",
-                            x => Interlocked.Add(ref sum, x.Sum()),
-                            true)
-                    }));
+            return taskExecutor.Execute(task);
+        }
 
-            taskExecutor.Execute(task);
+        [Benchmark]
+        public TaskResult pipeline_processing___Dataflow___parallel___not_batched()
+        {
+            var taskExecutor = new TaskExecutorBuilder()
+                .RegisterDataflowExecution()
+                .Build();
 
-            return sum;
+            var task = GetPipelineTask_NotBatched(true);
+
+            return taskExecutor.Execute(task);
+        }
+
+        [Benchmark]
+        public TaskResult pipeline_processing___Dataflow___parallel___batched()
+        {
+            var taskExecutor = new TaskExecutorBuilder()
+                .RegisterDataflowExecution()
+                .Build();
+
+            var task = GetPipelineTask_Batched(true);
+
+            return taskExecutor.Execute(task);
         }
         
         private IEnumerable<long> GetInput_NotBatched()
@@ -203,6 +113,44 @@ namespace Manisero.Navvy.Benchmarks
             {
                 yield return Enumerable.Repeat(1L, BatchSize).ToList();
             }
+        }
+
+        private TaskDefinition GetPipelineTask_NotBatched(
+            bool parallel)
+        {
+            var sum = 0L;
+
+            return new TaskDefinition(
+                new PipelineTaskStep<long>(
+                    "Sum",
+                    GetInput_NotBatched(),
+                    TotalCount,
+                    new List<PipelineBlock<long>>
+                    {
+                        new PipelineBlock<long>(
+                            "Update Sum",
+                            x => sum += x,
+                            parallel)
+                    }));
+        }
+
+        private TaskDefinition GetPipelineTask_Batched(
+            bool parallel)
+        {
+            var sum = 0L;
+
+            return new TaskDefinition(
+                new PipelineTaskStep<ICollection<long>>(
+                    "Sum",
+                    GetInput_Batched(),
+                    BatchesCount,
+                    new List<PipelineBlock<ICollection<long>>>
+                    {
+                        new PipelineBlock<ICollection<long>>(
+                            "Update Sum",
+                            x => sum += x.Sum(),
+                            parallel)
+                    }));
         }
     }
 }
