@@ -6,6 +6,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using Manisero.Navvy.BasicProcessing;
+using Manisero.Navvy.Core;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Dataflow;
 using Manisero.Navvy.PipelineProcessing;
@@ -31,103 +32,138 @@ namespace Manisero.Navvy.Benchmarks
         private const int BatchSize = 10000;
         private const int TotalCount = BatchesCount * BatchSize;
 
+        private ITaskExecutor _executor;
+        private TaskDefinition _task;
+
         [Benchmark(Baseline = true)]
         public long plain_sum()
         {
             return GetInput_NotBatched_Materialized().Sum();
         }
 
-        [Benchmark]
-        public TaskResult basic_processing()
+        [GlobalSetup(Target = nameof(basic_processing))]
+        public void setup___basic_processing()
         {
+            _executor = new TaskExecutorBuilder().Build();
+
             var sum = 0L;
 
-            var taskExecutor = new TaskExecutorBuilder().Build();
-
-            var task = new TaskDefinition(
+            _task = new TaskDefinition(
                 new BasicTaskStep(
                     "Sum",
                     () => sum = GetInput_NotBatched_Materialized().Sum()));
+        }
 
-            return taskExecutor.Execute(task);
+        [Benchmark]
+        public TaskResult basic_processing()
+        {
+            return _executor.Execute(_task);
+        }
+
+        [GlobalSetup(Target = nameof(pipeline_processing___sequential___not_batched))]
+        public void setup___pipeline_processing___sequential___not_batched()
+        {
+            _executor = new TaskExecutorBuilder().Build();
+            _task = GetPipelineTask_NotBatched(false);
         }
 
         [Benchmark]
         public TaskResult pipeline_processing___sequential___not_batched()
         {
-            var taskExecutor = new TaskExecutorBuilder().Build();
-            var task = GetPipelineTask_NotBatched(false);
+            return _executor.Execute(_task);
+        }
 
-            return taskExecutor.Execute(task);
+        [GlobalSetup(Target = nameof(pipeline_processing___sequential___batched))]
+        public void setup___pipeline_processing___sequential___batched()
+        {
+            _executor = new TaskExecutorBuilder().Build();
+            _task = GetPipelineTask_Batched(false);
         }
 
         [Benchmark]
         public TaskResult pipeline_processing___sequential___batched()
         {
-            var taskExecutor = new TaskExecutorBuilder().Build();
-            var task = GetPipelineTask_Batched(false);
+            return _executor.Execute(_task);
+        }
 
-            return taskExecutor.Execute(task);
+        [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___not_batched___not_parallel))]
+        public void setup___pipeline_processing___Dataflow___not_batched___not_parallel()
+        {
+            _executor = new TaskExecutorBuilder()
+                .RegisterDataflowExecution()
+                .Build();
+
+            _task = GetPipelineTask_NotBatched(false);
         }
 
         [Benchmark]
         public TaskResult pipeline_processing___Dataflow___not_batched___not_parallel()
         {
-            var taskExecutor = new TaskExecutorBuilder()
+            return _executor.Execute(_task);
+        }
+
+        [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___batched___not_parallel))]
+        public void setup___pipeline_processing___Dataflow___batched___not_parallel()
+        {
+            _executor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
                 .Build();
 
-            var task = GetPipelineTask_NotBatched(false);
-
-            return taskExecutor.Execute(task);
+            _task = GetPipelineTask_Batched(false);
         }
 
         [Benchmark]
         public TaskResult pipeline_processing___Dataflow___batched___not_parallel()
         {
-            var taskExecutor = new TaskExecutorBuilder()
+            return _executor.Execute(_task);
+        }
+
+        [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___not_batched___parallel))]
+        public void setup___pipeline_processing___Dataflow___not_batched___parallel()
+        {
+            _executor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
                 .Build();
 
-            var task = GetPipelineTask_Batched(false);
-
-            return taskExecutor.Execute(task);
+            _task = GetPipelineTask_NotBatched(true);
         }
 
         [Benchmark]
         public TaskResult pipeline_processing___Dataflow___not_batched___parallel()
         {
-            var taskExecutor = new TaskExecutorBuilder()
+            return _executor.Execute(_task);
+        }
+
+        [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___batched___parallel))]
+        public void setup___pipeline_processing___Dataflow___batched___parallel()
+        {
+            _executor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
                 .Build();
 
-            var task = GetPipelineTask_NotBatched(true);
-
-            return taskExecutor.Execute(task);
+            _task = GetPipelineTask_Batched(true);
         }
 
         [Benchmark]
         public TaskResult pipeline_processing___Dataflow___batched___parallel()
         {
-            var taskExecutor = new TaskExecutorBuilder()
+            return _executor.Execute(_task);
+        }
+
+        [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___batched___parallel___no_Interlock))]
+        public void setup___pipeline_processing___Dataflow___batched___parallel___no_Interlock()
+        {
+            _executor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
                 .Build();
 
-            var task = GetPipelineTask_Batched(true);
-
-            return taskExecutor.Execute(task);
+            _task = GetPipelineTask_Batched_Parallel_NoInterlock();
         }
 
         [Benchmark]
         public TaskResult pipeline_processing___Dataflow___batched___parallel___no_Interlock()
         {
-            var taskExecutor = new TaskExecutorBuilder()
-                .RegisterDataflowExecution()
-                .Build();
-
-            var task = GetPipelineTask_Batched_Parallel_NoInterlock();
-
-            return taskExecutor.Execute(task);
+            return _executor.Execute(_task);
         }
 
         private ICollection<long> GetInput_NotBatched_Materialized()
