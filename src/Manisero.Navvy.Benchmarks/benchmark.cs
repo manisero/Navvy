@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using BenchmarkDotNet.Attributes;
 using Manisero.Navvy.BasicProcessing;
-using Manisero.Navvy.Core;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Dataflow;
 using Manisero.Navvy.PipelineProcessing;
@@ -101,7 +102,19 @@ namespace Manisero.Navvy.Benchmarks
 
             return taskExecutor.Execute(task);
         }
-        
+
+        [Benchmark]
+        public TaskResult pipeline_processing___Dataflow___parallel___batched___no_Interlock()
+        {
+            var taskExecutor = new TaskExecutorBuilder()
+                .RegisterDataflowExecution()
+                .Build();
+
+            var task = GetPipelineTask_Batched_Parallel_NoInterlock();
+
+            return taskExecutor.Execute(task);
+        }
+
         private IEnumerable<long> GetInput_NotBatched()
         {
             return Enumerable.Repeat(1L, TotalCount);
@@ -129,7 +142,9 @@ namespace Manisero.Navvy.Benchmarks
                     {
                         new PipelineBlock<long>(
                             "Update Sum",
-                            x => sum += x,
+                            parallel
+                                ? (Action<long>)(x => Interlocked.Add(ref sum, x))
+                                : x => sum += x,
                             parallel)
                     }));
         }
@@ -148,8 +163,37 @@ namespace Manisero.Navvy.Benchmarks
                     {
                         new PipelineBlock<ICollection<long>>(
                             "Update Sum",
-                            x => sum += x.Sum(),
+                            parallel
+                                ? (Action<ICollection<long>>)(x => Interlocked.Add(ref sum, x.Sum()))
+                                : x => sum += x.Sum(),
                             parallel)
+                    }));
+        }
+
+        private struct NumbersWithTotal
+        {
+            public ICollection<long> Numbers { get; set; }
+            public long Total { get; set; }
+        }
+
+        private TaskDefinition GetPipelineTask_Batched_Parallel_NoInterlock()
+        {
+            var sum = 0L;
+
+            return new TaskDefinition(
+                new PipelineTaskStep<NumbersWithTotal>(
+                    "Sum",
+                    GetInput_Batched().Select(x => new NumbersWithTotal { Numbers = x }),
+                    BatchesCount,
+                    new List<PipelineBlock<NumbersWithTotal>>
+                    {
+                        new PipelineBlock<NumbersWithTotal>(
+                            "Calculate Total",
+                            x => x.Total = x.Numbers.Sum(),
+                            true),
+                        new PipelineBlock<NumbersWithTotal>(
+                            "Update Sum",
+                            x => sum += x.Total)
                     }));
         }
     }
