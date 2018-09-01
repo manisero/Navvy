@@ -9,11 +9,11 @@ using Manisero.Navvy.PipelineProcessing.Events;
 
 namespace Manisero.Navvy.Dataflow.StepExecution
 {
-    internal class DataflowPipelineBuilder<TItem>
+    internal class DataflowPipelineBuilder
     {
         private static readonly int DegreeOfParallelism = Environment.ProcessorCount - 1;
 
-        public DataflowPipeline<TItem> Build(
+        public DataflowPipeline<TItem> Build<TItem>(
             PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             IProgress<byte> progress,
@@ -24,7 +24,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 : BuildEmpty(step, context, progress, cancellation);
         }
 
-        private DataflowPipeline<TItem> BuildNotEmpty(
+        private DataflowPipeline<TItem> BuildNotEmpty<TItem>(
             PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             IProgress<byte> progress,
@@ -53,7 +53,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             };
         }
 
-        private DataflowPipeline<TItem> BuildEmpty(
+        private DataflowPipeline<TItem> BuildEmpty<TItem>(
             PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             IProgress<byte> progress,
@@ -70,7 +70,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             };
         }
 
-        private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> ToTransformBlock(
+        private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> ToTransformBlock<TItem>(
             PipelineTaskStep<TItem> step,
             int blockIndex,
             TaskStepExecutionContext context,
@@ -110,7 +110,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 });
         }
 
-        private ActionBlock<PipelineItem<TItem>> CreateProgressBlock(
+        private ActionBlock<PipelineItem<TItem>> CreateProgressBlock<TItem>(
             PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             PipelineExecutionEvents events,

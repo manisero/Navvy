@@ -11,7 +11,7 @@ namespace Manisero.Navvy.Dataflow
 {
     internal class DataflowPipelineStepExecutor<TItem> : ITaskStepExecutor<PipelineTaskStep<TItem>>
     {
-        private readonly DataflowPipelineBuilder<TItem> _dataflowPipelineBuilder = new DataflowPipelineBuilder<TItem>();
+        private readonly DataflowPipelineBuilder _dataflowPipelineBuilder = new DataflowPipelineBuilder();
 
         public void Execute(
             PipelineTaskStep<TItem> step,
