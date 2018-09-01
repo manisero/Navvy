@@ -7,31 +7,31 @@ using Manisero.Navvy.PipelineProcessing.Events;
 
 namespace Manisero.Navvy.PipelineProcessing
 {
-    internal class SequentialPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
+    internal class SequentialPipelineStepExecutor<TItem> : ITaskStepExecutor<PipelineTaskStep<TItem>>
     {
         public void Execute(
-            PipelineTaskStep<TData> step,
+            PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var batchNumber = 0;
+            var itemNumber = 0;
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
-            foreach (var input in step.Input)
+            foreach (var item in step.Input)
             {
-                batchNumber++;
-                events?.OnBatchStarted(batchNumber, input, step, context.Task);
-                var batchSw = Stopwatch.StartNew();
+                itemNumber++;
+                events?.OnItemStarted(itemNumber, item, step, context.Task);
+                var itemSw = Stopwatch.StartNew();
 
                 foreach (var block in step.Blocks)
                 {
-                    events?.OnBlockStarted(block, batchNumber, input, step, context.Task);
+                    events?.OnBlockStarted(block, itemNumber, item, step, context.Task);
                     var blockSw = Stopwatch.StartNew();
 
                     try
                     {
-                        block.Body(input);
+                        block.Body(item);
                     }
                     catch (Exception e)
                     {
@@ -39,13 +39,13 @@ namespace Manisero.Navvy.PipelineProcessing
                     }
 
                     blockSw.Stop();
-                    events?.OnBlockEnded(block, batchNumber, input, step, context.Task, blockSw.Elapsed);
+                    events?.OnBlockEnded(block, itemNumber, item, step, context.Task, blockSw.Elapsed);
                     cancellation.ThrowIfCancellationRequested();
                 }
 
-                batchSw.Stop();
-                events?.OnBatchEnded(batchNumber, input, step, context.Task, batchSw.Elapsed);
-                PipelineProcessingUtils.ReportProgress(batchNumber, step.ExpectedInputBatchesCount, progress);
+                itemSw.Stop();
+                events?.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed);
+                PipelineProcessingUtils.ReportProgress(itemNumber, step.ExpectedItemsCount, progress);
             }
         }
     }

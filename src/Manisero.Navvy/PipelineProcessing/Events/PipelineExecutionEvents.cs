@@ -5,19 +5,19 @@ using Manisero.Navvy.Utils;
 
 namespace Manisero.Navvy.PipelineProcessing.Events
 {
-    public struct BatchStartedEvent
+    public struct ItemStartedEvent
     {
-        public int BatchNumber;
-        public IEnumerable Batch;
+        public int ItemNumber;
+        public object Item;
         public ITaskStep Step;
         public TaskDefinition Task;
         public DateTime Timestamp;
     }
 
-    public struct BatchEndedEvent
+    public struct ItemEndedEvent
     {
-        public int BatchNumber;
-        public IEnumerable Batch;
+        public int ItemNumber;
+        public object Item;
         public ITaskStep Step;
         public TaskDefinition Task;
         public TimeSpan Duration;
@@ -27,8 +27,8 @@ namespace Manisero.Navvy.PipelineProcessing.Events
     public struct BlockStartedEvent
     {
         public IPipelineBlock Block;
-        public int BatchNumber;
-        public IEnumerable Batch;
+        public int ItemNumber;
+        public object Item;
         public ITaskStep Step;
         public TaskDefinition Task;
         public DateTime Timestamp;
@@ -37,8 +37,8 @@ namespace Manisero.Navvy.PipelineProcessing.Events
     public struct BlockEndedEvent
     {
         public IPipelineBlock Block;
-        public int BatchNumber;
-        public IEnumerable Batch;
+        public int ItemNumber;
+        public object Item;
         public ITaskStep Step;
         public TaskDefinition Task;
         public TimeSpan Duration;
@@ -47,25 +47,25 @@ namespace Manisero.Navvy.PipelineProcessing.Events
 
     public class PipelineExecutionEvents : IExecutionEvents
     {
-        public event ExecutionEventHandler<BatchStartedEvent> BatchStarted;
-        public event ExecutionEventHandler<BatchEndedEvent> BatchEnded;
+        public event ExecutionEventHandler<ItemStartedEvent> ItemStarted;
+        public event ExecutionEventHandler<ItemEndedEvent> ItemEnded;
         public event ExecutionEventHandler<BlockStartedEvent> BlockStarted;
         public event ExecutionEventHandler<BlockEndedEvent> BlockEnded;
 
         public PipelineExecutionEvents(
-            ExecutionEventHandler<BatchStartedEvent> batchStarted = null,
-            ExecutionEventHandler<BatchEndedEvent> batchEnded = null,
+            ExecutionEventHandler<ItemStartedEvent> itemStarted = null,
+            ExecutionEventHandler<ItemEndedEvent> itemEnded = null,
             ExecutionEventHandler<BlockStartedEvent> blockStarted = null,
             ExecutionEventHandler<BlockEndedEvent> blockEnded = null)
         {
-            if (batchStarted != null)
+            if (itemStarted != null)
             {
-                BatchStarted += batchStarted;
+                ItemStarted += itemStarted;
             }
 
-            if (batchEnded != null)
+            if (itemEnded != null)
             {
-                BatchEnded += batchEnded;
+                ItemEnded += itemEnded;
             }
 
             if (blockStarted != null)
@@ -79,24 +79,24 @@ namespace Manisero.Navvy.PipelineProcessing.Events
             }
         }
 
-        public void OnBatchStarted(int batchNumber, IEnumerable batch, ITaskStep step, TaskDefinition task)
+        public void OnItemStarted(int itemNumber, object item, ITaskStep step, TaskDefinition task)
         {
-            BatchStarted?.Invoke(new BatchStartedEvent
+            ItemStarted?.Invoke(new ItemStartedEvent
             {
-                BatchNumber = batchNumber,
-                Batch = batch,
+                ItemNumber = itemNumber,
+                Item = item,
                 Step = step,
                 Task = task,
                 Timestamp = DateTimeUtils.Now
             });
         }
 
-        public void OnBatchEnded(int batchNumber, IEnumerable batch, ITaskStep step, TaskDefinition task, TimeSpan duration)
+        public void OnItemEnded(int itemNumber, object item, ITaskStep step, TaskDefinition task, TimeSpan duration)
         {
-            BatchEnded?.Invoke(new BatchEndedEvent
+            ItemEnded?.Invoke(new ItemEndedEvent
             {
-                BatchNumber = batchNumber,
-                Batch = batch,
+                ItemNumber = itemNumber,
+                Item = item,
                 Step = step,
                 Task = task,
                 Duration = duration,
@@ -104,26 +104,26 @@ namespace Manisero.Navvy.PipelineProcessing.Events
             });
         }
 
-        public void OnBlockStarted(IPipelineBlock block, int batchNumber, IEnumerable batch, ITaskStep step, TaskDefinition task)
+        public void OnBlockStarted(IPipelineBlock block, int itemNumber, object item, ITaskStep step, TaskDefinition task)
         {
             BlockStarted?.Invoke(new BlockStartedEvent
             {
                 Block = block,
-                BatchNumber = batchNumber,
-                Batch = batch,
+                ItemNumber = itemNumber,
+                Item = item,
                 Step = step,
                 Task = task,
                 Timestamp = DateTimeUtils.Now
             });
         }
 
-        public void OnBlockEnded(IPipelineBlock block, int batchNumber, IEnumerable batch, ITaskStep step, TaskDefinition task, TimeSpan duration)
+        public void OnBlockEnded(IPipelineBlock block, int itemNumber, object item, ITaskStep step, TaskDefinition task, TimeSpan duration)
         {
             BlockEnded?.Invoke(new BlockEndedEvent
             {
                 Block = block,
-                BatchNumber = batchNumber,
-                Batch = batch,
+                ItemNumber = itemNumber,
+                Item = item,
                 Step = step,
                 Task = task,
                 Duration = duration,

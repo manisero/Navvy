@@ -6,13 +6,13 @@ namespace Manisero.Navvy.PipelineProcessing
     public static class PipelineProcessingUtils
     {
         public static void ReportProgress(
-            int batchNumber,
-            int expectedPipelineInputBatchesCount,
+            int itemNumber,
+            int expectedItemsCount,
             IProgress<byte> progress)
         {
             progress.Report(
-                batchNumber < expectedPipelineInputBatchesCount
-                    ? batchNumber.ToPercentageOf(expectedPipelineInputBatchesCount)
+                itemNumber < expectedItemsCount
+                    ? itemNumber.ToPercentageOf(expectedItemsCount)
                     : (byte)100);
         }
     }

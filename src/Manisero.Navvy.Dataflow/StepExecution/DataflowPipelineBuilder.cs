@@ -9,12 +9,12 @@ using Manisero.Navvy.PipelineProcessing.Events;
 
 namespace Manisero.Navvy.Dataflow.StepExecution
 {
-    internal class DataflowPipelineBuilder<TData>
+    internal class DataflowPipelineBuilder
     {
         private static readonly int DegreeOfParallelism = Environment.ProcessorCount - 1;
 
-        public DataflowPipeline<TData> Build(
-            PipelineTaskStep<TData> step,
+        public DataflowPipeline<TItem> Build<TItem>(
+            PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
@@ -24,8 +24,8 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 : BuildEmpty(step, context, progress, cancellation);
         }
 
-        private DataflowPipeline<TData> BuildNotEmpty(
-            PipelineTaskStep<TData> step,
+        private DataflowPipeline<TItem> BuildNotEmpty<TItem>(
+            PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
@@ -46,15 +46,15 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             var progressBlock = CreateProgressBlock(step, context, events, progress, cancellation);
             previousBlock.LinkTo(progressBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
-            return new DataflowPipeline<TData>
+            return new DataflowPipeline<TItem>
             {
                 InputBlock = firstBlock,
                 Completion = progressBlock.Completion
             };
         }
 
-        private DataflowPipeline<TData> BuildEmpty(
-            PipelineTaskStep<TData> step,
+        private DataflowPipeline<TItem> BuildEmpty<TItem>(
+            PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
@@ -63,15 +63,15 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
             var progressBlock = CreateProgressBlock(step, context, events, progress, cancellation);
 
-            return new DataflowPipeline<TData>
+            return new DataflowPipeline<TItem>
             {
                 InputBlock = progressBlock,
                 Completion = progressBlock.Completion
             };
         }
 
-        private TransformBlock<DataBatch<TData>, DataBatch<TData>> ToTransformBlock(
-            PipelineTaskStep<TData> step,
+        private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> ToTransformBlock<TItem>(
+            PipelineTaskStep<TItem> step,
             int blockIndex,
             TaskStepExecutionContext context,
             PipelineExecutionEvents events,
@@ -80,15 +80,15 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             var block = step.Blocks[blockIndex];
             var maxDegreeOfParallelism = block.Parallel ? DegreeOfParallelism : 1;
 
-            return new TransformBlock<DataBatch<TData>, DataBatch<TData>>(
+            return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
                 x =>
                 {
-                    events?.OnBlockStarted(block, x.Number, x.Data, step, context.Task);
+                    events?.OnBlockStarted(block, x.Number, x.Item, step, context.Task);
                     var sw = Stopwatch.StartNew();
 
                     try
                     {
-                        block.Body(x.Data);
+                        block.Body(x.Item);
                     }
                     catch (Exception e)
                     {
@@ -96,7 +96,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                     }
 
                     sw.Stop();
-                    events?.OnBlockEnded(block, x.Number, x.Data, step, context.Task, sw.Elapsed);
+                    events?.OnBlockEnded(block, x.Number, x.Item, step, context.Task, sw.Elapsed);
 
                     return x;
                 },
@@ -110,19 +110,19 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 });
         }
 
-        private ActionBlock<DataBatch<TData>> CreateProgressBlock(
-            PipelineTaskStep<TData> step,
+        private ActionBlock<PipelineItem<TItem>> CreateProgressBlock<TItem>(
+            PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             PipelineExecutionEvents events,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            return new ActionBlock<DataBatch<TData>>(
+            return new ActionBlock<PipelineItem<TItem>>(
                 x =>
                 {
                     x.ProcessingStopwatch.Stop();
-                    events?.OnBatchEnded(x.Number, x.Data, step, context.Task, x.ProcessingStopwatch.Elapsed);
-                    PipelineProcessingUtils.ReportProgress(x.Number, step.ExpectedInputBatchesCount, progress);
+                    events?.OnItemEnded(x.Number, x.Item, step, context.Task, x.ProcessingStopwatch.Elapsed);
+                    PipelineProcessingUtils.ReportProgress(x.Number, step.ExpectedItemsCount, progress);
                 },
                 new ExecutionDataflowBlockOptions
                 {

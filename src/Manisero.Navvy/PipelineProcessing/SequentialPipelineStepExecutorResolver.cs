@@ -9,8 +9,8 @@ namespace Manisero.Navvy.PipelineProcessing
         public ITaskStepExecutor<TTaskStep> Resolve<TTaskStep>()
             where TTaskStep : ITaskStep
         {
-            var dataType = typeof(TTaskStep).GenericTypeArguments[0];
-            var executorType = typeof(SequentialPipelineStepExecutor<>).MakeGenericType(dataType);
+            var itemType = typeof(TTaskStep).GenericTypeArguments[0];
+            var executorType = typeof(SequentialPipelineStepExecutor<>).MakeGenericType(itemType);
 
             return (ITaskStepExecutor<TTaskStep>)Activator.CreateInstance(executorType);
         }
