@@ -56,7 +56,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___not_parallel___not_batched()
+        public TaskResult pipeline_processing___Dataflow___not_batched___not_parallel()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
@@ -68,7 +68,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___not_parallel___batched()
+        public TaskResult pipeline_processing___Dataflow___batched___not_parallel()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
@@ -80,7 +80,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___parallel___not_batched()
+        public TaskResult pipeline_processing___Dataflow___not_batched___parallel()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
@@ -92,7 +92,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___parallel___batched()
+        public TaskResult pipeline_processing___Dataflow___batched___parallel()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
@@ -104,7 +104,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___parallel___batched___no_Interlock()
+        public TaskResult pipeline_processing___Dataflow___batched___parallel___no_Interlock()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
