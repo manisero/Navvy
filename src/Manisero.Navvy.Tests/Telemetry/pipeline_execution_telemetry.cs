@@ -25,16 +25,11 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             var item = 1;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<int>(
-                        "Step",
-                        new[] { item },
-                        new List<PipelineBlock<int>>())
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    "Step",
+                    new[] { item },
+                    new List<PipelineBlock<int>>()));
 
             // Act
             task.Execute(resolverType, events: events);
@@ -67,16 +62,11 @@ namespace Manisero.Navvy.Tests.Telemetry
                 "Block",
                 x => { });
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<int>(
-                        "Step",
-                        new[] { 0 },
-                        new List<PipelineBlock<int>> { block })
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    "Step",
+                    new[] { 0 },
+                    new List<PipelineBlock<int>> { block }));
 
             // Act
             task.Execute(resolverType, events: events);

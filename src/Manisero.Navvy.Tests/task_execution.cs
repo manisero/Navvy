@@ -33,30 +33,25 @@ namespace Manisero.Navvy.Tests
             var sum = 0;
             var completed = false;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "Initialize",
-                        () => { initialized = true; }),
-                    new PipelineTaskStep<int>(
-                        "Pipeline",
-                        new[] { 1, 2, 3, 4, 5, 6 },
-                        new List<PipelineBlock<int>>
-                        {
-                            new PipelineBlock<int>(
-                                "Sum",
-                                x => sum += x),
-                            new PipelineBlock<int>(
-                                "Log",
-                                x => _output.WriteLine(x.ToString()))
-                        }),
-                    new BasicTaskStep(
-                        "Complete",
-                        () => { completed = true; })
-                }
-            };
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Initialize",
+                    () => { initialized = true; }),
+                new PipelineTaskStep<int>(
+                    "Pipeline",
+                    new[] { 1, 2, 3, 4, 5, 6 },
+                    new List<PipelineBlock<int>>
+                    {
+                        new PipelineBlock<int>(
+                            "Sum",
+                            x => sum += x),
+                        new PipelineBlock<int>(
+                            "Log",
+                            x => _output.WriteLine(x.ToString()))
+                    }),
+                new BasicTaskStep(
+                    "Complete",
+                    () => { completed = true; }));
 
             var progress = new Progress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
             var cancellationSource = new CancellationTokenSource();

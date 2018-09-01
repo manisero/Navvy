@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
@@ -42,22 +41,17 @@ namespace Manisero.Navvy.Tests
             // Arrange
             var actualOutcomePassedToCondition = (TaskOutcome?)null;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    GetStepForOutcome(firstStepOutcome),
-                    GetStepForOutcome(secondStepOutcome, _ => true),
-                    new BasicTaskStep(
-                        "TestedStep",
-                        () => { },
-                        x =>
-                        {
-                            actualOutcomePassedToCondition = x;
-                            return true;
-                        })
-                }
-            };
+            var task = new TaskDefinition(
+                GetStepForOutcome(firstStepOutcome),
+                GetStepForOutcome(secondStepOutcome, _ => true),
+                new BasicTaskStep(
+                    "TestedStep",
+                    () => { },
+                    x =>
+                    {
+                        actualOutcomePassedToCondition = x;
+                        return true;
+                    }));
 
             // Act
             task.Execute(resolverType, cancellation: _cancellationSource);
@@ -78,16 +72,11 @@ namespace Manisero.Navvy.Tests
             TaskOutcome precedingStepOutcome,
             bool testedStepExecuted)
         {
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    GetStepForOutcome(precedingStepOutcome),
-                    new BasicTaskStep(
-                        "TestedStep",
-                        () => { _testedStepExecuted = true; })
-                }
-            };
+            var task = new TaskDefinition(
+                GetStepForOutcome(precedingStepOutcome),
+                new BasicTaskStep(
+                    "TestedStep",
+                    () => { _testedStepExecuted = true; }));
 
             test_conditional_execution(resolverType, task, testedStepExecuted);
         }
@@ -101,16 +90,11 @@ namespace Manisero.Navvy.Tests
             ResolverType resolverType,
             bool shouldExecute)
         {
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "TestedStep",
-                        () => { _testedStepExecuted = true; },
-                        _ => shouldExecute)
-                }
-            };
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "TestedStep",
+                    () => { _testedStepExecuted = true; },
+                    _ => shouldExecute));
 
             test_conditional_execution(resolverType, task, shouldExecute);
         }

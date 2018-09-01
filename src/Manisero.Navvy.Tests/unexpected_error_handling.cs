@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
@@ -31,13 +30,8 @@ namespace Manisero.Navvy.Tests
         public void test()
         {
             // Arrange
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    BasicTaskStep.Empty("Step")
-                }
-            };
+            var task = new TaskDefinition(
+                BasicTaskStep.Empty("Step"));
             
             var executor = new TaskExecutorBuilder()
                 .RegisterStepExecution(typeof(BasicTaskStep), new ThrowingStepExecutorResolver())

@@ -19,18 +19,13 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Streaming)]
         public void basic(ResolverType resolverType)
         {
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "Cancel",
-                        _cancellationSource.Cancel),
-                    new BasicTaskStep(
-                        "Complete",
-                        () => { _completed = true; })
-                }
-            };
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Cancel",
+                    _cancellationSource.Cancel),
+                new BasicTaskStep(
+                    "Complete",
+                    () => { _completed = true; }));
 
             test(task, resolverType);
         }
@@ -40,31 +35,26 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Streaming)]
         public void pipeline___within_single_block_between_items(ResolverType resolverType)
         {
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<int>(
-                        "Step",
-                        new[] { 0, 1 },
-                        new List<PipelineBlock<int>>
-                        {
-                            new PipelineBlock<int>(
-                                "Cancel / Complete",
-                                x =>
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    "Step",
+                    new[] { 0, 1 },
+                    new List<PipelineBlock<int>>
+                    {
+                        new PipelineBlock<int>(
+                            "Cancel / Complete",
+                            x =>
+                            {
+                                if (x == 0)
                                 {
-                                    if (x == 0)
-                                    {
-                                        _cancellationSource.Cancel();
-                                    }
-                                    else
-                                    {
-                                        _completed = true;
-                                    }
-                                })
-                        })
-                }
-            };
+                                    _cancellationSource.Cancel();
+                                }
+                                else
+                                {
+                                    _completed = true;
+                                }
+                            })
+                    }));
 
             test(task, resolverType);
         }
@@ -74,24 +64,19 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Streaming)]
         public void pipeline___between_blocks(ResolverType resolverType)
         {
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<int>(
-                        "Step",
-                        new[] { 0 },
-                        new List<PipelineBlock<int>>
-                        {
-                            new PipelineBlock<int>(
-                                "Cancel",
-                                x => { _cancellationSource.Cancel(); }),
-                            new PipelineBlock<int>(
-                                "Complete",
-                                x => { _completed = true; })
-                        })
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    "Step",
+                    new[] { 0 },
+                    new List<PipelineBlock<int>>
+                    {
+                        new PipelineBlock<int>(
+                            "Cancel",
+                            x => { _cancellationSource.Cancel(); }),
+                        new PipelineBlock<int>(
+                            "Complete",
+                            x => { _completed = true; })
+                    }));
 
             test(task, resolverType);
         }

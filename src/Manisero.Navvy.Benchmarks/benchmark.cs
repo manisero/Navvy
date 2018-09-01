@@ -27,16 +27,11 @@ namespace Manisero.Navvy.Benchmarks
             var sum = 0L;
 
             var taskExecutor = new TaskExecutorBuilder().Build();
-            
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "Sum",
-                        () => sum = GetInput_NotBatched().Sum())
-                }
-            };
+
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Sum",
+                    () => sum = GetInput_NotBatched().Sum()));
 
             taskExecutor.Execute(task);
 
@@ -50,22 +45,17 @@ namespace Manisero.Navvy.Benchmarks
 
             var taskExecutor = new TaskExecutorBuilder().Build();
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<long>(
-                        "Sum",
-                        GetInput_NotBatched(),
-                        TotalCount,
-                        new List<PipelineBlock<long>>
-                        {
-                            new PipelineBlock<long>(
-                                "Update Sum",
-                                x => sum += x)
-                        })
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<long>(
+                    "Sum",
+                    GetInput_NotBatched(),
+                    TotalCount,
+                    new List<PipelineBlock<long>>
+                    {
+                        new PipelineBlock<long>(
+                            "Update Sum",
+                            x => sum += x)
+                    }));
 
             taskExecutor.Execute(task);
 
@@ -78,23 +68,18 @@ namespace Manisero.Navvy.Benchmarks
             var sum = 0L;
             
             var taskExecutor = new TaskExecutorBuilder().Build();
-            
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<ICollection<long>>(
-                        "Sum",
-                        GetInput_Batched(),
-                        BatchesCount,
-                        new List<PipelineBlock<ICollection<long>>>
-                        {
-                            new PipelineBlock<ICollection<long>>(
-                                "Update Sum",
-                                x => sum += x.Sum())
-                        })
-                }
-            };
+
+            var task = new TaskDefinition(
+                new PipelineTaskStep<ICollection<long>>(
+                    "Sum",
+                    GetInput_Batched(),
+                    BatchesCount,
+                    new List<PipelineBlock<ICollection<long>>>
+                    {
+                        new PipelineBlock<ICollection<long>>(
+                            "Update Sum",
+                            x => sum += x.Sum())
+                    }));
 
             taskExecutor.Execute(task);
 
@@ -110,22 +95,17 @@ namespace Manisero.Navvy.Benchmarks
                 .RegisterDataflowExecution()
                 .Build();
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<long>(
-                        "Sum",
-                        GetInput_NotBatched(),
-                        TotalCount,
-                        new List<PipelineBlock<long>>
-                        {
-                            new PipelineBlock<long>(
-                                "Update Sum",
-                                x => sum += x)
-                        })
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<long>(
+                    "Sum",
+                    GetInput_NotBatched(),
+                    TotalCount,
+                    new List<PipelineBlock<long>>
+                    {
+                        new PipelineBlock<long>(
+                            "Update Sum",
+                            x => sum += x)
+                    }));
 
             taskExecutor.Execute(task);
 
@@ -140,23 +120,18 @@ namespace Manisero.Navvy.Benchmarks
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
                 .Build();
-            
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<ICollection<long>>(
-                        "Sum",
-                        GetInput_Batched(),
-                        BatchesCount,
-                        new List<PipelineBlock<ICollection<long>>>
-                        {
-                            new PipelineBlock<ICollection<long>>(
-                                "Update Sum",
-                                x => sum += x.Sum())
-                        })
-                }
-            };
+
+            var task = new TaskDefinition(
+                new PipelineTaskStep<ICollection<long>>(
+                    "Sum",
+                    GetInput_Batched(),
+                    BatchesCount,
+                    new List<PipelineBlock<ICollection<long>>>
+                    {
+                        new PipelineBlock<ICollection<long>>(
+                            "Update Sum",
+                            x => sum += x.Sum())
+                    }));
 
             taskExecutor.Execute(task);
 
@@ -172,23 +147,18 @@ namespace Manisero.Navvy.Benchmarks
 
             var sum = 0L;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<long>(
-                        "Sum",
-                        GetInput_NotBatched(),
-                        TotalCount,
-                        new List<PipelineBlock<long>>
-                        {
-                            new PipelineBlock<long>(
-                                "Update Sum",
-                                x => Interlocked.Add(ref sum, x),
-                                true)
-                        })
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<long>(
+                    "Sum",
+                    GetInput_NotBatched(),
+                    TotalCount,
+                    new List<PipelineBlock<long>>
+                    {
+                        new PipelineBlock<long>(
+                            "Update Sum",
+                            x => Interlocked.Add(ref sum, x),
+                            true)
+                    }));
 
             taskExecutor.Execute(task);
 
@@ -204,23 +174,18 @@ namespace Manisero.Navvy.Benchmarks
 
             var sum = 0L;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<ICollection<long>>(
-                        "Sum",
-                        GetInput_Batched(),
-                        BatchesCount,
-                        new List<PipelineBlock<ICollection<long>>>
-                        {
-                            new PipelineBlock<ICollection<long>>(
-                                "Update Sum",
-                                x => Interlocked.Add(ref sum, x.Sum()),
-                                true)
-                        })
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<ICollection<long>>(
+                    "Sum",
+                    GetInput_Batched(),
+                    BatchesCount,
+                    new List<PipelineBlock<ICollection<long>>>
+                    {
+                        new PipelineBlock<ICollection<long>>(
+                            "Update Sum",
+                            x => Interlocked.Add(ref sum, x.Sum()),
+                            true)
+                    }));
 
             taskExecutor.Execute(task);
 

@@ -64,10 +64,7 @@ namespace Manisero.Navvy.Tests
             // Arrange
             var progressReports = new List<TaskProgress>();
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep> { taskStep }
-            };
+            var task = new TaskDefinition(taskStep);
 
             var progress = new SynchronousProgress<TaskProgress>(x => progressReports.Add(x));
 

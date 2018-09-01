@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
@@ -23,13 +22,8 @@ namespace Manisero.Navvy.Tests.Telemetry
             events.TaskStarted += x => startedEvent = x;
             events.TaskEnded += x => endedEvent = x;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    BasicTaskStep.Empty("Step")
-                }
-            };
+            var task = new TaskDefinition(
+                BasicTaskStep.Empty("Step"));
 
             // Act
             task.Execute(events: events);
@@ -54,13 +48,8 @@ namespace Manisero.Navvy.Tests.Telemetry
             events.StepStarted += x => startedEvent = x;
             events.StepEnded += x => endedEvent = x;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    BasicTaskStep.Empty("Step")
-                }
-            };
+            var task = new TaskDefinition(
+                BasicTaskStep.Empty("Step"));
 
             // Act
             task.Execute(events: events);
@@ -83,16 +72,11 @@ namespace Manisero.Navvy.Tests.Telemetry
             var events = new TaskExecutionEvents();
             events.StepSkipped += x => skippedEvent = x;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "Step",
-                        () => { },
-                        _ => false)
-                }
-            };
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Step",
+                    () => { },
+                    _ => false));
 
             // Act
             task.Execute(events: events);
@@ -113,15 +97,10 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             var cancellationSource = new CancellationTokenSource();
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "Step",
-                        () => cancellationSource.Cancel())
-                }
-            };
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Step",
+                    () => cancellationSource.Cancel()));
 
             // Act
             task.Execute(cancellation: cancellationSource, events: events);
@@ -142,15 +121,10 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             var exception = new Exception();
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        "Step",
-                        () => throw exception)
-                }
-            };
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Step",
+                    () => throw exception));
 
             // Act
             task.Execute(events: events);

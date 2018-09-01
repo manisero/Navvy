@@ -19,15 +19,10 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Streaming)]
         public void basic(ResolverType resolverType)
         {
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new BasicTaskStep(
-                        FailingStepName,
-                        () => throw _error)
-                }
-            };
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    FailingStepName,
+                    () => throw _error));
             
             test(task, resolverType);
         }
@@ -37,21 +32,16 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Streaming)]
         public void pipeline___catches_error(ResolverType resolverType)
         {
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<int>(
-                        FailingStepName,
-                        new[] { 0 },
-                        new List<PipelineBlock<int>>
-                        {
-                            new PipelineBlock<int>(
-                                "Block",
-                                _ => throw _error)
-                        })
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    FailingStepName,
+                    new[] { 0 },
+                    new List<PipelineBlock<int>>
+                    {
+                        new PipelineBlock<int>(
+                            "Block",
+                            _ => throw _error)
+                    }));
             
             test(task, resolverType);
         }
@@ -63,31 +53,26 @@ namespace Manisero.Navvy.Tests
         {
             var completed = false;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<int>(
-                        FailingStepName,
-                        new[] { 0, 1 },
-                        new List<PipelineBlock<int>>
-                        {
-                            new PipelineBlock<int>(
-                                "Errors / Complete",
-                                x =>
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    FailingStepName,
+                    new[] { 0, 1 },
+                    new List<PipelineBlock<int>>
+                    {
+                        new PipelineBlock<int>(
+                            "Errors / Complete",
+                            x =>
+                            {
+                                if (x == 0)
                                 {
-                                    if (x == 0)
-                                    {
-                                        throw _error;
-                                    }
-                                    else
-                                    {
-                                        completed = true;
-                                    }
-                                })
-                        })
-                }
-            };
+                                    throw _error;
+                                }
+                                else
+                                {
+                                    completed = true;
+                                }
+                            })
+                    }));
 
             test(task, resolverType);
 
@@ -101,24 +86,19 @@ namespace Manisero.Navvy.Tests
         {
             var completed = false;
 
-            var task = new TaskDefinition
-            {
-                Steps = new List<ITaskStep>
-                {
-                    new PipelineTaskStep<int>(
-                        FailingStepName,
-                        new[] { 0 },
-                        new List<PipelineBlock<int>>
-                        {
-                            new PipelineBlock<int>(
-                                "Errors",
-                                x => throw _error),
-                            new PipelineBlock<int>(
-                                "Complete",
-                                x => { completed = true; })
-                        })
-                }
-            };
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    FailingStepName,
+                    new[] { 0 },
+                    new List<PipelineBlock<int>>
+                    {
+                        new PipelineBlock<int>(
+                            "Errors",
+                            x => throw _error),
+                        new PipelineBlock<int>(
+                            "Complete",
+                            x => { completed = true; })
+                    }));
 
             test(task, resolverType);
 
