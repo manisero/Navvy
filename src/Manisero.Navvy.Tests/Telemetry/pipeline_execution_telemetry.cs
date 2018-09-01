@@ -13,7 +13,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void batch_start_and_end_is_reported(ResolverType resolverType)
+        public void item_start_and_end_is_reported(ResolverType resolverType)
         {
             // Arrange
             ItemStartedEvent? startedEvent = null;
@@ -23,7 +23,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             events.ItemStarted += x => startedEvent = x;
             events.ItemEnded += x => endedEvent = x;
 
-            var batch = new[] { 0 };
+            var item = 1;
 
             var task = new TaskDefinition
             {
@@ -31,7 +31,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                 {
                     new PipelineTaskStep<int>(
                         "Step",
-                        new[] { batch },
+                        new[] { item },
                         new List<PipelineBlock<int>>())
                 }
             };
@@ -42,11 +42,11 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Assert
             startedEvent.Should().NotBeNull();
             startedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
-            startedEvent.Value.Item.ShouldBeEquivalentTo(batch);
+            startedEvent.Value.Item.ShouldBeEquivalentTo(item);
 
             endedEvent.Should().NotBeNull();
             endedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
-            endedEvent.Value.Item.ShouldBeEquivalentTo(batch);
+            endedEvent.Value.Item.ShouldBeEquivalentTo(item);
             endedEvent.Value.Duration.Ticks.Should().BePositive();
         }
 
@@ -63,7 +63,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             events.BlockStarted += x => startedEvent = x;
             events.BlockEnded += x => endedEvent = x;
 
-            var block = PipelineBlock<int>.BatchBody(
+            var block = new PipelineBlock<int>(
                 "Block",
                 x => { });
 
@@ -73,7 +73,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                 {
                     new PipelineTaskStep<int>(
                         "Step",
-                        new[] { new[] { 0 }},
+                        new[] { 0 },
                         new List<PipelineBlock<int>> { block })
                 }
             };

@@ -37,18 +37,18 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___more_batches_than_expected(ResolverType resolverType)
+        public void pipeline___more_items_than_expected(ResolverType resolverType)
         {
             test(
                 resolverType,
                 GetPipelineStep(3, 2),
-                new[] { 50, 100, 100 }); // TODO: Consider not reporting unexpected batches
+                new[] { 50, 100, 100 }); // TODO: Consider not reporting unexpected items
         }
 
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___less_batches_than_expected(ResolverType resolverType)
+        public void pipeline___less_items_than_expected(ResolverType resolverType)
         {
             test(
                 resolverType,
@@ -81,12 +81,12 @@ namespace Manisero.Navvy.Tests
             progressReports.Select(x => x.ProgressPercentage).ShouldAllBeEquivalentTo(expectedProgressReports);
         }
 
-        private ITaskStep GetPipelineStep(int actualBatchesCount, int? expectedBatchesCount = null)
+        private ITaskStep GetPipelineStep(int actualItemsCount, int? expectedItemsCount = null)
         {
             return new PipelineTaskStep<int>(
                 "Step",
-                Enumerable.Repeat<ICollection<int>>(new[] { 0 }, actualBatchesCount),
-                expectedBatchesCount ?? actualBatchesCount,
+                Enumerable.Repeat(0, actualItemsCount),
+                expectedItemsCount ?? actualItemsCount,
                 new List<PipelineBlock<int>>
                 {
                     new PipelineBlock<int>(

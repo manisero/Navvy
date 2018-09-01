@@ -43,13 +43,12 @@ namespace Manisero.Navvy.Tests
                 {
                     new PipelineTaskStep<int>(
                         FailingStepName,
-                        new[] { new[] { 0 } },
+                        new[] { 0 },
                         new List<PipelineBlock<int>>
                         {
-                            PipelineBlock<int>.BatchBody(
+                            new PipelineBlock<int>(
                                 "Block",
-                                _ => throw _error
-                            )
+                                _ => throw _error)
                         })
                 }
             };
@@ -60,7 +59,7 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___batch_following_invalid_batch_is_not_processed(ResolverType resolverType)
+        public void pipeline___item_following_invalid_item_is_not_processed(ResolverType resolverType)
         {
             var completed = false;
 
@@ -70,18 +69,14 @@ namespace Manisero.Navvy.Tests
                 {
                     new PipelineTaskStep<int>(
                         FailingStepName,
-                        new[]
-                        {
-                            new[] { 0 },
-                            new[] { 1 }
-                        },
+                        new[] { 0, 1 },
                         new List<PipelineBlock<int>>
                         {
-                            PipelineBlock<int>.BatchBody(
+                            new PipelineBlock<int>(
                                 "Errors / Complete",
                                 x =>
                                 {
-                                    if (x.Contains(0))
+                                    if (x == 0)
                                     {
                                         throw _error;
                                     }
@@ -102,7 +97,7 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___invalid_batch_is_not_further_processed(ResolverType resolverType)
+        public void pipeline___invalid_item_is_not_further_processed(ResolverType resolverType)
         {
             var completed = false;
 
@@ -112,13 +107,13 @@ namespace Manisero.Navvy.Tests
                 {
                     new PipelineTaskStep<int>(
                         FailingStepName,
-                        new[] { new[] { 0 } },
+                        new[] { 0 },
                         new List<PipelineBlock<int>>
                         {
-                            PipelineBlock<int>.BatchBody(
+                            new PipelineBlock<int>(
                                 "Errors",
                                 x => throw _error),
-                            PipelineBlock<int>.BatchBody(
+                            new PipelineBlock<int>(
                                 "Complete",
                                 x => { completed = true; })
                         })

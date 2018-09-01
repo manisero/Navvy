@@ -38,7 +38,7 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___within_single_block_between_batches(ResolverType resolverType)
+        public void pipeline___within_single_block_between_items(ResolverType resolverType)
         {
             var task = new TaskDefinition
             {
@@ -46,18 +46,14 @@ namespace Manisero.Navvy.Tests
                 {
                     new PipelineTaskStep<int>(
                         "Step",
-                        new[]
-                        {
-                            new[] { 0 },
-                            new[] { 1 }
-                        },
+                        new[] { 0, 1 },
                         new List<PipelineBlock<int>>
                         {
-                            PipelineBlock<int>.BatchBody(
+                            new PipelineBlock<int>(
                                 "Cancel / Complete",
                                 x =>
                                 {
-                                    if (x.Contains(0))
+                                    if (x == 0)
                                     {
                                         _cancellationSource.Cancel();
                                     }
@@ -84,13 +80,13 @@ namespace Manisero.Navvy.Tests
                 {
                     new PipelineTaskStep<int>(
                         "Step",
-                        new[] { new[] { 0 } },
+                        new[] { 0 },
                         new List<PipelineBlock<int>>
                         {
-                            PipelineBlock<int>.BatchBody(
+                            new PipelineBlock<int>(
                                 "Cancel",
                                 x => { _cancellationSource.Cancel(); }),
-                            PipelineBlock<int>.BatchBody(
+                            new PipelineBlock<int>(
                                 "Complete",
                                 x => { _completed = true; })
                         })

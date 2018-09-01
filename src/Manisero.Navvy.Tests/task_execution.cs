@@ -42,19 +42,15 @@ namespace Manisero.Navvy.Tests
                         () => { initialized = true; }),
                     new PipelineTaskStep<int>(
                         "Pipeline",
-                        new[]
-                        {
-                            new[] { 1, 2, 3 },
-                            new[] { 4, 5, 6 }
-                        },
+                        new[] { 1, 2, 3, 4, 5, 6 },
                         new List<PipelineBlock<int>>
                         {
-                            PipelineBlock<int>.ItemBody(
+                            new PipelineBlock<int>(
                                 "Sum",
                                 x => sum += x),
-                            PipelineBlock<int>.BatchBody(
+                            new PipelineBlock<int>(
                                 "Log",
-                                x => _output.WriteLine(string.Join(", ", x)))
+                                x => _output.WriteLine(x.ToString()))
                         }),
                     new BasicTaskStep(
                         "Complete",
@@ -74,8 +70,8 @@ namespace Manisero.Navvy.Tests
             var pipelineEvents = new PipelineExecutionEvents(
                 itemStarted: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' started."),
                 itemEnded: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."),
-                blockStarted: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' started processing batch {x.ItemNumber}."),
-                blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing batch {x.ItemNumber} after {x.Duration.Ticks} ticks."));
+                blockStarted: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' started processing item {x.ItemNumber}."),
+                blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing item {x.ItemNumber} after {x.Duration.Ticks} ticks."));
 
             // Act
             var result = task.Execute(resolverType, progress, cancellationSource, taskEvents, pipelineEvents);
