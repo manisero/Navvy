@@ -13,11 +13,12 @@ namespace Manisero.Navvy.Benchmarks
     {
         private const int BatchesCount = 100;
         private const int BatchSize = 10000;
+        private const int TotalCount = BatchesCount * BatchSize;
 
         [Benchmark(Baseline = true)]
         public long plain_sum()
         {
-            return GetInput().SelectMany(x => x).Sum();
+            return GetInput_NotBatched().Sum();
         }
 
         [Benchmark]
@@ -33,7 +34,7 @@ namespace Manisero.Navvy.Benchmarks
                 {
                     new BasicTaskStep(
                         "Sum",
-                        () => sum = GetInput().SelectMany(x => x).Sum())
+                        () => sum = GetInput_NotBatched().Sum())
                 }
             };
 
@@ -43,7 +44,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___sequential___update_per_item()
+        public long pipeline_processing___sequential___not_batched()
         {
             var sum = 0L;
 
@@ -55,11 +56,11 @@ namespace Manisero.Navvy.Benchmarks
                 {
                     new PipelineTaskStep<long>(
                         "Sum",
-                        GetInput(),
-                        BatchesCount,
+                        GetInput_NotBatched(),
+                        TotalCount,
                         new List<PipelineBlock<long>>
                         {
-                            PipelineBlock<long>.ItemBody(
+                            new PipelineBlock<long>(
                                 "Update Sum",
                                 x => sum += x)
                         })
@@ -72,7 +73,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___sequential___update_per_batch()
+        public long pipeline_processing___sequential___batched()
         {
             var sum = 0L;
             
@@ -82,13 +83,13 @@ namespace Manisero.Navvy.Benchmarks
             {
                 Steps = new List<ITaskStep>
                 {
-                    new PipelineTaskStep<long>(
+                    new PipelineTaskStep<ICollection<long>>(
                         "Sum",
-                        GetInput(),
+                        GetInput_Batched(),
                         BatchesCount,
-                        new List<PipelineBlock<long>>
+                        new List<PipelineBlock<ICollection<long>>>
                         {
-                            PipelineBlock<long>.BatchBody(
+                            new PipelineBlock<ICollection<long>>(
                                 "Update Sum",
                                 x => sum += x.Sum())
                         })
@@ -101,7 +102,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___Dataflow___not_parallel___update_per_item()
+        public long pipeline_processing___Dataflow___not_parallel___not_batched()
         {
             var sum = 0L;
 
@@ -115,11 +116,11 @@ namespace Manisero.Navvy.Benchmarks
                 {
                     new PipelineTaskStep<long>(
                         "Sum",
-                        GetInput(),
-                        BatchesCount,
+                        GetInput_NotBatched(),
+                        TotalCount,
                         new List<PipelineBlock<long>>
                         {
-                            PipelineBlock<long>.ItemBody(
+                            new PipelineBlock<long>(
                                 "Update Sum",
                                 x => sum += x)
                         })
@@ -132,7 +133,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___Dataflow___not_parallel___update_per_batch()
+        public long pipeline_processing___Dataflow___not_parallel___batched()
         {
             var sum = 0L;
 
@@ -144,13 +145,13 @@ namespace Manisero.Navvy.Benchmarks
             {
                 Steps = new List<ITaskStep>
                 {
-                    new PipelineTaskStep<long>(
+                    new PipelineTaskStep<ICollection<long>>(
                         "Sum",
-                        GetInput(),
+                        GetInput_Batched(),
                         BatchesCount,
-                        new List<PipelineBlock<long>>
+                        new List<PipelineBlock<ICollection<long>>>
                         {
-                            PipelineBlock<long>.BatchBody(
+                            new PipelineBlock<ICollection<long>>(
                                 "Update Sum",
                                 x => sum += x.Sum())
                         })
@@ -163,7 +164,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___Dataflow___parallel___update_per_item()
+        public long pipeline_processing___Dataflow___parallel___not_batched()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
@@ -177,11 +178,11 @@ namespace Manisero.Navvy.Benchmarks
                 {
                     new PipelineTaskStep<long>(
                         "Sum",
-                        GetInput(),
-                        BatchesCount,
+                        GetInput_NotBatched(),
+                        TotalCount,
                         new List<PipelineBlock<long>>
                         {
-                            PipelineBlock<long>.ItemBody(
+                            new PipelineBlock<long>(
                                 "Update Sum",
                                 x => Interlocked.Add(ref sum, x),
                                 true)
@@ -195,7 +196,7 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public long pipeline_processing___Dataflow___parallel___update_per_batch()
+        public long pipeline_processing___Dataflow___parallel___batched()
         {
             var taskExecutor = new TaskExecutorBuilder()
                 .RegisterDataflowExecution()
@@ -207,13 +208,13 @@ namespace Manisero.Navvy.Benchmarks
             {
                 Steps = new List<ITaskStep>
                 {
-                    new PipelineTaskStep<long>(
+                    new PipelineTaskStep<ICollection<long>>(
                         "Sum",
-                        GetInput(),
+                        GetInput_Batched(),
                         BatchesCount,
-                        new List<PipelineBlock<long>>
+                        new List<PipelineBlock<ICollection<long>>>
                         {
-                            PipelineBlock<long>.BatchBody(
+                            new PipelineBlock<ICollection<long>>(
                                 "Update Sum",
                                 x => Interlocked.Add(ref sum, x.Sum()),
                                 true)
@@ -225,8 +226,13 @@ namespace Manisero.Navvy.Benchmarks
 
             return sum;
         }
+        
+        private IEnumerable<long> GetInput_NotBatched()
+        {
+            return Enumerable.Repeat(1L, TotalCount);
+        }
 
-        private IEnumerable<ICollection<long>> GetInput()
+        private IEnumerable<ICollection<long>> GetInput_Batched()
         {
             for (var i = 0; i < BatchesCount; i++)
             {
