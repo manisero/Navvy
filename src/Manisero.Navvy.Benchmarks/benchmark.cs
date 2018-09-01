@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Dataflow;
@@ -10,8 +12,21 @@ using Manisero.Navvy.PipelineProcessing;
 
 namespace Manisero.Navvy.Benchmarks
 {
+    [Config(typeof(Config))]
+    [MemoryDiagnoser, RankColumn]
     public class benchmark
     {
+        private class Config : ManualConfig
+        {
+            public Config()
+            {
+                if (Program.IsTestRun)
+                {
+                    Add(Job.Dry);
+                }
+            }
+        }
+
         private const int BatchesCount = 100;
         private const int BatchSize = 10000;
         private const int TotalCount = BatchesCount * BatchSize;
@@ -19,7 +34,7 @@ namespace Manisero.Navvy.Benchmarks
         [Benchmark(Baseline = true)]
         public long plain_sum()
         {
-            return GetInput_NotBatched().Sum();
+            return GetInput_NotBatched().ToList().Sum();
         }
 
         [Benchmark]
@@ -32,7 +47,7 @@ namespace Manisero.Navvy.Benchmarks
             var task = new TaskDefinition(
                 new BasicTaskStep(
                     "Sum",
-                    () => sum = GetInput_NotBatched().Sum()));
+                    () => sum = GetInput_NotBatched().ToList().Sum()));
 
             return taskExecutor.Execute(task);
         }
