@@ -18,16 +18,19 @@ namespace Manisero.Navvy.PipelineProcessing
             var itemNumber = 0;
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
+            var itemSw = new Stopwatch();
+            var blockSw = new Stopwatch();
+
             foreach (var item in step.Input)
             {
                 itemNumber++;
                 events?.OnItemStarted(itemNumber, item, step, context.Task);
-                var itemSw = Stopwatch.StartNew();
+                itemSw.Start();
 
                 foreach (var block in step.Blocks)
                 {
                     events?.OnBlockStarted(block, itemNumber, item, step, context.Task);
-                    var blockSw = Stopwatch.StartNew();
+                    blockSw.Start();
 
                     try
                     {

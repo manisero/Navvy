@@ -34,7 +34,7 @@ namespace Manisero.Navvy.Benchmarks
         [Benchmark(Baseline = true)]
         public long plain_sum()
         {
-            return GetInput_NotBatched().ToList().Sum();
+            return GetInput_NotBatched_Materialized().Sum();
         }
 
         [Benchmark]
@@ -47,7 +47,7 @@ namespace Manisero.Navvy.Benchmarks
             var task = new TaskDefinition(
                 new BasicTaskStep(
                     "Sum",
-                    () => sum = GetInput_NotBatched().ToList().Sum()));
+                    () => sum = GetInput_NotBatched_Materialized().Sum()));
 
             return taskExecutor.Execute(task);
         }
@@ -130,16 +130,35 @@ namespace Manisero.Navvy.Benchmarks
             return taskExecutor.Execute(task);
         }
 
-        private IEnumerable<long> GetInput_NotBatched()
+        private ICollection<long> GetInput_NotBatched_Materialized()
+        {
+            var input = new long[TotalCount];
+
+            for (var i = 0; i < BatchSize; i++)
+            {
+                input[i] = 1L;
+            }
+
+            return input;
+        }
+
+        private IEnumerable<long> GetInput_NotBatched_NotMaterialized()
         {
             return Enumerable.Repeat(1L, TotalCount);
         }
 
         private IEnumerable<ICollection<long>> GetInput_Batched()
         {
-            for (var i = 0; i < BatchesCount; i++)
+            for (var batchIndex = 0; batchIndex < BatchesCount; batchIndex++)
             {
-                yield return Enumerable.Repeat(1L, BatchSize).ToList();
+                var batch = new long[BatchSize];
+
+                for (var itemIndex = 0; itemIndex < BatchSize; itemIndex++)
+                {
+                    batch[itemIndex] = 1L;
+                }
+
+                yield return batch;
             }
         }
 
@@ -151,7 +170,7 @@ namespace Manisero.Navvy.Benchmarks
             return new TaskDefinition(
                 new PipelineTaskStep<long>(
                     "Sum",
-                    GetInput_NotBatched(),
+                    GetInput_NotBatched_NotMaterialized(),
                     TotalCount,
                     new List<PipelineBlock<long>>
                     {
