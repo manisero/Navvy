@@ -10,8 +10,8 @@ namespace Manisero.Navvy.Dataflow
         public ITaskStepExecutor<TTaskStep> Resolve<TTaskStep>()
             where TTaskStep : ITaskStep
         {
-            var dataType = typeof(TTaskStep).GenericTypeArguments[0];
-            var executorType = typeof(DataflowPipelineStepExecutor<>).MakeGenericType(dataType);
+            var itemType = typeof(TTaskStep).GenericTypeArguments[0];
+            var executorType = typeof(DataflowPipelineStepExecutor<>).MakeGenericType(itemType);
 
             return (ITaskStepExecutor<TTaskStep>)Activator.CreateInstance(executorType);
         }

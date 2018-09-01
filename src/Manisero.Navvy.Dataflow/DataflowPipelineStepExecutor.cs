@@ -9,33 +9,33 @@ using Manisero.Navvy.PipelineProcessing.Events;
 
 namespace Manisero.Navvy.Dataflow
 {
-    internal class DataflowPipelineStepExecutor<TData> : ITaskStepExecutor<PipelineTaskStep<TData>>
+    internal class DataflowPipelineStepExecutor<TItem> : ITaskStepExecutor<PipelineTaskStep<TItem>>
     {
-        private readonly DataflowPipelineBuilder<TData> _dataflowPipelineBuilder = new DataflowPipelineBuilder<TData>();
+        private readonly DataflowPipelineBuilder<TItem> _dataflowPipelineBuilder = new DataflowPipelineBuilder<TItem>();
 
         public void Execute(
-            PipelineTaskStep<TData> step,
+            PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
             var pipeline = _dataflowPipelineBuilder.Build(step, context, progress, cancellation);
-            var batchNumber = 0;
+            var itemNumber = 0;
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
-            foreach (var input in step.Input)
+            foreach (var item in step.Input)
             {
-                batchNumber++;
-                events?.OnBatchStarted(batchNumber, input, step, context.Task);
+                itemNumber++;
+                events?.OnItemStarted(itemNumber, item, step, context.Task);
 
-                var batch = new DataBatch<TData>
+                var pipelineItem = new PipelineItem<TItem>
                 {
-                    Number = batchNumber,
-                    Data = input,
+                    Number = itemNumber,
+                    Item = item,
                     ProcessingStopwatch = Stopwatch.StartNew()
                 };
 
-                pipeline.InputBlock.SendAsync(batch).Wait();
+                pipeline.InputBlock.SendAsync(pipelineItem).Wait();
             }
 
             pipeline.InputBlock.Complete();

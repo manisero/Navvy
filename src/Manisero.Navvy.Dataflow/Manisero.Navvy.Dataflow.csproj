@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="DataflowPipelineStepExecutor.cs" />
     <Compile Include="DataflowPipelineStepExecutorResolver.cs" />
-    <Compile Include="StepExecution\DataBatch.cs" />
+    <Compile Include="StepExecution\PipelineItem.cs" />
     <Compile Include="StepExecution\DataflowPipeline.cs" />
     <Compile Include="StepExecution\DataflowPipelineBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

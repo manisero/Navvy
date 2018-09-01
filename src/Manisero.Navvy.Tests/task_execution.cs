@@ -72,10 +72,10 @@ namespace Manisero.Navvy.Tests
                 stepEnded: x => _output.WriteLine($"Step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."));
 
             var pipelineEvents = new PipelineExecutionEvents(
-                batchStarted: x => _output.WriteLine($"Batch {x.BatchNumber} of step '{x.Step.Name}' started."),
-                batchEnded: x => _output.WriteLine($"Batch {x.BatchNumber} of step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."),
-                blockStarted: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' started processing batch {x.BatchNumber}."),
-                blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing batch {x.BatchNumber} after {x.Duration.Ticks} ticks."));
+                itemStarted: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' started."),
+                itemEnded: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."),
+                blockStarted: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' started processing batch {x.ItemNumber}."),
+                blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing batch {x.ItemNumber} after {x.Duration.Ticks} ticks."));
 
             // Act
             var result = task.Execute(resolverType, progress, cancellationSource, taskEvents, pipelineEvents);

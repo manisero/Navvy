@@ -16,12 +16,12 @@ namespace Manisero.Navvy.Tests.Telemetry
         public void batch_start_and_end_is_reported(ResolverType resolverType)
         {
             // Arrange
-            BatchStartedEvent? startedEvent = null;
-            BatchEndedEvent? endedEvent = null;
+            ItemStartedEvent? startedEvent = null;
+            ItemEndedEvent? endedEvent = null;
 
             var events = new PipelineExecutionEvents();
-            events.BatchStarted += x => startedEvent = x;
-            events.BatchEnded += x => endedEvent = x;
+            events.ItemStarted += x => startedEvent = x;
+            events.ItemEnded += x => endedEvent = x;
 
             var batch = new[] { 0 };
 
@@ -41,12 +41,12 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Assert
             startedEvent.Should().NotBeNull();
-            startedEvent.Value.BatchNumber.ShouldBeEquivalentTo(1);
-            startedEvent.Value.Batch.ShouldBeEquivalentTo(batch);
+            startedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
+            startedEvent.Value.Item.ShouldBeEquivalentTo(batch);
 
             endedEvent.Should().NotBeNull();
-            endedEvent.Value.BatchNumber.ShouldBeEquivalentTo(1);
-            endedEvent.Value.Batch.ShouldBeEquivalentTo(batch);
+            endedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
+            endedEvent.Value.Item.ShouldBeEquivalentTo(batch);
             endedEvent.Value.Duration.Ticks.Should().BePositive();
         }
 
