@@ -124,7 +124,7 @@ namespace Manisero.Navvy.Core
                 EventsBag = _executionEventsBag
             };
 
-            var stepProgress = new Progress<byte>(
+            var stepProgress = new SynchronousProgress<byte>(
                 x => progress.Report(new TaskProgress
                 {
                     StepName = step.Name,

@@ -67,6 +67,7 @@
     <Compile Include="Utils\EmptyProgress.cs" />
     <Compile Include="Utils\IntExtensions.cs" />
     <Compile Include="Utils\MethodInfoExtensions.cs" />
+    <Compile Include="Utils\SynchronousProgress.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
