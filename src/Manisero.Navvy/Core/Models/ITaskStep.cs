@@ -8,4 +8,9 @@ namespace Manisero.Navvy.Core.Models
 
         Func<TaskOutcome, bool> ExecutionCondition { get; }
     }
+
+    public static class TaskStepUtils
+    {
+        public static readonly Func<TaskOutcome, bool> AlwaysExecuteCondition = _ => true;
+    }
 }
