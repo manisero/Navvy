@@ -15,7 +15,7 @@ namespace Manisero.Navvy
             ITaskStepExecutorResolver resolver);
 
         ITaskExecutorBuilder RegisterEvents(
-            IExecutionEvents events);
+            params IExecutionEvents[] events);
 
         ITaskExecutor Build();
     }
@@ -43,9 +43,13 @@ namespace Manisero.Navvy
         }
 
         public ITaskExecutorBuilder RegisterEvents(
-            IExecutionEvents events)
+            params IExecutionEvents[] events)
         {
-            _events[events.GetType()] = events;
+            foreach (var e in events)
+            {
+                _events[e.GetType()] = e;
+            }
+            
             return this;
         }
 

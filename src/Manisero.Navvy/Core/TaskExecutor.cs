@@ -52,10 +52,12 @@ namespace Manisero.Navvy.Core
             var currentOutcome = TaskOutcome.Successful;
             var errors = new List<TaskExecutionException>();
             var events = _executionEventsBag.TryGetEvents<TaskExecutionEvents>();
-
-            events?.OnTaskStarted(task);
-            var taskSw = Stopwatch.StartNew();
+            var taskSw = new Stopwatch();
+            var stepSw = new Stopwatch();
             
+            events?.OnTaskStarted(task);
+            taskSw.Start();
+
             foreach (var step in task.Steps)
             {
                 if (!step.ExecutionCondition(currentOutcome))
@@ -65,7 +67,7 @@ namespace Manisero.Navvy.Core
                 }
 
                 events?.OnStepStarted(step, task);
-                var stepSw = Stopwatch.StartNew();
+                stepSw.Restart();
 
                 try
                 {

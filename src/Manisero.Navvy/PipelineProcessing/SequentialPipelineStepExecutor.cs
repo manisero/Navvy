@@ -25,12 +25,12 @@ namespace Manisero.Navvy.PipelineProcessing
             {
                 itemNumber++;
                 events?.OnItemStarted(itemNumber, item, step, context.Task);
-                itemSw.Start();
+                itemSw.Restart();
 
                 foreach (var block in step.Blocks)
                 {
                     events?.OnBlockStarted(block, itemNumber, item, step, context.Task);
-                    blockSw.Start();
+                    blockSw.Restart();
 
                     try
                     {
