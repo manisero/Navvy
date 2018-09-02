@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Utils;
@@ -46,18 +47,28 @@ namespace Manisero.Navvy.PipelineProcessing.Events
         public DateTime Timestamp;
     }
 
+    public struct PipelineEndedEvent
+    {
+        public IReadOnlyDictionary<string, TimeSpan> TotalBlockDurations;
+        public ITaskStep Step;
+        public TaskDefinition Task;
+        public DateTime Timestamp;
+    }
+
     public class PipelineExecutionEvents : IExecutionEvents
     {
         public event ExecutionEventHandler<ItemStartedEvent> ItemStarted;
         public event ExecutionEventHandler<ItemEndedEvent> ItemEnded;
         public event ExecutionEventHandler<BlockStartedEvent> BlockStarted;
         public event ExecutionEventHandler<BlockEndedEvent> BlockEnded;
+        public event ExecutionEventHandler<PipelineEndedEvent> PipelineEnded;
 
         public PipelineExecutionEvents(
             ExecutionEventHandler<ItemStartedEvent> itemStarted = null,
             ExecutionEventHandler<ItemEndedEvent> itemEnded = null,
             ExecutionEventHandler<BlockStartedEvent> blockStarted = null,
-            ExecutionEventHandler<BlockEndedEvent> blockEnded = null)
+            ExecutionEventHandler<BlockEndedEvent> blockEnded = null,
+            ExecutionEventHandler<PipelineEndedEvent> pipelineEnded = null)
         {
             if (itemStarted != null)
             {
@@ -77,6 +88,11 @@ namespace Manisero.Navvy.PipelineProcessing.Events
             if (blockEnded != null)
             {
                 BlockEnded += blockEnded;
+            }
+
+            if (pipelineEnded != null)
+            {
+                PipelineEnded += pipelineEnded;
             }
         }
 
@@ -129,6 +145,17 @@ namespace Manisero.Navvy.PipelineProcessing.Events
                 Step = step,
                 Task = task,
                 Duration = duration,
+                Timestamp = DateTimeUtils.Now
+            });
+        }
+
+        public void OnPipelineEnded(IReadOnlyDictionary<string, TimeSpan> totalBlockDurations, ITaskStep step, TaskDefinition task)
+        {
+            PipelineEnded?.Invoke(new PipelineEndedEvent
+            {
+                TotalBlockDurations = totalBlockDurations,
+                Step = step,
+                Task = task,
                 Timestamp = DateTimeUtils.Now
             });
         }

@@ -83,6 +83,8 @@ namespace Manisero.Navvy.Dataflow
 
                 throw flat;
             }
+
+            events?.OnPipelineEnded(dataflowExecutionContext.TotalBlockDurations, step, context.Task);
         }
     }
 }

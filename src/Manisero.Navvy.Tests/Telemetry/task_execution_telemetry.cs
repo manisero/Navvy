@@ -30,11 +30,11 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Assert
             startedEvent.Should().NotBeNull();
-            startedEvent.Value.Task.ShouldBeEquivalentTo(task);
+            startedEvent.Value.Task.Should().BeSameAs(task);
 
             endedEvent.Should().NotBeNull();
-            endedEvent.Value.Task.ShouldBeEquivalentTo(task);
-            endedEvent.Value.Duration.Ticks.Should().BePositive();
+            endedEvent.Value.Task.Should().BeSameAs(task);
+            endedEvent.Value.Duration.Should().BePositive();
         }
 
         [Fact]
@@ -56,11 +56,11 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Assert
             startedEvent.Should().NotBeNull();
-            startedEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
+            startedEvent.Value.Step.Should().BeSameAs(task.Steps[0]);
 
             endedEvent.Should().NotBeNull();
-            endedEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
-            endedEvent.Value.Duration.Ticks.Should().BePositive();
+            endedEvent.Value.Step.Should().BeSameAs(task.Steps[0]);
+            endedEvent.Value.Duration.Should().BePositive();
         }
 
         [Fact]
@@ -83,7 +83,7 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Assert
             skippedEvent.Should().NotBeNull();
-            skippedEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
+            skippedEvent.Value.Step.Should().BeSameAs(task.Steps[0]);
         }
 
         [Fact]
@@ -107,7 +107,7 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Assert
             canceledEvent.Should().NotBeNull();
-            canceledEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
+            canceledEvent.Value.Step.Should().BeSameAs(task.Steps[0]);
         }
 
         [Fact]
@@ -131,8 +131,8 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Assert
             failedEvent.Should().NotBeNull();
-            failedEvent.Value.Exception.InnerException.ShouldBeEquivalentTo(exception);
-            failedEvent.Value.Step.ShouldBeEquivalentTo(task.Steps[0]);
+            failedEvent.Value.Exception.InnerException.Should().BeSameAs(exception);
+            failedEvent.Value.Step.Should().BeSameAs(task.Steps[0]);
         }
     }
 }

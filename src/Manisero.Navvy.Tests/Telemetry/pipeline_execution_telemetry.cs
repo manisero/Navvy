@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing;
@@ -39,12 +40,12 @@ namespace Manisero.Navvy.Tests.Telemetry
             startedEvent.Should().NotBeNull();
             startedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
             startedEvent.Value.Item.ShouldBeEquivalentTo(item);
-            startedEvent.Value.MaterializationDuration.Ticks.Should().BePositive();
+            startedEvent.Value.MaterializationDuration.Should().BePositive();
 
             endedEvent.Should().NotBeNull();
             endedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
             endedEvent.Value.Item.ShouldBeEquivalentTo(item);
-            endedEvent.Value.Duration.Ticks.Should().BePositive();
+            endedEvent.Value.Duration.Should().BePositive();
         }
 
         [Theory]
@@ -75,11 +76,49 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Assert
             startedEvent.Should().NotBeNull();
-            startedEvent.Value.Block.ShouldBeEquivalentTo(block);
+            startedEvent.Value.Block.Should().BeSameAs(block);
 
             endedEvent.Should().NotBeNull();
-            endedEvent.Value.Block.ShouldBeEquivalentTo(block);
-            endedEvent.Value.Duration.Ticks.Should().BePositive();
+            endedEvent.Value.Block.Should().BeSameAs(block);
+            endedEvent.Value.Duration.Should().BePositive();
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void pipeline_end_is_reported(ResolverType resolverType)
+        {
+            // Arrange
+            PipelineEndedEvent? endedEvent = null;
+
+            var events = new PipelineExecutionEvents();
+            events.PipelineEnded += x => endedEvent = x;
+
+            var block1 = new PipelineBlock<int>(
+                "Block1",
+                x => { });
+
+            var block2 = new PipelineBlock<int>(
+                "Block1",
+                x => { });
+
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    "Step",
+                    new[] { 0 },
+                    new List<PipelineBlock<int>> { block1, block2 }));
+
+            // Act
+            task.Execute(resolverType, events: events);
+
+            // Assert
+            endedEvent.Should().NotBeNull();
+            endedEvent.Value.Step.Should().BeSameAs(task.Steps[0]);
+            endedEvent.Value.TotalBlockDurations.Should().NotBeNull();
+
+            var totalBlockDurations = endedEvent.Value.TotalBlockDurations.ToDictionary(x => x.Key, x => x.Value);
+            totalBlockDurations.Should().ContainKey(block1.Name).WhichValue.Should().BePositive();
+            totalBlockDurations.Should().ContainKey(block2.Name).WhichValue.Should().BePositive();
         }
     }
 }

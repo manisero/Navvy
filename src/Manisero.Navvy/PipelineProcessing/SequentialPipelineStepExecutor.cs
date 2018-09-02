@@ -67,6 +67,8 @@ namespace Manisero.Navvy.PipelineProcessing
                     PipelineProcessingUtils.ReportProgress(itemNumber, step.Input.ExpectedItemsCount, progress);
                 }
             }
+
+            events?.OnPipelineEnded(totalBlockDurations, step, context.Task);
         }
     }
 }
