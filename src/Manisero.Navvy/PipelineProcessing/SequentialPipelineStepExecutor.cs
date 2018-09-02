@@ -68,7 +68,7 @@ namespace Manisero.Navvy.PipelineProcessing
                 }
             }
 
-            events?.OnPipelineEnded(totalBlockDurations, step, context.Task);
+            events?.OnPipelineEnded(totalInputMaterializationDuration, totalBlockDurations, step, context.Task);
         }
     }
 }

@@ -49,6 +49,7 @@ namespace Manisero.Navvy.PipelineProcessing.Events
 
     public struct PipelineEndedEvent
     {
+        public TimeSpan TotalInputMaterializationDuration;
         public IReadOnlyDictionary<string, TimeSpan> TotalBlockDurations;
         public ITaskStep Step;
         public TaskDefinition Task;
@@ -149,10 +150,11 @@ namespace Manisero.Navvy.PipelineProcessing.Events
             });
         }
 
-        public void OnPipelineEnded(IReadOnlyDictionary<string, TimeSpan> totalBlockDurations, ITaskStep step, TaskDefinition task)
+        public void OnPipelineEnded(TimeSpan totalInputMaterializationDuration, IReadOnlyDictionary<string, TimeSpan> totalBlockDurations, ITaskStep step, TaskDefinition task)
         {
             PipelineEnded?.Invoke(new PipelineEndedEvent
             {
+                TotalInputMaterializationDuration = totalInputMaterializationDuration,
                 TotalBlockDurations = totalBlockDurations,
                 Step = step,
                 Task = task,

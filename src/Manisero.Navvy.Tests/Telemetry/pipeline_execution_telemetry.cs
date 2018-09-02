@@ -114,8 +114,9 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Assert
             endedEvent.Should().NotBeNull();
             endedEvent.Value.Step.Should().BeSameAs(task.Steps[0]);
-            endedEvent.Value.TotalBlockDurations.Should().NotBeNull();
+            endedEvent.Value.TotalInputMaterializationDuration.Should().BePositive();
 
+            endedEvent.Value.TotalBlockDurations.Should().NotBeNull();
             var totalBlockDurations = endedEvent.Value.TotalBlockDurations.ToDictionary(x => x.Key, x => x.Value);
             totalBlockDurations.Should().ContainKey(block1.Name).WhichValue.Should().BePositive();
             totalBlockDurations.Should().ContainKey(block2.Name).WhichValue.Should().BePositive();
