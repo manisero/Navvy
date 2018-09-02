@@ -3,9 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.Navvy.Core.Models;
-using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.PipelineProcessing;
-using Manisero.Navvy.PipelineProcessing.Events;
 using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.Dataflow.StepExecution
@@ -16,7 +14,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
         public DataflowPipeline<TItem> Build<TItem>(
             PipelineTaskStep<TItem> step,
-            TaskStepExecutionContext context,
+            DataflowExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
@@ -27,24 +25,22 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
         private DataflowPipeline<TItem> BuildNotEmpty<TItem>(
             PipelineTaskStep<TItem> step,
-            TaskStepExecutionContext context,
+            DataflowExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
-            
-            var firstBlock = ToTransformBlock(step, 0, context, events, cancellation);
+            var firstBlock = ToTransformBlock(step, 0, context, cancellation);
             var previousBlock = firstBlock;
 
             for (var i = 1; i <= step.Blocks.Count - 1; i++)
             {
-                var currentBlock = ToTransformBlock(step, i, context, events, cancellation);
+                var currentBlock = ToTransformBlock(step, i, context, cancellation);
                 previousBlock.LinkTo(currentBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
                 previousBlock = currentBlock;
             }
 
-            var progressBlock = CreateProgressBlock(step, context, events, progress, cancellation);
+            var progressBlock = CreateProgressBlock(step, context, progress, cancellation);
             previousBlock.LinkTo(progressBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
             return new DataflowPipeline<TItem>
@@ -56,13 +52,11 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
         private DataflowPipeline<TItem> BuildEmpty<TItem>(
             PipelineTaskStep<TItem> step,
-            TaskStepExecutionContext context,
+            DataflowExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
-
-            var progressBlock = CreateProgressBlock(step, context, events, progress, cancellation);
+            var progressBlock = CreateProgressBlock(step, context, progress, cancellation);
 
             return new DataflowPipeline<TItem>
             {
@@ -74,8 +68,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
         private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> ToTransformBlock<TItem>(
             PipelineTaskStep<TItem> step,
             int blockIndex,
-            TaskStepExecutionContext context,
-            PipelineExecutionEvents events,
+            DataflowExecutionContext context,
             CancellationToken cancellation)
         {
             var block = step.Blocks[blockIndex];
@@ -84,7 +77,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
                 x =>
                 {
-                    events?.OnBlockStarted(block, x.Number, x.Item, step, context.Task);
+                    context.Events?.OnBlockStarted(block, x.Number, x.Item, step, context.StepContext.Task);
                     var sw = Stopwatch.StartNew();
 
                     try
@@ -97,7 +90,8 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                     }
 
                     sw.Stop();
-                    events?.OnBlockEnded(block, x.Number, x.Item, step, context.Task, sw.Elapsed);
+                    context.TotalBlockDurations.AddOrUpdate(block.Name, sw.Elapsed, (_, duration) => duration + sw.Elapsed);
+                    context.Events?.OnBlockEnded(block, x.Number, x.Item, step, context.StepContext.Task, sw.Elapsed);
 
                     return x;
                 },
@@ -113,8 +107,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
         private ActionBlock<PipelineItem<TItem>> CreateProgressBlock<TItem>(
             PipelineTaskStep<TItem> step,
-            TaskStepExecutionContext context,
-            PipelineExecutionEvents events,
+            DataflowExecutionContext context,
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
@@ -122,7 +115,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 x =>
                 {
                     x.ProcessingStopwatch.Stop();
-                    events?.OnItemEnded(x.Number, x.Item, step, context.Task, x.ProcessingStopwatch.Elapsed);
+                    context.Events?.OnItemEnded(x.Number, x.Item, step, context.StepContext.Task, x.ProcessingStopwatch.Elapsed);
                     PipelineProcessingUtils.ReportProgress(x.Number, step.Input.ExpectedItemsCount, progress);
                 },
                 new ExecutionDataflowBlockOptions

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using Manisero.Navvy.Core.StepExecution;
@@ -19,9 +22,20 @@ namespace Manisero.Navvy.Dataflow
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
-            var pipeline = _dataflowPipelineBuilder.Build(step, context, progress, cancellation);
-            var itemNumber = 0;
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
+
+            var dataflowExecutionContext = new DataflowExecutionContext
+            {
+                StepContext = context,
+                Events = events,
+                TotalBlockDurations = new ConcurrentDictionary<string, TimeSpan>(
+                    step.Blocks.Select(x => x.Name).Distinct().Select(
+                        x => new KeyValuePair<string, TimeSpan>(x, TimeSpan.Zero)))
+            };
+            
+            var pipeline = _dataflowPipelineBuilder.Build(step, dataflowExecutionContext, progress, cancellation);
+            var itemNumber = 0;
+            var totalInputMaterializationDuration = TimeSpan.Zero;
 
             using (var inputEnumerator = step.Input.Input.GetEnumerator())
             {
@@ -42,7 +56,9 @@ namespace Manisero.Navvy.Dataflow
                         ProcessingStopwatch = sw
                     };
 
-                    events?.OnItemStarted(pipelineItem.Number, pipelineItem.Item, sw.Elapsed, step, context.Task);
+                    var materializationDuration = sw.Elapsed;
+                    totalInputMaterializationDuration += materializationDuration;
+                    events?.OnItemStarted(pipelineItem.Number, pipelineItem.Item, materializationDuration, step, context.Task);
 
                     pipeline.InputBlock.SendAsync(pipelineItem).Wait();
 

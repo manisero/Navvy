@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Core.StepExecution;
@@ -20,6 +21,8 @@ namespace Manisero.Navvy.PipelineProcessing
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
             var itemSw = new Stopwatch();
             var blockSw = new Stopwatch();
+            var totalInputMaterializationDuration = TimeSpan.Zero;
+            var totalBlockDurations = step.Blocks.Select(x => x.Name).Distinct().ToDictionary(x => x, _ => TimeSpan.Zero);
 
             using (var inputEnumerator = step.Input.Input.GetEnumerator())
             {
@@ -32,10 +35,12 @@ namespace Manisero.Navvy.PipelineProcessing
                         itemSw.Stop();
                         break;
                     }
-
+                    
                     itemNumber++;
                     var item = inputEnumerator.Current;
-                    events?.OnItemStarted(itemNumber, item, itemSw.Elapsed, step, context.Task);
+                    var materializationDuration = itemSw.Elapsed;
+                    totalInputMaterializationDuration += materializationDuration;
+                    events?.OnItemStarted(itemNumber, item, materializationDuration, step, context.Task);
 
                     foreach (var block in step.Blocks)
                     {
@@ -52,6 +57,7 @@ namespace Manisero.Navvy.PipelineProcessing
                         }
 
                         blockSw.Stop();
+                        totalBlockDurations[block.Name] += blockSw.Elapsed;
                         events?.OnBlockEnded(block, itemNumber, item, step, context.Task, blockSw.Elapsed);
                         cancellation.ThrowIfCancellationRequested();
                     }
