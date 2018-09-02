@@ -28,9 +28,13 @@ namespace Manisero.Navvy.Benchmarks
             }
         }
 
-        private const int BatchesCount = 100;
-        private const int BatchSize = 10000;
-        private const int TotalCount = BatchesCount * BatchSize;
+        [Params(1, 100)]
+        public int BatchesCount { get; set; }
+
+        [Params(1, 10000, 1000000)]
+        public int BatchSize { get; set; }
+
+        private int TotalCount => BatchesCount * BatchSize;
 
         private ITaskExecutor _executor;
         private TaskDefinition _task;
