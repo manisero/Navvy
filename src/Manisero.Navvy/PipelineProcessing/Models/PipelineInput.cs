@@ -25,7 +25,7 @@ namespace Manisero.Navvy.PipelineProcessing.Models
         }
     }
 
-    public class LazyEnumerablePipelineInput<TItem> : IPipelineInput<TItem>
+    public class LazyPipelineInput<TItem> : IPipelineInput<TItem>
     {
         private readonly Lazy<IEnumerable<TItem>> _lazyInput;
 
@@ -35,12 +35,12 @@ namespace Manisero.Navvy.PipelineProcessing.Models
 
         public int ExpectedItemsCount => _lazyExpectedItemsCount.Value;
 
-        public LazyEnumerablePipelineInput(
-            Lazy<IEnumerable<TItem>> input,
-            Lazy<int> expectedItemsCount)
+        public LazyPipelineInput(
+            Func<IEnumerable<TItem>> inputFactory,
+            Func<int> expectedItemsCountFactory)
         {
-            _lazyInput = input;
-            _lazyExpectedItemsCount = expectedItemsCount;
+            _lazyInput = new Lazy<IEnumerable<TItem>>(inputFactory);
+            _lazyExpectedItemsCount = new Lazy<int>(expectedItemsCountFactory);
         }
     }
 }
