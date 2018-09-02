@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Manisero.Navvy.Core.Models;
+using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.PipelineProcessing
 {
@@ -10,13 +11,31 @@ namespace Manisero.Navvy.PipelineProcessing
 
         public Func<TaskOutcome, bool> ExecutionCondition { get; }
 
-        /// <summary>Items to input to first block. After iterating, first block will be completed.</summary>
-        public IEnumerable<TItem> Input { get; }
-
-        /// <summary>Used to report progress. Assumption: output count == input count.</summary>
-        public int ExpectedItemsCount { get; }
+        public IPipelineInput<TItem> Input { get; set; }
 
         public IList<PipelineBlock<TItem>> Blocks { get; }
+
+        public PipelineTaskStep(
+            string name,
+            IPipelineInput<TItem> input,
+            IList<PipelineBlock<TItem>> blocks,
+            Func<TaskOutcome, bool> executionCondition = null)
+        {
+            Name = name;
+            ExecutionCondition = executionCondition ?? (x => x == TaskOutcome.Successful);
+            Input = input;
+            Blocks = blocks;
+        }
+
+        public PipelineTaskStep(
+            string name,
+            IEnumerable<TItem> input,
+            int expectedItemsCount,
+            IList<PipelineBlock<TItem>> blocks,
+            Func<TaskOutcome, bool> executionCondition = null)
+            : this(name, new PipelineInput<TItem>(input, expectedItemsCount), blocks, executionCondition)
+        {
+        }
 
         public PipelineTaskStep(
             string name,
@@ -26,58 +45,5 @@ namespace Manisero.Navvy.PipelineProcessing
             : this(name, input, input.Count, blocks, executionCondition)
         {
         }
-
-        public PipelineTaskStep(
-            string name,
-            IEnumerable<TItem> input,
-            int expectedItemsCount,
-            IList<PipelineBlock<TItem>> blocks,
-            Func<TaskOutcome, bool> executionCondition = null)
-        {
-            Name = name;
-            ExecutionCondition = executionCondition ?? (x => x == TaskOutcome.Successful);
-            Input = input;
-            ExpectedItemsCount = expectedItemsCount;
-            Blocks = blocks;
-        }
-    }
-
-    public interface IPipelineBlock
-    {
-        string Name { get; }
-    }
-
-    public class PipelineBlock<TItem> : IPipelineBlock
-    {
-        public string Name { get; }
-
-        public Action<TItem> Body { get; }
-
-        public bool Parallel { get; }
-
-        public PipelineBlock(
-            string name,
-            Action<TItem> body,
-            bool parallel = false)
-        {
-            Name = name;
-            Body = body;
-            Parallel = parallel;
-        }
-    }
-
-    public class PipelineBlockExceptionData
-    {
-        public string BlockName { get; set; }
-    }
-
-    public static class PipelineBlockExtensions
-    {
-        public static PipelineBlockExceptionData GetExceptionData<TData>(
-            this PipelineBlock<TData> block)
-            => new PipelineBlockExceptionData
-            {
-                BlockName = block.Name
-            };
     }
 }

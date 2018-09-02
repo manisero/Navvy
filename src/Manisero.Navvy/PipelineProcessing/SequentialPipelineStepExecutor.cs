@@ -4,6 +4,7 @@ using System.Threading;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.PipelineProcessing.Events;
+using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.PipelineProcessing
 {
@@ -21,7 +22,7 @@ namespace Manisero.Navvy.PipelineProcessing
             var itemSw = new Stopwatch();
             var blockSw = new Stopwatch();
 
-            foreach (var item in step.Input)
+            foreach (var item in step.Input.Input)
             {
                 itemNumber++;
                 events?.OnItemStarted(itemNumber, item, step, context.Task);
@@ -48,7 +49,7 @@ namespace Manisero.Navvy.PipelineProcessing
 
                 itemSw.Stop();
                 events?.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed);
-                PipelineProcessingUtils.ReportProgress(itemNumber, step.ExpectedItemsCount, progress);
+                PipelineProcessingUtils.ReportProgress(itemNumber, step.Input.ExpectedItemsCount, progress);
             }
         }
     }

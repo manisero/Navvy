@@ -6,6 +6,7 @@ using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
+using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.Dataflow.StepExecution
 {
@@ -122,7 +123,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 {
                     x.ProcessingStopwatch.Stop();
                     events?.OnItemEnded(x.Number, x.Item, step, context.Task, x.ProcessingStopwatch.Elapsed);
-                    PipelineProcessingUtils.ReportProgress(x.Number, step.ExpectedItemsCount, progress);
+                    PipelineProcessingUtils.ReportProgress(x.Number, step.Input.ExpectedItemsCount, progress);
                 },
                 new ExecutionDataflowBlockOptions
                 {

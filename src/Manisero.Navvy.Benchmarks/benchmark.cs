@@ -10,6 +10,7 @@ using Manisero.Navvy.Core;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Dataflow;
 using Manisero.Navvy.PipelineProcessing;
+using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.Benchmarks
 {

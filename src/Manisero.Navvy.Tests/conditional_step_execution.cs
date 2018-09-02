@@ -43,7 +43,7 @@ namespace Manisero.Navvy.Tests
 
             var task = new TaskDefinition(
                 GetStepForOutcome(firstStepOutcome),
-                GetStepForOutcome(secondStepOutcome, _ => true),
+                GetStepForOutcome(secondStepOutcome, TaskStepUtils.AlwaysExecuteCondition),
                 new BasicTaskStep(
                     "TestedStep",
                     () => { },

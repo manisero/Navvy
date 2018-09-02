@@ -3,6 +3,7 @@ using FluentAssertions;
 using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
+using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Tests.Utils;
 using Xunit;
 

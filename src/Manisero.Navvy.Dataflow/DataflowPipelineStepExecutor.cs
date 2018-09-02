@@ -23,7 +23,7 @@ namespace Manisero.Navvy.Dataflow
             var itemNumber = 0;
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
-            foreach (var item in step.Input)
+            foreach (var item in step.Input.Input)
             {
                 itemNumber++;
                 events?.OnItemStarted(itemNumber, item, step, context.Task);
