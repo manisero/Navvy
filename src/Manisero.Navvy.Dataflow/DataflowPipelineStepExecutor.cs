@@ -45,6 +45,8 @@ namespace Manisero.Navvy.Dataflow
                     events?.OnItemStarted(pipelineItem.Number, pipelineItem.Item, sw.Elapsed, step, context.Task);
 
                     pipeline.InputBlock.SendAsync(pipelineItem).Wait();
+
+                    cancellation.ThrowIfCancellationRequested();
                 }
             }
 
