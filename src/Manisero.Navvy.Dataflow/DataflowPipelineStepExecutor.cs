@@ -23,19 +23,29 @@ namespace Manisero.Navvy.Dataflow
             var itemNumber = 0;
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
-            foreach (var item in step.Input.Input)
+            using (var inputEnumerator = step.Input.Input.GetEnumerator())
             {
-                itemNumber++;
-                events?.OnItemStarted(itemNumber, item, step, context.Task);
-
-                var pipelineItem = new PipelineItem<TItem>
+                while (true)
                 {
-                    Number = itemNumber,
-                    Item = item,
-                    ProcessingStopwatch = Stopwatch.StartNew()
-                };
+                    var sw = Stopwatch.StartNew();
 
-                pipeline.InputBlock.SendAsync(pipelineItem).Wait();
+                    if (!inputEnumerator.MoveNext())
+                    {
+                        sw.Stop();
+                        break;
+                    }
+
+                    var pipelineItem = new PipelineItem<TItem>
+                    {
+                        Number = ++itemNumber,
+                        Item = inputEnumerator.Current,
+                        ProcessingStopwatch = sw
+                    };
+
+                    events?.OnItemStarted(pipelineItem.Number, pipelineItem.Item, sw.Elapsed, step, context.Task);
+
+                    pipeline.InputBlock.SendAsync(pipelineItem).Wait();
+                }
             }
 
             pipeline.InputBlock.Complete();

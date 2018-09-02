@@ -39,6 +39,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             startedEvent.Should().NotBeNull();
             startedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
             startedEvent.Value.Item.ShouldBeEquivalentTo(item);
+            startedEvent.Value.MaterializationDuration.Ticks.Should().BePositive();
 
             endedEvent.Should().NotBeNull();
             endedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);

@@ -18,38 +18,48 @@ namespace Manisero.Navvy.PipelineProcessing
         {
             var itemNumber = 0;
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
-
             var itemSw = new Stopwatch();
             var blockSw = new Stopwatch();
 
-            foreach (var item in step.Input.Input)
+            using (var inputEnumerator = step.Input.Input.GetEnumerator())
             {
-                itemNumber++;
-                events?.OnItemStarted(itemNumber, item, step, context.Task);
-                itemSw.Restart();
-
-                foreach (var block in step.Blocks)
+                while (true)
                 {
-                    events?.OnBlockStarted(block, itemNumber, item, step, context.Task);
-                    blockSw.Restart();
+                    itemSw.Restart();
 
-                    try
+                    if (!inputEnumerator.MoveNext())
                     {
-                        block.Body(item);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new TaskExecutionException(e, step, block.GetExceptionData());
+                        itemSw.Stop();
+                        break;
                     }
 
-                    blockSw.Stop();
-                    events?.OnBlockEnded(block, itemNumber, item, step, context.Task, blockSw.Elapsed);
-                    cancellation.ThrowIfCancellationRequested();
+                    itemNumber++;
+                    var item = inputEnumerator.Current;
+                    events?.OnItemStarted(itemNumber, item, itemSw.Elapsed, step, context.Task);
+
+                    foreach (var block in step.Blocks)
+                    {
+                        events?.OnBlockStarted(block, itemNumber, item, step, context.Task);
+                        blockSw.Restart();
+
+                        try
+                        {
+                            block.Body(item);
+                        }
+                        catch (Exception e)
+                        {
+                            throw new TaskExecutionException(e, step, block.GetExceptionData());
+                        }
+
+                        blockSw.Stop();
+                        events?.OnBlockEnded(block, itemNumber, item, step, context.Task, blockSw.Elapsed);
+                        cancellation.ThrowIfCancellationRequested();
+                    }
+
+                    itemSw.Stop();
+                    events?.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed);
+                    PipelineProcessingUtils.ReportProgress(itemNumber, step.Input.ExpectedItemsCount, progress);
                 }
-
-                itemSw.Stop();
-                events?.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed);
-                PipelineProcessingUtils.ReportProgress(itemNumber, step.Input.ExpectedItemsCount, progress);
             }
         }
     }

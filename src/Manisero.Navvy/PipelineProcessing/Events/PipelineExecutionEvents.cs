@@ -9,6 +9,7 @@ namespace Manisero.Navvy.PipelineProcessing.Events
     {
         public int ItemNumber;
         public object Item;
+        public TimeSpan MaterializationDuration;
         public ITaskStep Step;
         public TaskDefinition Task;
         public DateTime Timestamp;
@@ -79,12 +80,13 @@ namespace Manisero.Navvy.PipelineProcessing.Events
             }
         }
 
-        public void OnItemStarted(int itemNumber, object item, ITaskStep step, TaskDefinition task)
+        public void OnItemStarted(int itemNumber, object item, TimeSpan materializationDuration, ITaskStep step, TaskDefinition task)
         {
             ItemStarted?.Invoke(new ItemStartedEvent
             {
                 ItemNumber = itemNumber,
                 Item = item,
+                MaterializationDuration = materializationDuration,
                 Step = step,
                 Task = task,
                 Timestamp = DateTimeUtils.Now
