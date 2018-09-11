@@ -7,13 +7,11 @@ build_script:
 
     dotnet build -c Release
 
+    dotnet test Manisero.Navvy.Tests -c Release --no-build
+
     dotnet pack Manisero.Navvy -c Release --include-symbols --no-build
 
     dotnet pack Manisero.Navvy.Dataflow -c Release --include-symbols --no-build
-
-test_script:
-- cmd: >-
-    dotnet test Manisero.Navvy.Tests -c Release --no-build
 
 deploy:
 - provider: NuGet
