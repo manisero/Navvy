@@ -32,7 +32,7 @@ namespace Manisero.Navvy.Benchmarks
         [Params(1, 100)]
         public int BatchesCount { get; set; }
 
-        [Params(1, 10000, 1000000)]
+        [Params(1, 10000)]
         public int BatchSize { get; set; }
 
         private int TotalCount => BatchesCount * BatchSize;
