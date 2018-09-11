@@ -8,6 +8,11 @@ build:
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
+test_script:
+- cmd: >-
+    cd src
+
+    dotnet test Manisero.Navvy.Tests -c Release
 deploy:
 - provider: NuGet
   api_key:
