@@ -1,9 +1,6 @@
 version: '{build}'
 image: Visual Studio 2017
 
-before_build:
-- cmd: nuget restore src\
-
 build_script:
 - cmd: >-
     cd src
