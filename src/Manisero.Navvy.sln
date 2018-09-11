@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy", "Manisero.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy.Dataflow", "Manisero.Navvy.Dataflow\Manisero.Navvy.Dataflow.csproj", "{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy.Tests", "Manisero.Navvy.Tests\Manisero.Navvy.Tests.csproj", "{1AD20D50-3485-4AC7-AF7B-EC0503C2CB08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD20D50-3485-4AC7-AF7B-EC0503C2CB08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD20D50-3485-4AC7-AF7B-EC0503C2CB08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD20D50-3485-4AC7-AF7B-EC0503C2CB08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD20D50-3485-4AC7-AF7B-EC0503C2CB08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
