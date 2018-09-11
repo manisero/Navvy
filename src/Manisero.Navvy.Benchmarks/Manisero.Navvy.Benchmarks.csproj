@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Manisero.Navvy.Dataflow\Manisero.Navvy.Dataflow.csproj" />
+    <ProjectReference Include="..\Manisero.Navvy\Manisero.Navvy.csproj" />
+  </ItemGroup>
+
+</Project>
