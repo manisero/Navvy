@@ -116,7 +116,7 @@ namespace Manisero.Navvy.Tests
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);
             var error = result.Errors.Should().NotBeNull().And.ContainSingle().Subject;
-            error.StepName.ShouldBeEquivalentTo(FailingStepName);
+            error.StepName.Should().Be(FailingStepName);
             error.InnerException.Should().BeSameAs(_error);
         }
     }

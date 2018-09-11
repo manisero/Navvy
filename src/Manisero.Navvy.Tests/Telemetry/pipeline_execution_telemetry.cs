@@ -38,13 +38,13 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Assert
             startedEvent.Should().NotBeNull();
-            startedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
-            startedEvent.Value.Item.ShouldBeEquivalentTo(item);
+            startedEvent.Value.ItemNumber.Should().Be(1);
+            startedEvent.Value.Item.Should().Be(item);
             startedEvent.Value.MaterializationDuration.Should().BePositive();
 
             endedEvent.Should().NotBeNull();
-            endedEvent.Value.ItemNumber.ShouldBeEquivalentTo(1);
-            endedEvent.Value.Item.ShouldBeEquivalentTo(item);
+            endedEvent.Value.ItemNumber.Should().Be(1);
+            endedEvent.Value.Item.Should().Be(item);
             endedEvent.Value.Duration.Should().BePositive();
         }
 
