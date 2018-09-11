@@ -11,6 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manisero.Navvy.Tests", "Man
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy.Benchmarks", "Manisero.Navvy.Benchmarks\Manisero.Navvy.Benchmarks.csproj", "{43AA8C62-F93A-40F8-8DF1-35267D7532DA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Implementation", "1. Implementation", "{B059F11C-FE04-4F18-8F95-8E3D1D805ECA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Tests", "2. Tests", "{75498E94-C9F8-4B78-979E-F2E10120DD82}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Benchmarks", "3. Benchmarks", "{26A85E3C-DE02-4DAA-B28A-ED048967D3F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +42,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BB3730EE-E553-4C60-82A2-897BB90C8352} = {B059F11C-FE04-4F18-8F95-8E3D1D805ECA}
+		{04A1A1DF-F11B-441C-ABCF-CCDCDC483987} = {B059F11C-FE04-4F18-8F95-8E3D1D805ECA}
+		{1AD20D50-3485-4AC7-AF7B-EC0503C2CB08} = {75498E94-C9F8-4B78-979E-F2E10120DD82}
+		{43AA8C62-F93A-40F8-8DF1-35267D7532DA} = {26A85E3C-DE02-4DAA-B28A-ED048967D3F5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {29B82D42-9EA7-4D6E-AD5D-FC7D6FD10326}
