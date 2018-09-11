@@ -5,8 +5,6 @@ build_script:
 - cmd: >-
     cd src
 
-    dotnet restore
-
     dotnet build -c Release
 
     dotnet pack Manisero.Navvy -c Release --include-symbols --no-build
@@ -15,8 +13,6 @@ build_script:
 
 test_script:
 - cmd: >-
-    cd src
-    
     dotnet test Manisero.Navvy.Tests -c Release --no-build
 
 deploy:
