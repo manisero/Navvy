@@ -41,7 +41,7 @@ namespace Manisero.Navvy.Tests
             Action act = () => executor.Execute(task);
 
             // Assert
-            act.ShouldThrow<Exception>().Which.Should().BeSameAs(Error);
+            act.Should().Throw<Exception>().Which.Should().BeSameAs(Error);
         }
     }
 }

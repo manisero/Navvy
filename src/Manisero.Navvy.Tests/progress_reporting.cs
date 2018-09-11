@@ -20,7 +20,7 @@ namespace Manisero.Navvy.Tests
             test(
                 resolverType,
                 BasicTaskStep.Empty("Step"),
-                new[] { 100 });
+                new byte[] { 100 });
         }
 
         [Theory]
@@ -31,7 +31,7 @@ namespace Manisero.Navvy.Tests
             test(
                 resolverType,
                 GetPipelineStep(3),
-                new[] { 33, 66, 100 });
+                new byte[] { 33, 66, 100 });
         }
 
         [Theory]
@@ -42,7 +42,7 @@ namespace Manisero.Navvy.Tests
             test(
                 resolverType,
                 GetPipelineStep(3, 2),
-                new[] { 50, 100, 100 }); // TODO: Consider not reporting unexpected items
+                new byte[] { 50, 100, 100 }); // TODO: Consider not reporting unexpected items
         }
 
         [Theory]
@@ -53,13 +53,13 @@ namespace Manisero.Navvy.Tests
             test(
                 resolverType,
                 GetPipelineStep(3, 4),
-                new[] { 25, 50, 75 }); // TODO: Consider including step status in TaskProgress (and reporting finished when finished)
+                new byte[] { 25, 50, 75 }); // TODO: Consider including step status in TaskProgress (and reporting finished when finished)
         }
 
         private void test(
             ResolverType resolverType,
             ITaskStep taskStep,
-            ICollection<int> expectedProgressReports)
+            ICollection<byte> expectedProgressReports)
         {
             // Arrange
             var progressReports = new List<TaskProgress>();
@@ -73,7 +73,7 @@ namespace Manisero.Navvy.Tests
 
             // Assert
             progressReports.Select(x => x.StepName).Should().OnlyContain(x => x == taskStep.Name);
-            progressReports.Select(x => x.ProgressPercentage).ShouldAllBeEquivalentTo(expectedProgressReports);
+            progressReports.Select(x => x.ProgressPercentage).Should().BeEquivalentTo(expectedProgressReports);
         }
 
         private ITaskStep GetPipelineStep(int actualItemsCount, int? expectedItemsCount = null)
