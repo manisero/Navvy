@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy", "Manisero.Navvy\Manisero.Navvy.csproj", "{BB3730EE-E553-4C60-82A2-897BB90C8352}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.Navvy.Dataflow", "Manisero.Navvy.Dataflow\Manisero.Navvy.Dataflow.csproj", "{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BB3730EE-E553-4C60-82A2-897BB90C8352}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB3730EE-E553-4C60-82A2-897BB90C8352}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB3730EE-E553-4C60-82A2-897BB90C8352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04A1A1DF-F11B-441C-ABCF-CCDCDC483987}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
