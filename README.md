@@ -46,7 +46,7 @@ var executor = new TaskExecutorBuilder()
 4. Execute the task:
 
 ```C#
-executor.Execute(task);
+executor.Execute(summingTask);
 
 Console.WriteLine($"Result: {sum}.");
 ```
