@@ -32,7 +32,7 @@ var summingTask = new TaskDefinition(
         }),
     new BasicTaskStep(
         name: "Complete",
-        body: () => Console.WriteLine("Summing task started.")));
+        body: () => Console.WriteLine("Summing task finished.")));
 ```
 
 3. Create task execution engine:
