@@ -66,6 +66,6 @@ For a more detailed sample, see [sample application](https://github.com/manisero
 - Extensibility - new types of steps and new ways to execute them can be defined and registered.
 - Built on .NET Standard 2.0.
 
-## More
+## Feedback wanted
 
 You are encouraged to play around with Navvy. If you do so, please give feedback! Write an email (you'll find the address [here](https://github.com/manisero)) or create an [issue](https://github.com/manisero/Navvy/issues).
