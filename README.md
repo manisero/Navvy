@@ -5,7 +5,7 @@ A long-running tasks execution framework.
 
 1. Install [Manisero.Navvy](https://www.nuget.org/packages/Manisero.Navvy/) NuGet package.
 
-- Consider adding [Manisero.Navvy.Dataflow](https://www.nuget.org/packages/Manisero.Navvy.Dataflow/) package to use [TPL Dataflow](https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library) for pipelines execution.
+- Consider adding [Manisero.Navvy.Dataflow](https://www.nuget.org/packages/Manisero.Navvy.Dataflow/) package in order to use [TPL Dataflow](https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/dataflow-task-parallel-library) for pipelines execution.
 
 2. Define task to execute:
 
@@ -50,3 +50,17 @@ executor.Execute(summingTask);
 
 Console.WriteLine($"Result: {sum}.");
 ```
+
+For a more detailed sample, see [sample application](https://github.com/manisero/Navvy.SampleApp) demonstrating usage of Navvy.
+
+## Features
+
+- Built-in progress reporting.
+- Cancellation support.
+- Detailed execution reporting:
+  - Task-, Step- and Block- -Started / -Ended events,
+  - -Ended events contain duration of the task / step / block.
+- Parallel processing support (Dataflow only).
+- Task execution errors handling.
+- Conditional steps execution.
+- Extensibility - new types of steps and new ways to execute them can be defined and registered.
