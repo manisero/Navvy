@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Tests.Utils;

@@ -1,5 +1,4 @@
 ﻿using System;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.PipelineProcessing;
 

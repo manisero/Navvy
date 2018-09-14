@@ -1,4 +1,4 @@
-﻿namespace Manisero.Navvy.Core.Models
+﻿namespace Manisero.Navvy.Core
 {
     public interface IExecutionEvents
     {

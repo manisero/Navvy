@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.PipelineProcessing

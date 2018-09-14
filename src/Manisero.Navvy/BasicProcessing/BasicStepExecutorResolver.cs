@@ -1,5 +1,4 @@
-﻿using Manisero.Navvy.Core.Models;
-using Manisero.Navvy.Core.StepExecution;
+﻿using Manisero.Navvy.Core.StepExecution;
 
 namespace Manisero.Navvy.BasicProcessing
 {

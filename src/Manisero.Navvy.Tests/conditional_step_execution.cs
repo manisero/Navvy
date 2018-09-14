@@ -2,7 +2,6 @@
 using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Tests.Utils;
 using Xunit;
 

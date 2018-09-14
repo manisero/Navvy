@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Manisero.Navvy.Core.Models
+namespace Manisero.Navvy
 {
     public class TaskDefinition
     {

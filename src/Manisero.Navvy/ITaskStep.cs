@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Manisero.Navvy.Core.Models
+namespace Manisero.Navvy
 {
     public interface ITaskStep
     {

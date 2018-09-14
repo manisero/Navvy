@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.PipelineProcessing.Events;
 using Manisero.Navvy.PipelineProcessing.Models;

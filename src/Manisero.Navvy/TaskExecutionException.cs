@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Manisero.Navvy.Core.Models
+namespace Manisero.Navvy
 {
     public class TaskExecutionException : Exception
     {
@@ -12,7 +12,7 @@ namespace Manisero.Navvy.Core.Models
             Exception innerException,
             ITaskStep taskStep,
             object additionalData = null)
-            : base("Errors while executing task. See inner exception.", innerException)
+            : base("Error while executing task. See inner exception.", innerException)
         {
             StepName = taskStep.Name;
             AdditionalData = additionalData;

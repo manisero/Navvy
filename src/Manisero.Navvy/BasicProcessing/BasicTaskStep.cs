@@ -1,5 +1,4 @@
 ﻿using System;
-using Manisero.Navvy.Core.Models;
 
 namespace Manisero.Navvy.BasicProcessing
 {

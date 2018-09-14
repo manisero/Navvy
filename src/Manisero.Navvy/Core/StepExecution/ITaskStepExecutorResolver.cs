@@ -1,6 +1,4 @@
-﻿using Manisero.Navvy.Core.Models;
-
-namespace Manisero.Navvy.Core.StepExecution
+﻿namespace Manisero.Navvy.Core.StepExecution
 {
     public interface ITaskStepExecutorResolver
     {

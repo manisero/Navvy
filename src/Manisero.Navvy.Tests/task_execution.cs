@@ -3,7 +3,6 @@ using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Events;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
 using Manisero.Navvy.PipelineProcessing.Models;

@@ -1,5 +1,4 @@
 ﻿using Manisero.Navvy.Core;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Dataflow;
 
 namespace Manisero.Navvy.Tests.Utils

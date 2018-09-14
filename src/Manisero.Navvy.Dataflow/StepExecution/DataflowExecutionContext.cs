@@ -5,7 +5,7 @@ using Manisero.Navvy.PipelineProcessing.Events;
 
 namespace Manisero.Navvy.Dataflow.StepExecution
 {
-    public class DataflowExecutionContext
+    internal class DataflowExecutionContext
     {
         public TaskStepExecutionContext StepContext { get; set; }
 

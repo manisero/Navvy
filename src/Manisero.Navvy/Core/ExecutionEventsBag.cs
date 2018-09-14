@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Manisero.Navvy.Utils;
 
-namespace Manisero.Navvy.Core.Models
+namespace Manisero.Navvy.Core
 {
     public class ExecutionEventsBag
     {

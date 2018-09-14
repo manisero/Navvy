@@ -6,8 +6,6 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using Manisero.Navvy.BasicProcessing;
-using Manisero.Navvy.Core;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Dataflow;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Models;

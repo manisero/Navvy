@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Manisero.Navvy.Core.Models;
 
 namespace Manisero.Navvy.Core.StepExecution
 {

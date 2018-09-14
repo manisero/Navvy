@@ -4,20 +4,11 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using Manisero.Navvy.Core.Events;
-using Manisero.Navvy.Core.Models;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.Utils;
 
 namespace Manisero.Navvy.Core
 {
-    public interface ITaskExecutor
-    {
-        TaskResult Execute(
-            TaskDefinition task,
-            IProgress<TaskProgress> progress = null,
-            CancellationToken? cancellation = null);
-    }
-
     public class TaskExecutor : ITaskExecutor
     {
         private static readonly MethodInfo ExecuteStepMethod

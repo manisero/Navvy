@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Manisero.Navvy.Core.Models
+namespace Manisero.Navvy
 {
     public class TaskResult
     {
         public TaskOutcome Outcome { get; }
+
         public IReadOnlyCollection<TaskExecutionException> Errors { get; }
 
         public TaskResult(
@@ -22,12 +23,5 @@ namespace Manisero.Navvy.Core.Models
                     ? TaskOutcome.Canceled
                     : TaskOutcome.Successful;
         }
-    }
-
-    public enum TaskOutcome
-    {
-        Successful = 1,
-        Canceled = 2,
-        Failed = 3
     }
 }
