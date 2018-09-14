@@ -105,6 +105,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                 new PipelineTaskStep<int>(
                     "Step",
                     new[] { 0 },
+                    1,
                     new List<PipelineBlock<int>> { block1, block2 }));
 
             // Act
