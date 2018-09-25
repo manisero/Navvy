@@ -9,8 +9,6 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 {
     internal class DataflowPipelineBuilder
     {
-        private static readonly int DegreeOfParallelism = Environment.ProcessorCount - 1;
-
         public DataflowPipeline<TItem> Build<TItem>(
             PipelineTaskStep<TItem> step,
             DataflowExecutionContext context,
@@ -71,7 +69,6 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             CancellationToken cancellation)
         {
             var block = step.Blocks[blockIndex];
-            var maxDegreeOfParallelism = block.Parallel ? DegreeOfParallelism : 1;
 
             return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
                 x =>
@@ -97,8 +94,8 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 new ExecutionDataflowBlockOptions
                 {
                     NameFormat = block.Name,
-                    MaxDegreeOfParallelism = maxDegreeOfParallelism,
-                    BoundedCapacity = maxDegreeOfParallelism,
+                    MaxDegreeOfParallelism = block.MaxDegreeOfParallelism,
+                    BoundedCapacity = block.MaxDegreeOfParallelism,
                     EnsureOrdered = true,
                     CancellationToken = cancellation
                 });

@@ -13,16 +13,16 @@ namespace Manisero.Navvy.PipelineProcessing.Models
 
         public Action<TItem> Body { get; }
 
-        public bool Parallel { get; }
+        public int MaxDegreeOfParallelism { get; }
 
         public PipelineBlock(
             string name,
             Action<TItem> body,
-            bool parallel = false)
+            int maxDegreeOfParallelism = 1)
         {
             Name = name;
             Body = body;
-            Parallel = parallel;
+            MaxDegreeOfParallelism = maxDegreeOfParallelism;
         }
     }
 

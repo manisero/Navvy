@@ -218,7 +218,7 @@ namespace Manisero.Navvy.Benchmarks
                             parallel
                                 ? (Action<long>)(x => Interlocked.Add(ref sum, x))
                                 : x => sum += x,
-                            parallel)
+                            parallel ? 6 : 1)
                     }));
         }
 
@@ -239,7 +239,7 @@ namespace Manisero.Navvy.Benchmarks
                             parallel
                                 ? (Action<ICollection<long>>)(x => Interlocked.Add(ref sum, x.Sum()))
                                 : x => sum += x.Sum(),
-                            parallel)
+                            parallel ? 6 : 1)
                     }));
         }
 
@@ -263,7 +263,7 @@ namespace Manisero.Navvy.Benchmarks
                         new PipelineBlock<NumbersWithTotal>(
                             "Calculate Total",
                             x => x.Total = x.Numbers.Sum(),
-                            true),
+                            6),
                         new PipelineBlock<NumbersWithTotal>(
                             "Update Sum",
                             x => sum += x.Total)
