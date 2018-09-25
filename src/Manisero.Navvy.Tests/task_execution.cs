@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
-using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Tests.Utils;
 using Xunit;
 using Xunit.Abstractions;
@@ -36,18 +34,12 @@ namespace Manisero.Navvy.Tests
                 new BasicTaskStep(
                     "Initialize",
                     () => { initialized = true; }),
-                new PipelineTaskStep<int>(
-                    "Pipeline",
-                    new[] { 1, 2, 3, 4, 5, 6 },
-                    new List<PipelineBlock<int>>
-                    {
-                        new PipelineBlock<int>(
-                            "Sum",
-                            x => sum += x),
-                        new PipelineBlock<int>(
-                            "Log",
-                            x => _output.WriteLine(x.ToString()))
-                    }),
+                PipelineTaskStep
+                    .Builder<int>("Pipeline")
+                    .WithInput(new[] { 1, 2, 3, 4, 5, 6 })
+                    .WithBlock("Sum", x => sum += x)
+                    .WithBlock("Log", x => _output.WriteLine(x.ToString()))
+                    .Build(),
                 new BasicTaskStep(
                     "Complete",
                     () => { completed = true; }));
