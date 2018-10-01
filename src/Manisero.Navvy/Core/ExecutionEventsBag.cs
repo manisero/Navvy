@@ -25,6 +25,15 @@ namespace Manisero.Navvy.Core
                     x => (ICollection<IExecutionEvents>)x.ToArray());
         }
 
+        public ExecutionEventsBag(
+            ExecutionEventsBag other1,
+            ExecutionEventsBag other2)
+        {
+            _events = other1._events.Merge(
+                other2._events,
+                (x, y) => x.Concat(y).ToArray());
+        }
+
         public ExecutionEventsGroup<TEvents>? TryGetEvents<TEvents>()
             where TEvents : class, IExecutionEvents
         {

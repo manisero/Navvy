@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Manisero.Navvy.Core.Events;
@@ -42,7 +41,7 @@ namespace Manisero.Navvy.Core
                 cancellation = CancellationToken.None;
             }
 
-            var eventsBag = events.Any() ? new ExecutionEventsBag(events) : _globalEventsBag; // TODO: Merge bags
+            var eventsBag = new ExecutionEventsBag(_globalEventsBag, new ExecutionEventsBag(events));
 
             var currentOutcome = TaskOutcome.Successful;
             var errors = new List<TaskExecutionException>();
