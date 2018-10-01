@@ -15,20 +15,21 @@ namespace Manisero.Navvy.Core
             = typeof(TaskExecutor).GetMethod(nameof(ExecuteStep), BindingFlags.Instance | BindingFlags.NonPublic);
 
         private readonly ITaskStepExecutorResolver _taskStepExecutorResolver;
-        private readonly ExecutionEventsBag _executionEventsBag;
+        private readonly ExecutionEventsBag _globalEventsBag;
 
         public TaskExecutor(
             ITaskStepExecutorResolver taskStepExecutorResolver,
-            ExecutionEventsBag executionEventsBag)
+            ExecutionEventsBag globalEventsBag)
         {
             _taskStepExecutorResolver = taskStepExecutorResolver;
-            _executionEventsBag = executionEventsBag;
+            _globalEventsBag = globalEventsBag;
         }
 
         public TaskResult Execute(
             TaskDefinition task,
             IProgress<TaskProgress> progress = null,
-            CancellationToken? cancellation = null)
+            CancellationToken? cancellation = null,
+            params IExecutionEvents[] events)
         {
             if (progress == null)
             {
@@ -40,24 +41,26 @@ namespace Manisero.Navvy.Core
                 cancellation = CancellationToken.None;
             }
 
+            var eventsBag = new ExecutionEventsBag(events); // TODO: Merge with _globalEventsBag
+
             var currentOutcome = TaskOutcome.Successful;
             var errors = new List<TaskExecutionException>();
-            var events = _executionEventsBag.TryGetEvents<TaskExecutionEvents>();
+            var taskEvents = eventsBag.TryGetEvents<TaskExecutionEvents>();
             var taskSw = new Stopwatch();
             var stepSw = new Stopwatch();
             
-            events?.OnTaskStarted(task);
+            taskEvents?.OnTaskStarted(task);
             taskSw.Start();
 
             foreach (var step in task.Steps)
             {
                 if (!step.ExecutionCondition(currentOutcome))
                 {
-                    events?.OnStepSkipped(step, task);
+                    taskEvents?.OnStepSkipped(step, task);
                     continue;
                 }
 
-                events?.OnStepStarted(step, task);
+                taskEvents?.OnStepStarted(step, task);
                 stepSw.Restart();
 
                 try
@@ -65,7 +68,7 @@ namespace Manisero.Navvy.Core
                     ExecuteStepMethod.InvokeAsGeneric(
                         this,
                         new[] { step.GetType() },
-                        step, task, progress, cancellation);
+                        step, task, progress, cancellation, eventsBag);
                 }
                 catch (OperationCanceledException e)
                 {
@@ -74,7 +77,7 @@ namespace Manisero.Navvy.Core
                         currentOutcome = TaskOutcome.Canceled;
                     }
 
-                    events?.OnStepCanceled(step, task);
+                    taskEvents?.OnStepCanceled(step, task);
                 }
                 catch (TaskExecutionException e)
                 {
@@ -85,11 +88,11 @@ namespace Manisero.Navvy.Core
                         currentOutcome = TaskOutcome.Failed;
                     }
 
-                    events?.OnStepFailed(e, step, task);
+                    taskEvents?.OnStepFailed(e, step, task);
                 }
 
                 stepSw.Stop();
-                events?.OnStepEnded(step, task, stepSw.Elapsed);
+                taskEvents?.OnStepEnded(step, task, stepSw.Elapsed);
             }
 
             var result = new TaskResult(
@@ -97,7 +100,7 @@ namespace Manisero.Navvy.Core
                 errors);
 
             taskSw.Stop();
-            events?.OnTaskEnded(task, result, taskSw.Elapsed);
+            taskEvents?.OnTaskEnded(task, result, taskSw.Elapsed);
             
             return result;
         }
@@ -106,7 +109,8 @@ namespace Manisero.Navvy.Core
             TStep step,
             TaskDefinition task,
             IProgress<TaskProgress> progress,
-            CancellationToken cancellation)
+            CancellationToken cancellation,
+            ExecutionEventsBag eventsBag)
             where TStep : ITaskStep
         {
             var stepExecutor = _taskStepExecutorResolver.Resolve<TStep>();
@@ -114,7 +118,7 @@ namespace Manisero.Navvy.Core
             var context = new TaskStepExecutionContext
             {
                 Task = task,
-                EventsBag = _executionEventsBag
+                EventsBag = eventsBag
             };
 
             var stepProgress = new SynchronousProgress<byte>(

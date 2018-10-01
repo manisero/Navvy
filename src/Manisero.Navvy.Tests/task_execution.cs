@@ -54,7 +54,7 @@ namespace Manisero.Navvy.Tests
                 stepEnded: x => _output.WriteLine($"Step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."));
 
             var pipelineEvents = new PipelineExecutionEvents(
-                itemMaterialized: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' started."),
+                itemMaterialized: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' materialized."),
                 itemEnded: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."),
                 blockStarted: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' started processing item {x.ItemNumber}."),
                 blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing item {x.ItemNumber} after {x.Duration.Ticks} ticks."));

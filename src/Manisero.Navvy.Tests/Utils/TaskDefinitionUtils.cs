@@ -13,9 +13,9 @@ namespace Manisero.Navvy.Tests.Utils
             CancellationTokenSource cancellation = null,
             params IExecutionEvents[] events)
         {
-            var executor = TaskExecutorFactory.Create(resolverType, events);
-
-            return executor.Execute(task, progress, cancellation?.Token);
+            var executor = TaskExecutorFactory.Create(resolverType);
+            
+            return executor.Execute(task, progress, cancellation?.Token, events);
         }
     }
 }
