@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Manisero.Navvy.Utils;
 
 namespace Manisero.Navvy.Core
 {
     public class ExecutionEventsBag
     {
+        private static readonly MethodInfo CreateEventsGroupMethod
+            = typeof(ExecutionEventsBag).GetMethod(nameof(CreateEventsGroup), BindingFlags.Instance | BindingFlags.NonPublic);
+
         /// <summary>Events type -> groups of Events of given type</summary>
-        private readonly IDictionary<Type, ICollection<IExecutionEvents>> _events;
+        private readonly IDictionary<Type, IExecutionEventsGroup> _events;
 
         public ExecutionEventsBag()
             : this(Enumerable.Empty<IExecutionEvents>())
@@ -22,7 +26,7 @@ namespace Manisero.Navvy.Core
                 .GroupBy(x => x.GetType())
                 .ToDictionary(
                     x => x.Key,
-                    x => (ICollection<IExecutionEvents>)x.ToArray());
+                    x => CreateEventsGroupMethod.InvokeAsGeneric<IExecutionEventsGroup>(this, new[] { x.Key }, x));
         }
 
         public ExecutionEventsBag(
@@ -31,24 +35,32 @@ namespace Manisero.Navvy.Core
         {
             _events = other1._events.Merge(
                 other2._events,
-                (x, y) => x.Concat(y).ToArray());
+                (x, y) => x.Merge(y));
         }
 
-        public ExecutionEventsGroup<TEvents>? TryGetEvents<TEvents>()
+        public ExecutionEventsGroup<TEvents> TryGetEvents<TEvents>()
             where TEvents : class, IExecutionEvents
         {
             var events = _events.GetValueOrDefault(typeof(TEvents));
 
-            if (events == null)
-            {
-                return null;
-            }
-
-            return new ExecutionEventsGroup<TEvents>(events.Cast<TEvents>().ToArray());
+            return events != null
+                ? (ExecutionEventsGroup<TEvents>)events
+                : null;
         }
+
+        private ExecutionEventsGroup<TEvents> CreateEventsGroup<TEvents>(
+            IEnumerable<IExecutionEvents> events)
+            where TEvents : class, IExecutionEvents
+            => new ExecutionEventsGroup<TEvents>(events.Cast<TEvents>().ToArray());
     }
 
-    public struct ExecutionEventsGroup<TEvents>
+    internal interface IExecutionEventsGroup
+    {
+        IExecutionEventsGroup Merge(
+            IExecutionEventsGroup other);
+    }
+
+    public class ExecutionEventsGroup<TEvents> : IExecutionEventsGroup
         where TEvents : class, IExecutionEvents
     {
         private readonly ICollection<TEvents> _events;
@@ -66,6 +78,14 @@ namespace Manisero.Navvy.Core
             {
                 raiseAction(e);
             }
+        }
+
+        IExecutionEventsGroup IExecutionEventsGroup.Merge(
+            IExecutionEventsGroup other)
+        {
+            var otherGroup = (ExecutionEventsGroup<TEvents>)other;
+
+            return new ExecutionEventsGroup<TEvents>(_events.Concat(otherGroup._events).ToArray());
         }
     }
 }

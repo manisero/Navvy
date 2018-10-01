@@ -10,7 +10,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
     {
         public TaskStepExecutionContext StepContext { get; set; }
 
-        public ExecutionEventsGroup<PipelineExecutionEvents>? Events { get; set; }
+        public ExecutionEventsGroup<PipelineExecutionEvents> Events { get; set; }
 
         public ConcurrentDictionary<string, TimeSpan> TotalBlockDurations { get; set; }
     }
