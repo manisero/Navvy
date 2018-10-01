@@ -40,11 +40,11 @@ namespace Manisero.Navvy.PipelineProcessing
                     var item = inputEnumerator.Current;
                     var materializationDuration = itemSw.Elapsed;
                     totalInputMaterializationDuration += materializationDuration;
-                    events?.OnItemMaterialized(itemNumber, item, itemStartTs, materializationDuration, step, context.Task);
+                    events?.Raise(x => x.OnItemMaterialized(itemNumber, item, itemStartTs, materializationDuration, step, context.Task));
 
                     foreach (var block in step.Blocks)
                     {
-                        events?.OnBlockStarted(block, itemNumber, item, step, context.Task);
+                        events?.Raise(x => x.OnBlockStarted(block, itemNumber, item, step, context.Task));
                         blockSw.Restart();
 
                         try
@@ -58,17 +58,17 @@ namespace Manisero.Navvy.PipelineProcessing
 
                         blockSw.Stop();
                         totalBlockDurations[block.Name] += blockSw.Elapsed;
-                        events?.OnBlockEnded(block, itemNumber, item, step, context.Task, blockSw.Elapsed);
+                        events?.Raise(x => x.OnBlockEnded(block, itemNumber, item, step, context.Task, blockSw.Elapsed));
                         cancellation.ThrowIfCancellationRequested();
                     }
 
                     itemSw.Stop();
-                    events?.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed);
+                    events?.Raise(x => x.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed));
                     PipelineProcessingUtils.ReportProgress(itemNumber, step.Input.ExpectedItemsCount, progress);
                 }
             }
 
-            events?.OnPipelineEnded(totalInputMaterializationDuration, totalBlockDurations, step, context.Task);
+            events?.Raise(x => x.OnPipelineEnded(totalInputMaterializationDuration, totalBlockDurations, step, context.Task));
         }
     }
 }

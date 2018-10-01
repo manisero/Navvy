@@ -24,8 +24,7 @@ namespace Manisero.Navvy
         private readonly IDictionary<Type, ITaskStepExecutorResolver> _stepExecutorResolvers
             = new Dictionary<Type, ITaskStepExecutorResolver>();
 
-        private readonly IDictionary<Type, IExecutionEvents> _events
-            = new Dictionary<Type, IExecutionEvents>();
+        private readonly List<IExecutionEvents> _events = new List<IExecutionEvents>();
 
         public TaskExecutorBuilder()
         {
@@ -44,10 +43,7 @@ namespace Manisero.Navvy
         public ITaskExecutorBuilder RegisterEvents(
             params IExecutionEvents[] events)
         {
-            foreach (var e in events)
-            {
-                _events[e.GetType()] = e;
-            }
+            _events.AddRange(events);
             
             return this;
         }
@@ -56,7 +52,7 @@ namespace Manisero.Navvy
         {
             return new TaskExecutor(
                 new CompositeTaskStepExecutorResolver(_stepExecutorResolvers),
-                new ExecutionEventsBag(_events.Values));
+                new ExecutionEventsBag(_events));
         }
     }
 }

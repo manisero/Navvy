@@ -73,7 +73,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
                 x =>
                 {
-                    context.Events?.OnBlockStarted(block, x.Number, x.Item, step, context.StepContext.Task);
+                    context.Events?.Raise(e => e.OnBlockStarted(block, x.Number, x.Item, step, context.StepContext.Task));
                     var sw = Stopwatch.StartNew();
 
                     try
@@ -87,7 +87,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
                     sw.Stop();
                     context.TotalBlockDurations.AddOrUpdate(block.Name, sw.Elapsed, (_, duration) => duration + sw.Elapsed);
-                    context.Events?.OnBlockEnded(block, x.Number, x.Item, step, context.StepContext.Task, sw.Elapsed);
+                    context.Events?.Raise(e => e.OnBlockEnded(block, x.Number, x.Item, step, context.StepContext.Task, sw.Elapsed));
 
                     return x;
                 },
@@ -111,7 +111,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 x =>
                 {
                     x.ProcessingStopwatch.Stop();
-                    context.Events?.OnItemEnded(x.Number, x.Item, step, context.StepContext.Task, x.ProcessingStopwatch.Elapsed);
+                    context.Events?.Raise(e => e.OnItemEnded(x.Number, x.Item, step, context.StepContext.Task, x.ProcessingStopwatch.Elapsed));
                     PipelineProcessingUtils.ReportProgress(x.Number, step.Input.ExpectedItemsCount, progress);
                 },
                 new ExecutionDataflowBlockOptions

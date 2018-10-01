@@ -59,7 +59,7 @@ namespace Manisero.Navvy.Dataflow
 
                     var materializationDuration = sw.Elapsed;
                     totalInputMaterializationDuration += materializationDuration;
-                    events?.OnItemMaterialized(pipelineItem.Number, pipelineItem.Item, itemStartTs, materializationDuration, step, context.Task);
+                    events?.Raise(x => x.OnItemMaterialized(pipelineItem.Number, pipelineItem.Item, itemStartTs, materializationDuration, step, context.Task));
 
                     pipeline.InputBlock.SendAsync(pipelineItem).Wait();
 
@@ -85,7 +85,7 @@ namespace Manisero.Navvy.Dataflow
                 throw flat;
             }
 
-            events?.OnPipelineEnded(totalInputMaterializationDuration, dataflowExecutionContext.TotalBlockDurations, step, context.Task);
+            events?.Raise(x => x.OnPipelineEnded(totalInputMaterializationDuration, dataflowExecutionContext.TotalBlockDurations, step, context.Task));
         }
     }
 }

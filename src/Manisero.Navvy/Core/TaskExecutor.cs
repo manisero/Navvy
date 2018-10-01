@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Manisero.Navvy.Core.Events;
@@ -41,7 +42,7 @@ namespace Manisero.Navvy.Core
                 cancellation = CancellationToken.None;
             }
 
-            var eventsBag = new ExecutionEventsBag(events); // TODO: Merge with _globalEventsBag
+            var eventsBag = events.Any() ? new ExecutionEventsBag(events) : _globalEventsBag; // TODO: Merge bags
 
             var currentOutcome = TaskOutcome.Successful;
             var errors = new List<TaskExecutionException>();
@@ -49,18 +50,18 @@ namespace Manisero.Navvy.Core
             var taskSw = new Stopwatch();
             var stepSw = new Stopwatch();
             
-            taskEvents?.OnTaskStarted(task);
+            taskEvents?.Raise(x => x.OnTaskStarted(task));
             taskSw.Start();
 
             foreach (var step in task.Steps)
             {
                 if (!step.ExecutionCondition(currentOutcome))
                 {
-                    taskEvents?.OnStepSkipped(step, task);
+                    taskEvents?.Raise(x => x.OnStepSkipped(step, task));
                     continue;
                 }
 
-                taskEvents?.OnStepStarted(step, task);
+                taskEvents?.Raise(x => x.OnStepStarted(step, task));
                 stepSw.Restart();
 
                 try
@@ -77,7 +78,7 @@ namespace Manisero.Navvy.Core
                         currentOutcome = TaskOutcome.Canceled;
                     }
 
-                    taskEvents?.OnStepCanceled(step, task);
+                    taskEvents?.Raise(x => x.OnStepCanceled(step, task));
                 }
                 catch (TaskExecutionException e)
                 {
@@ -88,11 +89,11 @@ namespace Manisero.Navvy.Core
                         currentOutcome = TaskOutcome.Failed;
                     }
 
-                    taskEvents?.OnStepFailed(e, step, task);
+                    taskEvents?.Raise(x => x.OnStepFailed(e, step, task));
                 }
 
                 stepSw.Stop();
-                taskEvents?.OnStepEnded(step, task, stepSw.Elapsed);
+                taskEvents?.Raise(x => x.OnStepEnded(step, task, stepSw.Elapsed));
             }
 
             var result = new TaskResult(
@@ -100,7 +101,7 @@ namespace Manisero.Navvy.Core
                 errors);
 
             taskSw.Stop();
-            taskEvents?.OnTaskEnded(task, result, taskSw.Elapsed);
+            taskEvents?.Raise(x => x.OnTaskEnded(task, result, taskSw.Elapsed));
             
             return result;
         }

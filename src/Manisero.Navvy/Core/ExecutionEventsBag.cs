@@ -7,8 +7,8 @@ namespace Manisero.Navvy.Core
 {
     public class ExecutionEventsBag
     {
-        /// <summary>Events type -> Events</summary>
-        private readonly IDictionary<Type, IExecutionEvents> _events;
+        /// <summary>Events type -> groups of Events of given type</summary>
+        private readonly IDictionary<Type, ICollection<IExecutionEvents>> _events;
 
         public ExecutionEventsBag()
             : this(Enumerable.Empty<IExecutionEvents>())
@@ -18,11 +18,45 @@ namespace Manisero.Navvy.Core
         public ExecutionEventsBag(
             IEnumerable<IExecutionEvents> events)
         {
-            _events = events.ToDictionary(x => x.GetType());
+            _events = events
+                .GroupBy(x => x.GetType())
+                .ToDictionary(
+                    x => x.Key,
+                    x => (ICollection<IExecutionEvents>)x.ToArray());
         }
 
-        public TEvents TryGetEvents<TEvents>()
+        public ExecutionEventsGroup<TEvents>? TryGetEvents<TEvents>()
             where TEvents : class, IExecutionEvents
-            => (TEvents)_events.GetValueOrDefault(typeof(TEvents));
+        {
+            var events = _events.GetValueOrDefault(typeof(TEvents));
+
+            if (events == null)
+            {
+                return null;
+            }
+
+            return new ExecutionEventsGroup<TEvents>(events.Cast<TEvents>().ToArray());
+        }
+    }
+
+    public struct ExecutionEventsGroup<TEvents>
+        where TEvents : class, IExecutionEvents
+    {
+        private readonly ICollection<TEvents> _events;
+
+        public ExecutionEventsGroup(
+            ICollection<TEvents> events)
+        {
+            _events = events;
+        }
+
+        public void Raise(
+            Action<TEvents> raiseAction)
+        {
+            foreach (var e in _events)
+            {
+                raiseAction(e);
+            }
+        }
     }
 }
