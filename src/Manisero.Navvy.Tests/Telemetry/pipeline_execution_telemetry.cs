@@ -17,11 +17,11 @@ namespace Manisero.Navvy.Tests.Telemetry
         public void item_start_and_end_is_reported(ResolverType resolverType)
         {
             // Arrange
-            ItemStartedEvent? startedEvent = null;
+            ItemMaterializedEvent? startedEvent = null;
             ItemEndedEvent? endedEvent = null;
 
             var events = new PipelineExecutionEvents();
-            events.ItemStarted += x => startedEvent = x;
+            events.ItemMaterialized += x => startedEvent = x;
             events.ItemEnded += x => endedEvent = x;
 
             var item = 1;

@@ -27,6 +27,7 @@ namespace Manisero.Navvy.PipelineProcessing
             {
                 while (true)
                 {
+                    var itemStartTs = DateTimeOffset.UtcNow;
                     itemSw.Restart();
 
                     if (!inputEnumerator.MoveNext())
@@ -39,7 +40,7 @@ namespace Manisero.Navvy.PipelineProcessing
                     var item = inputEnumerator.Current;
                     var materializationDuration = itemSw.Elapsed;
                     totalInputMaterializationDuration += materializationDuration;
-                    events?.OnItemStarted(itemNumber, item, materializationDuration, step, context.Task);
+                    events?.OnItemMaterialized(itemNumber, item, itemStartTs, materializationDuration, step, context.Task);
 
                     foreach (var block in step.Blocks)
                     {

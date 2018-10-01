@@ -41,6 +41,7 @@ namespace Manisero.Navvy.Dataflow
             {
                 while (true)
                 {
+                    var itemStartTs = DateTimeOffset.UtcNow;
                     var sw = Stopwatch.StartNew();
 
                     if (!inputEnumerator.MoveNext())
@@ -58,7 +59,7 @@ namespace Manisero.Navvy.Dataflow
 
                     var materializationDuration = sw.Elapsed;
                     totalInputMaterializationDuration += materializationDuration;
-                    events?.OnItemStarted(pipelineItem.Number, pipelineItem.Item, materializationDuration, step, context.Task);
+                    events?.OnItemMaterialized(pipelineItem.Number, pipelineItem.Item, itemStartTs, materializationDuration, step, context.Task);
 
                     pipeline.InputBlock.SendAsync(pipelineItem).Wait();
 

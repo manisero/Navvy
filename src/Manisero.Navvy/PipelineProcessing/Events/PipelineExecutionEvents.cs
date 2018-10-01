@@ -6,10 +6,11 @@ using Manisero.Navvy.Utils;
 
 namespace Manisero.Navvy.PipelineProcessing.Events
 {
-    public struct ItemStartedEvent
+    public struct ItemMaterializedEvent
     {
         public int ItemNumber;
         public object Item;
+        public DateTime ItemStartTimestamp;
         public TimeSpan MaterializationDuration;
         public ITaskStep Step;
         public TaskDefinition Task;
@@ -58,22 +59,22 @@ namespace Manisero.Navvy.PipelineProcessing.Events
 
     public class PipelineExecutionEvents : IExecutionEvents
     {
-        public event ExecutionEventHandler<ItemStartedEvent> ItemStarted;
+        public event ExecutionEventHandler<ItemMaterializedEvent> ItemMaterialized;
         public event ExecutionEventHandler<ItemEndedEvent> ItemEnded;
         public event ExecutionEventHandler<BlockStartedEvent> BlockStarted;
         public event ExecutionEventHandler<BlockEndedEvent> BlockEnded;
         public event ExecutionEventHandler<PipelineEndedEvent> PipelineEnded;
 
         public PipelineExecutionEvents(
-            ExecutionEventHandler<ItemStartedEvent> itemStarted = null,
+            ExecutionEventHandler<ItemMaterializedEvent> itemMaterialized = null,
             ExecutionEventHandler<ItemEndedEvent> itemEnded = null,
             ExecutionEventHandler<BlockStartedEvent> blockStarted = null,
             ExecutionEventHandler<BlockEndedEvent> blockEnded = null,
             ExecutionEventHandler<PipelineEndedEvent> pipelineEnded = null)
         {
-            if (itemStarted != null)
+            if (itemMaterialized != null)
             {
-                ItemStarted += itemStarted;
+                ItemMaterialized += itemMaterialized;
             }
 
             if (itemEnded != null)
@@ -97,12 +98,13 @@ namespace Manisero.Navvy.PipelineProcessing.Events
             }
         }
 
-        public void OnItemStarted(int itemNumber, object item, TimeSpan materializationDuration, ITaskStep step, TaskDefinition task)
+        public void OnItemMaterialized(int itemNumber, object item, DateTimeOffset itemStartTimestamp, TimeSpan materializationDuration, ITaskStep step, TaskDefinition task)
         {
-            ItemStarted?.Invoke(new ItemStartedEvent
+            ItemMaterialized?.Invoke(new ItemMaterializedEvent
             {
                 ItemNumber = itemNumber,
                 Item = item,
+                ItemStartTimestamp = itemStartTimestamp.UtcDateTime,
                 MaterializationDuration = materializationDuration,
                 Step = step,
                 Task = task,
