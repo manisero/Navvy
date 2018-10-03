@@ -31,6 +31,7 @@ namespace Manisero.Navvy.Tests
             var completed = false;
 
             var task = new TaskDefinition(
+                "TestTask",
                 new BasicTaskStep(
                     "Initialize",
                     () => { initialized = true; }),
@@ -44,11 +45,13 @@ namespace Manisero.Navvy.Tests
                     "Complete",
                     () => { completed = true; }));
 
+            task.Extras["Id"] = 1;
+
             var progress = new SynchronousProgress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
             var cancellationSource = new CancellationTokenSource();
 
             var taskEvents = new TaskExecutionEvents(
-                taskStarted: x => _output.WriteLine("Task started."),
+                taskStarted: x => _output.WriteLine($"Task '{x.Task.Name}' (id: {x.Task.Extras["Id"]}) started."),
                 taskEnded: x => _output.WriteLine($"Task ended after {x.Duration.Ticks} ticks."),
                 stepStarted: x => _output.WriteLine($"Step '{x.Step.Name}' started."),
                 stepEnded: x => _output.WriteLine($"Step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."));
