@@ -7,13 +7,13 @@ namespace Manisero.Navvy
     {
         public string Name { get; }
 
-        public IList<ITaskStep> Steps { get; }
+        public IReadOnlyList<ITaskStep> Steps { get; }
 
         public IDictionary<string, object> Extras { get; } = new ConcurrentDictionary<string, object>();
 
         public TaskDefinition(
             string name,
-            IList<ITaskStep> steps)
+            IReadOnlyList<ITaskStep> steps)
         {
             Name = name;
             Steps = steps;
@@ -22,12 +22,12 @@ namespace Manisero.Navvy
         public TaskDefinition(
             string name,
             params ITaskStep[] steps)
-            : this(name, (IList<ITaskStep>)steps)
+            : this(name, (IReadOnlyList<ITaskStep>)steps)
         {
         }
 
         public TaskDefinition(
-            IList<ITaskStep> steps)
+            IReadOnlyList<ITaskStep> steps)
             : this(null, steps)
         {
             Steps = steps;
@@ -35,7 +35,7 @@ namespace Manisero.Navvy
 
         public TaskDefinition(
             params ITaskStep[] steps)
-            : this((IList<ITaskStep>)steps)
+            : this((IReadOnlyList<ITaskStep>)steps)
         {
         }
     }

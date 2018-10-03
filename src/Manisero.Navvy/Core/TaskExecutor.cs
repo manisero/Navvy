@@ -122,11 +122,7 @@ namespace Manisero.Navvy.Core
             };
 
             var stepProgress = new SynchronousProgress<byte>(
-                x => progress.Report(new TaskProgress
-                {
-                    StepName = step.Name,
-                    ProgressPercentage = x
-                }));
+                x => progress.Report(new TaskProgress(step.Name, x)));
             
             stepExecutor.Execute(step, context, stepProgress, cancellation);
         }
