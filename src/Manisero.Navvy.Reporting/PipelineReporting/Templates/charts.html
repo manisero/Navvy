@@ -1,0 +1,52 @@
+﻿<html>
+<head>
+    <title>Pipeline execution log</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+<div id="itemTimesContainer" style="width: 95%; margin: auto"></div>
+<div id="memoryContainer" style="width: 95%; margin: auto"></div>
+<div id="blockTimesContainer" style="width: 95%; margin: auto"></div>
+
+<script language="JavaScript">
+    function drawCharts() {
+
+        var reportData = @ReportDataJson;
+
+        // ItemTimes
+        
+        var itemTimesOptions = {
+            height: (reportData.ItemTimesData.length - 1) * 12
+        };
+
+        var itemTimesChart = new google.visualization.Timeline(document.getElementById('itemTimesContainer'));
+        itemTimesChart.draw(google.visualization.arrayToDataTable(reportData.ItemTimesData), itemTimesOptions);
+
+        // Memory
+        
+        var memoryOptions = {
+            title: 'Memory',
+            legend: { position: 'top' }
+        };
+
+        var memoryChart = new google.visualization.LineChart(document.getElementById('memoryContainer'));
+        memoryChart.draw(google.visualization.arrayToDataTable(reportData.MemoryData), memoryOptions);
+
+        // BlockTimes
+        
+        var blockTimesOptions = {
+            title: 'Block total durations',
+            legend: { position: 'top' },
+            vAxis: { minValue: 0 }
+        };
+
+        var blockTimesChart = new google.visualization.ColumnChart(document.getElementById('blockTimesContainer'));
+        blockTimesChart.draw(google.visualization.arrayToDataTable(reportData.BlockTimesData), blockTimesOptions);
+    }
+
+    google.charts.load('current', { packages: ['corechart', 'timeline'] });
+    google.charts.setOnLoadCallback(drawCharts);
+</script>
+</body>
+</html>

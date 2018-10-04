@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="PipelineReporting\Templates\charts.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="PipelineReporting\Templates\charts.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Manisero.Navvy\Manisero.Navvy.csproj" />
+  </ItemGroup>
+
+</Project>
