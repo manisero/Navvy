@@ -13,7 +13,7 @@
             this TaskDefinition task)
             => task.Extras.Get<TaskExecutionLog>(TaskExecutionLogExtraKey);
 
-        public static ITaskExecutorBuilder RegisterTaskExecutionLogger(
+        public static ITaskExecutorBuilder UseTaskExecutionLogger(
             this ITaskExecutorBuilder builder)
             => builder.RegisterEvents(TaskExecutionLogger.CreateEvents());
     }

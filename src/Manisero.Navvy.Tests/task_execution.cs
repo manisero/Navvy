@@ -34,7 +34,7 @@ namespace Manisero.Navvy.Tests
 
             var executor = new TaskExecutorBuilder()
                 .RegisterPipelineExecution(resolverType)
-                .RegisterTaskExecutionLogger()
+                .UseTaskExecutionLogger()
                 .Build();
 
             var task = new TaskDefinition(
