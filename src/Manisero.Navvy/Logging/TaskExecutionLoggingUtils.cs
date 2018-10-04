@@ -7,11 +7,11 @@
         internal static void SetExecutionLog(
             this TaskDefinition task,
             TaskExecutionLog log)
-            => task.Extras[TaskExecutionLogExtraKey] = log;
+            => task.Extras.Set(TaskExecutionLogExtraKey, log);
 
         public static TaskExecutionLog GetExecutionLog(
             this TaskDefinition task)
-            => (TaskExecutionLog)task.Extras[TaskExecutionLogExtraKey];
+            => task.Extras.Get<TaskExecutionLog>(TaskExecutionLogExtraKey);
 
         public static ITaskExecutorBuilder RegisterTaskExecutionLogger(
             this ITaskExecutorBuilder builder)

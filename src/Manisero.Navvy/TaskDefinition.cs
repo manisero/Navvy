@@ -1,5 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Manisero.Navvy.Core;
 
 namespace Manisero.Navvy
 {
@@ -9,7 +9,7 @@ namespace Manisero.Navvy
 
         public IReadOnlyList<ITaskStep> Steps { get; }
 
-        public IDictionary<string, object> Extras { get; } = new ConcurrentDictionary<string, object>();
+        public TaskExtras Extras { get; } = new TaskExtras();
 
         public TaskDefinition(
             string name,
