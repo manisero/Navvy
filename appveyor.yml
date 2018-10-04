@@ -11,6 +11,8 @@ build_script:
 
     dotnet pack Manisero.Navvy.Dataflow -c Release --include-symbols --no-build
 
+    dotnet pack Manisero.Navvy.Reporting -c Release --include-symbols --no-build
+
 test_script:
 - cmd: >-
     dotnet test Manisero.Navvy.Tests -c Release --no-build
