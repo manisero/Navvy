@@ -1,5 +1,4 @@
 ﻿using Manisero.Navvy.Core;
-using Manisero.Navvy.Dataflow;
 
 namespace Manisero.Navvy.Tests.Utils
 {
@@ -15,12 +14,8 @@ namespace Manisero.Navvy.Tests.Utils
             ResolverType resolverType,
             params IExecutionEvents[] events)
         {
-            var builder = new TaskExecutorBuilder();
-
-            if (resolverType == ResolverType.Streaming)
-            {
-                builder.RegisterDataflowExecution();
-            }
+            var builder = new TaskExecutorBuilder()
+                .RegisterPipelineExecution(resolverType);
 
             foreach (var e in events)
             {

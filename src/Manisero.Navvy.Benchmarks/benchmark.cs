@@ -93,7 +93,7 @@ namespace Manisero.Navvy.Benchmarks
         public void setup___pipeline_processing___Dataflow___not_batched___not_parallel()
         {
             _executor = new TaskExecutorBuilder()
-                .RegisterDataflowExecution()
+                .UseDataflowPipelineExecution()
                 .Build();
 
             _task = GetPipelineTask_NotBatched(false);
@@ -109,7 +109,7 @@ namespace Manisero.Navvy.Benchmarks
         public void setup___pipeline_processing___Dataflow___batched___not_parallel()
         {
             _executor = new TaskExecutorBuilder()
-                .RegisterDataflowExecution()
+                .UseDataflowPipelineExecution()
                 .Build();
 
             _task = GetPipelineTask_Batched(false);
@@ -125,7 +125,7 @@ namespace Manisero.Navvy.Benchmarks
         public void setup___pipeline_processing___Dataflow___not_batched___parallel()
         {
             _executor = new TaskExecutorBuilder()
-                .RegisterDataflowExecution()
+                .UseDataflowPipelineExecution()
                 .Build();
 
             _task = GetPipelineTask_NotBatched(true);
@@ -141,7 +141,7 @@ namespace Manisero.Navvy.Benchmarks
         public void setup___pipeline_processing___Dataflow___batched___parallel()
         {
             _executor = new TaskExecutorBuilder()
-                .RegisterDataflowExecution()
+                .UseDataflowPipelineExecution()
                 .Build();
 
             _task = GetPipelineTask_Batched(true);
@@ -157,7 +157,7 @@ namespace Manisero.Navvy.Benchmarks
         public void setup___pipeline_processing___Dataflow___batched___parallel___no_Interlock()
         {
             _executor = new TaskExecutorBuilder()
-                .RegisterDataflowExecution()
+                .UseDataflowPipelineExecution()
                 .Build();
 
             _task = GetPipelineTask_Batched_Parallel_NoInterlock();

@@ -8,7 +8,7 @@ namespace Manisero.Navvy.Tests.Utils
             this ITaskExecutorBuilder builder,
             ResolverType resolverType)
             => resolverType == ResolverType.Streaming
-                ? builder.RegisterDataflowExecution()
+                ? builder.UseDataflowPipelineExecution()
                 : builder;
     }
 }

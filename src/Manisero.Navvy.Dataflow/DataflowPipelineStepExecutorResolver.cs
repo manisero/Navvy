@@ -18,7 +18,7 @@ namespace Manisero.Navvy.Dataflow
 
     public static class TaskExecutorBuilderExtensions
     {
-        public static ITaskExecutorBuilder RegisterDataflowExecution(
+        public static ITaskExecutorBuilder UseDataflowPipelineExecution(
             this ITaskExecutorBuilder builder)
             => builder.RegisterStepExecution(typeof(PipelineTaskStep<>), new DataflowPipelineStepExecutorResolver());
     }
