@@ -1,7 +1,9 @@
 ﻿using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
+using Manisero.Navvy.Core;
 using Manisero.Navvy.Core.Events;
+using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
 using Manisero.Navvy.Tests.Utils;
@@ -30,6 +32,11 @@ namespace Manisero.Navvy.Tests
             var sum = 0;
             var completed = false;
 
+            var executor = new TaskExecutorBuilder()
+                .RegisterPipelineExecution(resolverType)
+                .RegisterTaskExecutionLogger()
+                .Build();
+
             var task = new TaskDefinition(
                 "TestTask",
                 new BasicTaskStep(
@@ -50,26 +57,29 @@ namespace Manisero.Navvy.Tests
             var progress = new SynchronousProgress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
             var cancellationSource = new CancellationTokenSource();
 
-            var taskEvents = new TaskExecutionEvents(
-                taskStarted: x => _output.WriteLine($"Task '{x.Task.Name}' (id: {x.Task.Extras["Id"]}) started."),
-                taskEnded: x => _output.WriteLine($"Task ended after {x.Duration.Ticks} ticks."),
-                stepStarted: x => _output.WriteLine($"Step '{x.Step.Name}' started."),
-                stepEnded: x => _output.WriteLine($"Step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."));
-
-            var pipelineEvents = new PipelineExecutionEvents(
-                itemMaterialized: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' materialized."),
-                itemEnded: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."),
-                blockStarted: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' started processing item {x.ItemNumber}."),
-                blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing item {x.ItemNumber} after {x.Duration.Ticks} ticks."));
+            var events = new IExecutionEvents[]
+            {
+                new TaskExecutionEvents(
+                    taskStarted: x => _output.WriteLine($"Task '{x.Task.Name}' (id: {x.Task.Extras["Id"]}) started."),
+                    taskEnded: x => _output.WriteLine($"Task ended after {x.Duration.Ticks} ticks."),
+                    stepStarted: x => _output.WriteLine($"Step '{x.Step.Name}' started."),
+                    stepEnded: x => _output.WriteLine($"Step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks.")),
+                new PipelineExecutionEvents(
+                    itemMaterialized: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' materialized."),
+                    itemEnded: x => _output.WriteLine($"Item {x.ItemNumber} of step '{x.Step.Name}' ended after {x.Duration.Ticks} ticks."),
+                    blockStarted: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' started processing item {x.ItemNumber}."),
+                    blockEnded: x => _output.WriteLine($"Block '{x.Block.Name}' of step '{x.Step.Name}' ended processing item {x.ItemNumber} after {x.Duration.Ticks} ticks."))
+            };
 
             // Act
-            var result = task.Execute(resolverType, progress, cancellationSource, taskEvents, pipelineEvents);
+            var result = executor.Execute(task, progress, cancellationSource.Token, events);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Successful);
             initialized.Should().Be(true);
             sum.Should().Be(21);
             completed.Should().Be(true);
+            task.GetExecutionLog().Should().NotBeNull();
         }
     }
 }
