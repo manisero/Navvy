@@ -26,9 +26,10 @@ namespace Manisero.Navvy.Reporting
             this TaskDefinition task)
             => task.Extras.Get<string>(TaskExecutionReportsFolderPathExtraKey);
 
-        public static ITaskExecutorBuilder UseTaskExecutionReporting(
+        /// <param name="reportsFolderPathFactory">If specified, generated reports will be saved in given folder.</param>
+        public static ITaskExecutorBuilder UseTaskExecutionReporter(
             this ITaskExecutorBuilder builder,
             Func<TaskDefinition, string> reportsFolderPathFactory = null)
-            => builder.RegisterEvents(TaskExecutionReportsGenerator.CreateEvents(reportsFolderPathFactory));
+            => builder.RegisterEvents(TaskExecutionReporter.CreateEvents(reportsFolderPathFactory));
     }
 }

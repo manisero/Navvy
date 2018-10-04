@@ -6,6 +6,7 @@ using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
+using Manisero.Navvy.Reporting;
 using Manisero.Navvy.Tests.Utils;
 using Xunit;
 using Xunit.Abstractions;
@@ -35,6 +36,7 @@ namespace Manisero.Navvy.Tests
             var executor = new TaskExecutorBuilder()
                 .RegisterPipelineExecution(resolverType)
                 .UseTaskExecutionLogger()
+                .UseTaskExecutionReporter()
                 .Build();
 
             var task = new TaskDefinition(
@@ -80,6 +82,7 @@ namespace Manisero.Navvy.Tests
             sum.Should().Be(21);
             completed.Should().Be(true);
             task.GetExecutionLog().Should().NotBeNull();
+            task.GetExecutionReports().Should().NotBeNull().And.NotBeEmpty();
         }
     }
 }

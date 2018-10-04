@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Manisero.Navvy.Dataflow\Manisero.Navvy.Dataflow.csproj" />
+    <ProjectReference Include="..\Manisero.Navvy.Reporting\Manisero.Navvy.Reporting.csproj" />
     <ProjectReference Include="..\Manisero.Navvy\Manisero.Navvy.csproj" />
   </ItemGroup>
 
