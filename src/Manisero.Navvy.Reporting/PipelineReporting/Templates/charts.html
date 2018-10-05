@@ -29,10 +29,15 @@
         
         var memoryOptions = {
             title: 'Memory',
-            legend: { position: 'top' }
+            legend: { position: 'top' },
+            hAxis: {
+                title: reportData.MemoryData[0][0],
+                viewWindowMode: 'maximized'
+            },
+            vAxis: { minValue: 0}
         };
 
-        var memoryChart = new google.visualization.LineChart(document.getElementById('memoryContainer'));
+        var memoryChart = new google.visualization.ScatterChart(document.getElementById('memoryContainer'));
         memoryChart.draw(google.visualization.arrayToDataTable(reportData.MemoryData), memoryOptions);
 
         // BlockTimes
