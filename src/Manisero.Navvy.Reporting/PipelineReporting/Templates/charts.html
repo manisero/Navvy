@@ -15,9 +15,11 @@
         var reportData = @ReportDataJson;
 
         // ItemTimes
-        
+
+        var itemsCount = new Set(reportData.ItemTimesData.map(x => x[0])).size - 1;
+
         var itemTimesOptions = {
-            height: (reportData.ItemTimesData.length - 1) * 12
+            height: itemsCount * 46
         };
 
         var itemTimesChart = new google.visualization.Timeline(document.getElementById('itemTimesContainer'));
