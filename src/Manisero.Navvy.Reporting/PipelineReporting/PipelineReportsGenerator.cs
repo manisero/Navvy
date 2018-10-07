@@ -41,8 +41,8 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
         private static IEnumerable<ReportTemplate> GetReportTemplates()
         {
-            var templatesAssembly = typeof(TemplatesNamespaceMarker).Assembly;
-            var templateResourceNamePrefix = typeof(TemplatesNamespaceMarker).Namespace + ".";
+            var templatesAssembly = typeof(PipelineReportingTemplatesNamespaceMarker).Assembly;
+            var templateResourceNamePrefix = typeof(PipelineReportingTemplatesNamespaceMarker).Namespace + ".";
 
             var templateResourceNames = templatesAssembly
                 .GetManifestResourceNames()

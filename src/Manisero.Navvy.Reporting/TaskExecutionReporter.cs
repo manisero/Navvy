@@ -7,6 +7,7 @@ using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.Reporting.PipelineReporting;
+using Manisero.Navvy.Reporting.TaskReporting;
 
 namespace Manisero.Navvy.Reporting
 {
@@ -20,6 +21,7 @@ namespace Manisero.Navvy.Reporting
     {
         public static ITaskExecutionReporter Instance = new TaskExecutionReporter();
 
+        private readonly ITaskReportsGenerator _taskReportsGenerator = new TaskReportsGenerator();
         private readonly IPipelineReportDataExtractor _pipelineReportDataExtractor = new PipelineReportDataExtractor();
         private readonly IPipelineReportsGenerator _pipelineReportsGenerator = new PipelineReportsGenerator();
 
@@ -27,6 +29,13 @@ namespace Manisero.Navvy.Reporting
             TaskDefinition successfulTask)
         {
             var log = successfulTask.GetExecutionLog();
+
+            var taskReports = _taskReportsGenerator.Generate(log);
+
+            foreach (var report in taskReports)
+            {
+                yield return report;
+            }
 
             foreach (var pipeline in successfulTask.Steps.Where(x => x is IPipelineTaskStep).Cast<IPipelineTaskStep>())
             {
