@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
+using Manisero.Navvy.Reporting.Shared;
 using Manisero.Navvy.Reporting.Utils;
 
 namespace Manisero.Navvy.Reporting.PipelineReporting
@@ -16,8 +17,6 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
     internal class PipelineReportDataExtractor : IPipelineReportDataExtractor
     {
-        private const string MsUnit = " [ms]";
-        private const string MbUnit = " [mb]";
         private const string MaterializationBlockName = "Materialization";
 
         public PipelineReportData Extract(
@@ -39,7 +38,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             TaskStepLog stepLog,
             ICollection<string> blockNames)
         {
-            var headerRow = new[] { "Item", "Step", "StartTs", "EndTs" };
+            var headerRow = new[] { "Item", "Step", "Start" + PipelineReportingUtils.MsUnit, "End" + PipelineReportingUtils.MsUnit };
 
             var dataRows = stepLog
                 .ItemLogs
@@ -83,7 +82,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             TaskStepLog stepLog,
             ICollection<string> blockNames)
         {
-            yield return new[] { "Step", "Total duration" + MsUnit };
+            yield return new[] { "Step", "Total duration" + PipelineReportingUtils.MsUnit };
             yield return new[] { MaterializationBlockName, stepLog.BlockTotals.MaterializationDuration.GetLogValue() };
 
             foreach (var blockName in blockNames)
@@ -96,7 +95,12 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             DurationLog stepDuration,
             IEnumerable<DiagnosticLog> diagnostics)
         {
-            yield return new[] { "Time" + MsUnit, "Process working set" + MbUnit, "GC allocated set" + MbUnit };
+            yield return new[]
+            {
+                "Time" + PipelineReportingUtils.MsUnit,
+                "Process working set" + PipelineReportingUtils.MbUnit,
+                "GC allocated set" + PipelineReportingUtils.MbUnit
+            };
 
             var relevantDiagnostics = diagnostics
                 .Where(x => x.Timestamp.IsBetween(stepDuration.StartTs, stepDuration.EndTs))

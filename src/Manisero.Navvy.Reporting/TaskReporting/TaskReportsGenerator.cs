@@ -16,18 +16,21 @@ namespace Manisero.Navvy.Reporting.TaskReporting
     {
         public const string ReportDataJsonToken = "@ReportDataJson";
 
+        private readonly ITaskReportDataExtractor _taskReportDataExtractor;
         private readonly IReportsFormatter _reportsFormatter;
 
         public TaskReportsGenerator(
+            ITaskReportDataExtractor taskReportDataExtractor,
             IReportsFormatter reportsFormatter)
         {
+            _taskReportDataExtractor = taskReportDataExtractor;
             _reportsFormatter = reportsFormatter;
         }
 
         public ICollection<TaskExecutionReport> Generate(
             TaskExecutionLog log)
         {
-            var data = ExtractReportData(log);
+            var data = _taskReportDataExtractor.Extract(log);
 
             return _reportsFormatter.Format(
                     data,
@@ -35,12 +38,6 @@ namespace Manisero.Navvy.Reporting.TaskReporting
                     ReportDataJsonToken,
                     x => x)
                 .ToArray();
-        }
-
-        private TaskReportData ExtractReportData(
-            TaskExecutionLog log)
-        {
-            return new TaskReportData();
         }
     }
 }

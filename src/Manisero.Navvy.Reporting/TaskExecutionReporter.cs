@@ -30,6 +30,7 @@ namespace Manisero.Navvy.Reporting
             var reportsFormatter = new ReportsFormatter();
 
             _taskReportsGenerator = new TaskReportsGenerator(
+                new TaskReportDataExtractor(),
                 reportsFormatter);
 
             _pipelineReportsGenerator = new PipelineReportsGenerator(
