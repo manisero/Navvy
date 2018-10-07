@@ -13,7 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TaskReporting\Templates\charts.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="PipelineReporting\Templates\charts.html" />
+    <EmbeddedResource Include="TaskReporting\Templates\charts.html" />
   </ItemGroup>
 
   <ItemGroup>

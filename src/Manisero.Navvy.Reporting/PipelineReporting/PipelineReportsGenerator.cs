@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Manisero.Navvy.Reporting.PipelineReporting.Templates;
-using Manisero.Navvy.Reporting.Utils;
+using Manisero.Navvy.Reporting.Shared;
 
 namespace Manisero.Navvy.Reporting.PipelineReporting
 {
@@ -15,51 +12,24 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
     internal class PipelineReportsGenerator : IPipelineReportsGenerator
     {
-        private struct ReportTemplate
-        {
-            public string FileName { get; set; }
-            public string Body { get; set; }
-        }
-
         public const string ReportDataJsonToken = "@ReportDataJson";
 
-        private static readonly Lazy<ICollection<ReportTemplate>> ReportTemplates =
-            new Lazy<ICollection<ReportTemplate>>(() => GetReportTemplates().ToArray());
+        private readonly IReportsFormatter _reportsFormatter;
+
+        public PipelineReportsGenerator(
+            IReportsFormatter reportsFormatter)
+        {
+            _reportsFormatter = reportsFormatter;
+        }
 
         public IEnumerable<TaskExecutionReport> Generate(
             PipelineReportData data)
         {
-            var reportDataJson = data.ToJson();
-
-            foreach (var template in ReportTemplates.Value)
-            {
-                yield return new TaskExecutionReport(
-                    $"{data.PipelineName}_{template.FileName}",
-                    template.Body.Replace(ReportDataJsonToken, reportDataJson));
-            }
-        }
-
-        private static IEnumerable<ReportTemplate> GetReportTemplates()
-        {
-            var templatesAssembly = typeof(PipelineReportingTemplatesNamespaceMarker).Assembly;
-            var templateResourceNamePrefix = typeof(PipelineReportingTemplatesNamespaceMarker).Namespace + ".";
-
-            var templateResourceNames = templatesAssembly
-                .GetManifestResourceNames()
-                .Where(x => x.StartsWith(templateResourceNamePrefix));
-
-            foreach (var resourceName in templateResourceNames)
-            {
-                using (var resourceStream = templatesAssembly.GetManifestResourceStream(resourceName))
-                using (var reader = new StreamReader(resourceStream))
-                {
-                    yield return new ReportTemplate
-                    {
-                        FileName = resourceName.Substring(templateResourceNamePrefix.Length),
-                        Body = reader.ReadToEnd()
-                    };
-                }
-            }
+            return _reportsFormatter.Format(
+                data,
+                typeof(PipelineReportingTemplatesNamespaceMarker),
+                x => $"{data.PipelineName}_{x}",
+                ReportDataJsonToken);
         }
     }
 }

@@ -7,6 +7,7 @@ using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.Reporting.PipelineReporting;
+using Manisero.Navvy.Reporting.Shared;
 using Manisero.Navvy.Reporting.TaskReporting;
 
 namespace Manisero.Navvy.Reporting
@@ -21,9 +22,18 @@ namespace Manisero.Navvy.Reporting
     {
         public static ITaskExecutionReporter Instance = new TaskExecutionReporter();
 
-        private readonly ITaskReportsGenerator _taskReportsGenerator = new TaskReportsGenerator();
-        private readonly IPipelineReportDataExtractor _pipelineReportDataExtractor = new PipelineReportDataExtractor();
-        private readonly IPipelineReportsGenerator _pipelineReportsGenerator = new PipelineReportsGenerator();
+        private readonly ITaskReportsGenerator _taskReportsGenerator;
+        private readonly IPipelineReportDataExtractor _pipelineReportDataExtractor;
+        private readonly IPipelineReportsGenerator _pipelineReportsGenerator;
+
+        public TaskExecutionReporter()
+        {
+            var reportsFormatter = new ReportsFormatter();
+
+            _taskReportsGenerator = new TaskReportsGenerator();
+            _pipelineReportDataExtractor = new PipelineReportDataExtractor();
+            _pipelineReportsGenerator = new PipelineReportsGenerator(reportsFormatter);
+        }
 
         public IEnumerable<TaskExecutionReport> GenerateReports(
             TaskDefinition successfulTask)
