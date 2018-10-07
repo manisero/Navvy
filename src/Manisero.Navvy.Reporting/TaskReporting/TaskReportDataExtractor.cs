@@ -9,35 +9,40 @@ namespace Manisero.Navvy.Reporting.TaskReporting
     internal interface ITaskReportDataExtractor
     {
         TaskReportData Extract(
+            TaskDefinition task,
             TaskExecutionLog log);
     }
 
     internal class TaskReportDataExtractor : ITaskReportDataExtractor
     {
         public TaskReportData Extract(
+            TaskDefinition task,
             TaskExecutionLog log)
         {
+            var stepNames = task.Steps.Select(x => x.Name);
+
             return new TaskReportData
             {
-                StepTimesData = GetStepTimesData(log).ToArray(),
+                StepTimesData = GetStepTimesData(log, stepNames).ToArray(),
                 MemoryData = GetMemoryData(log.TaskDuration, log.Diagnostics).ToArray()
             };
         }
 
         private IEnumerable<ICollection<object>> GetStepTimesData(
-            TaskExecutionLog log)
+            TaskExecutionLog log,
+            IEnumerable<string> stepNames)
         {
             yield return new[] { "Step", "Start" + PipelineReportingUtils.MsUnit, "End" + PipelineReportingUtils.MsUnit };
 
             var taskStartTs = log.TaskDuration.StartTs;
 
-            foreach (var nameToLog in log.StepLogs)
+            foreach (var stepName in stepNames)
             {
-                var stepDuration = nameToLog.Value.Duration;
+                var stepDuration = log.StepLogs[stepName].Duration;
 
                 yield return new[]
                 {
-                    nameToLog.Key,
+                    stepName,
                     (stepDuration.StartTs - taskStartTs).GetLogValue(),
                     (stepDuration.EndTs - taskStartTs).GetLogValue()
                 };

@@ -9,6 +9,7 @@ namespace Manisero.Navvy.Reporting.TaskReporting
     internal interface ITaskReportsGenerator
     {
         ICollection<TaskExecutionReport> Generate(
+            TaskDefinition task,
             TaskExecutionLog log);
     }
 
@@ -28,9 +29,10 @@ namespace Manisero.Navvy.Reporting.TaskReporting
         }
 
         public ICollection<TaskExecutionReport> Generate(
+            TaskDefinition task,
             TaskExecutionLog log)
         {
-            var data = _taskReportDataExtractor.Extract(log);
+            var data = _taskReportDataExtractor.Extract(task, log);
 
             return _reportsFormatter.Format(
                     data,

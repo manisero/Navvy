@@ -43,7 +43,7 @@ namespace Manisero.Navvy.Reporting
         {
             var log = successfulTask.GetExecutionLog();
 
-            var taskReports = _taskReportsGenerator.Generate(log);
+            var taskReports = _taskReportsGenerator.Generate(successfulTask, log);
 
             foreach (var report in taskReports)
             {
