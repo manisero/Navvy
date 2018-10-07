@@ -19,7 +19,7 @@
         var itemsCount = new Set(reportData.ItemTimesData.map(x => x[0])).size - 1;
 
         var itemTimesOptions = {
-            height: itemsCount * 46
+            height: itemsCount * 41 + 50
         };
 
         var itemTimesChart = new google.visualization.Timeline(document.getElementById('itemTimesContainer'));
