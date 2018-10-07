@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Models;
@@ -18,6 +19,7 @@ namespace Manisero.Navvy.Tests
         {
             // Arrange
             var task = new TaskDefinition(
+                BasicTaskStep.Empty("Basic"),
                 new PipelineTaskStep<int>(
                     "Pipeline1",
                     new[] { 1 },
