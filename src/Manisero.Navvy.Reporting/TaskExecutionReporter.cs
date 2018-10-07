@@ -23,16 +23,18 @@ namespace Manisero.Navvy.Reporting
         public static ITaskExecutionReporter Instance = new TaskExecutionReporter();
 
         private readonly ITaskReportsGenerator _taskReportsGenerator;
-        private readonly IPipelineReportDataExtractor _pipelineReportDataExtractor;
         private readonly IPipelineReportsGenerator _pipelineReportsGenerator;
 
         public TaskExecutionReporter()
         {
             var reportsFormatter = new ReportsFormatter();
 
-            _taskReportsGenerator = new TaskReportsGenerator(reportsFormatter);
-            _pipelineReportDataExtractor = new PipelineReportDataExtractor();
-            _pipelineReportsGenerator = new PipelineReportsGenerator(reportsFormatter);
+            _taskReportsGenerator = new TaskReportsGenerator(
+                reportsFormatter);
+
+            _pipelineReportsGenerator = new PipelineReportsGenerator(
+                new PipelineReportDataExtractor(),
+                reportsFormatter);
         }
 
         public IEnumerable<TaskExecutionReport> GenerateReports(
@@ -49,8 +51,7 @@ namespace Manisero.Navvy.Reporting
 
             foreach (var pipeline in successfulTask.Steps.Where(x => x is IPipelineTaskStep).Cast<IPipelineTaskStep>())
             {
-                var data = _pipelineReportDataExtractor.Extract(pipeline, log);
-                var pipelineReports = _pipelineReportsGenerator.Generate(data);
+                var pipelineReports = _pipelineReportsGenerator.Generate(pipeline, log);
 
                 foreach (var report in pipelineReports)
                 {

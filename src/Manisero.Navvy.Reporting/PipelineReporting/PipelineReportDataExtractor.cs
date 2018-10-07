@@ -29,7 +29,6 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
             return new PipelineReportData
             {
-                PipelineName = pipeline.Name,
                 ItemTimesData = GetItemTimesData(stepLog, blockNames).ToArray(),
                 BlockTimesData = GetBlockTimesData(stepLog, blockNames).ToArray(),
                 MemoryData = GetMemoryData(stepLog.Duration, log.Diagnostics).ToArray()
