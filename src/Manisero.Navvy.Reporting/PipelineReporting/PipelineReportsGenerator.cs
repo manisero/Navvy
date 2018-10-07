@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Manisero.Navvy.Reporting.PipelineReporting.Templates;
 using Manisero.Navvy.Reporting.Shared;
 
@@ -6,7 +7,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 {
     internal interface IPipelineReportsGenerator
     {
-        IEnumerable<TaskExecutionReport> Generate(
+        ICollection<TaskExecutionReport> Generate(
             PipelineReportData data);
     }
 
@@ -22,14 +23,15 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             _reportsFormatter = reportsFormatter;
         }
 
-        public IEnumerable<TaskExecutionReport> Generate(
+        public ICollection<TaskExecutionReport> Generate(
             PipelineReportData data)
         {
             return _reportsFormatter.Format(
-                data,
-                typeof(PipelineReportingTemplatesNamespaceMarker),
-                x => $"{data.PipelineName}_{x}",
-                ReportDataJsonToken);
+                    data,
+                    typeof(PipelineReportingTemplatesNamespaceMarker),
+                    ReportDataJsonToken,
+                    x => $"{data.PipelineName}_{x}")
+                .ToArray();
         }
     }
 }

@@ -9,11 +9,12 @@ namespace Manisero.Navvy.Reporting.Shared
 {
     internal interface IReportsFormatter
     {
+        /// <param name="reportNameGetter">Template file name => report name</param>
         IEnumerable<TaskExecutionReport> Format(
             object reportData,
             Type templatesNamespaceMarker,
-            Func<string, string> reportNameGetter,
-            string reportDataJsonToken);
+            string reportDataJsonToken,
+            Func<string, string> reportNameGetter);
     }
 
     internal class ReportsFormatter : IReportsFormatter
@@ -27,12 +28,12 @@ namespace Manisero.Navvy.Reporting.Shared
         /// <summary>Templates namespace marker -> templates</summary>
         private readonly ConcurrentDictionary<Type, ICollection<ReportTemplate>> _templates =
             new ConcurrentDictionary<Type, ICollection<ReportTemplate>>();
-
+        
         public IEnumerable<TaskExecutionReport> Format(
             object reportData,
             Type templatesNamespaceMarker,
-            Func<string, string> reportNameGetter,
-            string reportDataJsonToken)
+            string reportDataJsonToken,
+            Func<string, string> reportNameGetter)
         {
             var reportTemplates = _templates.GetOrAdd(
                 templatesNamespaceMarker,

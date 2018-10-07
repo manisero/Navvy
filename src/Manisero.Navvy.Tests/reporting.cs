@@ -36,6 +36,7 @@ namespace Manisero.Navvy.Tests
             // Assert
             var reports = task.GetExecutionReports();
             reports.Should().NotBeNull().And.NotBeEmpty();
+            reports.Should().Contain(x => x.Name == "charts.html");
             reports.Should().Contain(x => x.Name == "Pipeline1_charts.html");
             reports.Should().Contain(x => x.Name == "Pipeline2_charts.html");
         }
