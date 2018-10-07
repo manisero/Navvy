@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Manisero.Navvy.Logging;
@@ -37,6 +38,27 @@ namespace Manisero.Navvy.Tests
             reports.Should().NotBeNull().And.NotBeEmpty();
             reports.Should().Contain(x => x.Name == "Pipeline1_charts.html");
             reports.Should().Contain(x => x.Name == "Pipeline2_charts.html");
+        }
+
+        [Fact]
+        public void task_fails___no_report()
+        {
+            // Arrange
+            var task = new TaskDefinition(
+                PipelineTaskStep.Builder<int>("Pipeline")
+                    .WithInput(new[] { 1 })
+                    .WithBlock("Failing block", x => throw new Exception())
+                    .Build());
+
+            var loggerEvents = TaskExecutionLogger.CreateEvents();
+            var reporterEvents = TaskExecutionReporter.CreateEvents();
+
+            // Act
+            task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+
+            // Assert
+            var reports = task.Extras.TryGet<IReadOnlyCollection<TaskExecutionReport>>(TaskExecutionReportingUtils.TaskExecutionReportsExtraKey);
+            reports.Should().BeNull();
         }
     }
 }

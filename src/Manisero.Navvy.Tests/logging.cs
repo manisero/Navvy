@@ -29,5 +29,24 @@ namespace Manisero.Navvy.Tests
             log.TaskDuration.StartTs.Should().BeOnOrAfter(startTs).And.BeOnOrBefore(endTs);
             log.Diagnostics.Should().NotBeEmpty();
         }
+
+        [Fact]
+        public void task_fails___does_not_break()
+        {
+            // Arrange
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Failing step",
+                    () => throw new Exception()));
+
+            var events = TaskExecutionLogger.CreateEvents();
+
+            // Act
+            task.Execute(events: events);
+
+            // Assert
+            var log = task.GetExecutionLog();
+            log.Should().NotBeNull();
+        }
     }
 }
