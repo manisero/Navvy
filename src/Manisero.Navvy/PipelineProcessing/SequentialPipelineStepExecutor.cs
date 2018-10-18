@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.PipelineProcessing.Events;
 using Manisero.Navvy.PipelineProcessing.Models;
@@ -17,6 +18,7 @@ namespace Manisero.Navvy.PipelineProcessing
             CancellationToken cancellation)
         {
             var itemNumber = 0;
+            var taskEvents = context.EventsBag.TryGetEvents<TaskExecutionEvents>();
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
             var itemSw = new Stopwatch();
             var blockSw = new Stopwatch();
@@ -64,6 +66,7 @@ namespace Manisero.Navvy.PipelineProcessing
 
                     itemSw.Stop();
                     events?.Raise(x => x.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed));
+                    taskEvents?.Raise(x => x.OnStepProgressed(itemNumber, step.Input.ExpectedItemsCount, itemSw.Elapsed, step, context.Task));
                     PipelineProcessingUtils.ReportProgress(itemNumber, step.Input.ExpectedItemsCount, progress);
                 }
             }

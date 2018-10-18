@@ -167,6 +167,15 @@ namespace Manisero.Navvy.Core.Events
             });
         }
 
+        public void OnStepProgressed(int itemNumber, int expectedItemsCount, TimeSpan durationSoFar, ITaskStep step, TaskDefinition task)
+        {
+            var progress = itemNumber < expectedItemsCount
+                ? itemNumber.ToPercentageOf(expectedItemsCount)
+                : (byte)100;
+
+            OnStepProgressed(progress, durationSoFar, step, task);
+        }
+
         public void OnStepEnded(ITaskStep step, TaskDefinition task, TimeSpan duration)
         {
             _stepEnded?.Invoke(new StepEndedEvent

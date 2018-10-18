@@ -112,6 +112,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 {
                     x.ProcessingStopwatch.Stop();
                     context.Events?.Raise(e => e.OnItemEnded(x.Number, x.Item, step, context.StepContext.Task, x.ProcessingStopwatch.Elapsed));
+                    context.TaskEvents?.Raise(e => e.OnStepProgressed(x.Number, step.Input.ExpectedItemsCount, x.ProcessingStopwatch.Elapsed, step, context.StepContext.Task));
                     PipelineProcessingUtils.ReportProgress(x.Number, step.Input.ExpectedItemsCount, progress);
                 },
                 new ExecutionDataflowBlockOptions
