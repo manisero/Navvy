@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
+using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.StepExecution;
 
 namespace Manisero.Navvy.BasicProcessing
@@ -12,6 +14,9 @@ namespace Manisero.Navvy.BasicProcessing
             IProgress<byte> progress,
             CancellationToken cancellation)
         {
+            var events = context.EventsBag.TryGetEvents<TaskExecutionEvents>();
+            var sw = new Stopwatch();
+
             try
             {
                 step.Body();
@@ -21,6 +26,8 @@ namespace Manisero.Navvy.BasicProcessing
                 throw new TaskExecutionException(e, step);
             }
 
+            sw.Stop();
+            events?.Raise(x => x.OnStepProgressed(100, sw.Elapsed, step, context.Task));
             progress.Report(100);
             cancellation.ThrowIfCancellationRequested();
         }
