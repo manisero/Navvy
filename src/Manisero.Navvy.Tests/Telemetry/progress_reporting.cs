@@ -40,7 +40,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             test(
                 resolverType,
                 GetPipelineStep(3, 2),
-                new byte[] { 50, 100, 100 }); // TODO: Consider not reporting unexpected items
+                new byte[] { 50, 100, 100 });
         }
 
         [Theory]
@@ -51,7 +51,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             test(
                 resolverType,
                 GetPipelineStep(3, 4),
-                new byte[] { 25, 50, 75 }); // TODO: Consider including step status in TaskProgress (and reporting finished when finished)
+                new byte[] { 25, 50, 75 });
         }
 
         private void test(
