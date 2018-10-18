@@ -56,62 +56,62 @@ namespace Manisero.Navvy.Core.Events
 
     public class TaskExecutionEvents : IExecutionEvents
     {
-        public event ExecutionEventHandler<TaskStartedEvent> TaskStarted;
-        public event ExecutionEventHandler<TaskEndedEvent> TaskEnded;
-        public event ExecutionEventHandler<StepStartedEvent> StepStarted;
-        public event ExecutionEventHandler<StepEndedEvent> StepEnded;
-        public event ExecutionEventHandler<StepSkippedEvent> StepSkipped;
-        public event ExecutionEventHandler<StepCanceledEvent> StepCanceled;
-        public event ExecutionEventHandler<StepFailedEvent> StepFailed;
+        private readonly Action<TaskStartedEvent> _taskStarted;
+        private readonly Action<TaskEndedEvent> _taskEnded;
+        private readonly Action<StepStartedEvent> _stepStarted;
+        private readonly Action<StepEndedEvent> _stepEnded;
+        private readonly Action<StepSkippedEvent> _stepSkipped;
+        private readonly Action<StepCanceledEvent> _stepCanceled;
+        private readonly Action<StepFailedEvent> _stepFailed;
 
         public TaskExecutionEvents(
-            ExecutionEventHandler<TaskStartedEvent> taskStarted = null,
-            ExecutionEventHandler<TaskEndedEvent> taskEnded = null,
-            ExecutionEventHandler<StepStartedEvent> stepStarted = null,
-            ExecutionEventHandler<StepEndedEvent> stepEnded = null,
-            ExecutionEventHandler<StepSkippedEvent> stepSkipped = null,
-            ExecutionEventHandler<StepCanceledEvent> stepCanceled = null,
-            ExecutionEventHandler<StepFailedEvent> stepFailed = null)
+            Action<TaskStartedEvent> taskStarted = null,
+            Action<TaskEndedEvent> taskEnded = null,
+            Action<StepStartedEvent> stepStarted = null,
+            Action<StepEndedEvent> stepEnded = null,
+            Action<StepSkippedEvent> stepSkipped = null,
+            Action<StepCanceledEvent> stepCanceled = null,
+            Action<StepFailedEvent> stepFailed = null)
         {
             if (taskStarted != null)
             {
-                TaskStarted += taskStarted;
+                _taskStarted = taskStarted;
             }
 
             if (taskEnded != null)
             {
-                TaskEnded += taskEnded;
+                _taskEnded = taskEnded;
             }
 
             if (stepStarted != null)
             {
-                StepStarted += stepStarted;
+                _stepStarted = stepStarted;
             }
 
             if (stepEnded != null)
             {
-                StepEnded += stepEnded;
+                _stepEnded = stepEnded;
             }
 
             if (stepSkipped != null)
             {
-                StepSkipped += stepSkipped;
+                _stepSkipped = stepSkipped;
             }
 
             if (stepCanceled != null)
             {
-                StepCanceled += stepCanceled;
+                _stepCanceled = stepCanceled;
             }
 
             if (stepFailed != null)
             {
-                StepFailed += stepFailed;
+                _stepFailed = stepFailed;
             }
         }
 
         public void OnTaskStarted(TaskDefinition task)
         {
-            TaskStarted?.Invoke(new TaskStartedEvent
+            _taskStarted?.Invoke(new TaskStartedEvent
             {
                 Task = task,
                 Timestamp = DateTimeUtils.Now
@@ -120,7 +120,7 @@ namespace Manisero.Navvy.Core.Events
 
         public void OnTaskEnded(TaskDefinition task, TaskResult result, TimeSpan duration)
         {
-            TaskEnded?.Invoke(new TaskEndedEvent
+            _taskEnded?.Invoke(new TaskEndedEvent
             {
                 Task = task,
                 Result = result,
@@ -131,7 +131,7 @@ namespace Manisero.Navvy.Core.Events
 
         public void OnStepStarted(ITaskStep step, TaskDefinition task)
         {
-            StepStarted?.Invoke(new StepStartedEvent
+            _stepStarted?.Invoke(new StepStartedEvent
             {
                 Step = step,
                 Task = task,
@@ -141,7 +141,7 @@ namespace Manisero.Navvy.Core.Events
 
         public void OnStepEnded(ITaskStep step, TaskDefinition task, TimeSpan duration)
         {
-            StepEnded?.Invoke(new StepEndedEvent
+            _stepEnded?.Invoke(new StepEndedEvent
             {
                 Step = step,
                 Task = task,
@@ -152,7 +152,7 @@ namespace Manisero.Navvy.Core.Events
 
         public void OnStepSkipped(ITaskStep step, TaskDefinition task)
         {
-            StepSkipped?.Invoke(new StepSkippedEvent
+            _stepSkipped?.Invoke(new StepSkippedEvent
             {
                 Step = step,
                 Task = task,
@@ -162,7 +162,7 @@ namespace Manisero.Navvy.Core.Events
 
         public void OnStepCanceled(ITaskStep step, TaskDefinition task)
         {
-            StepCanceled?.Invoke(new StepCanceledEvent
+            _stepCanceled?.Invoke(new StepCanceledEvent
             {
                 Step = step,
                 Task = task,
@@ -172,7 +172,7 @@ namespace Manisero.Navvy.Core.Events
 
         public void OnStepFailed(TaskExecutionException exception, ITaskStep step, TaskDefinition task)
         {
-            StepFailed?.Invoke(new StepFailedEvent
+            _stepFailed?.Invoke(new StepFailedEvent
             {
                 Exception = exception,
                 Step = step,

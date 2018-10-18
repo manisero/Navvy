@@ -14,8 +14,8 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Arrange
             var eventHandled = false;
 
-            var events = new TaskExecutionEvents();
-            events.TaskStarted += _ => eventHandled = true;
+            var events = new TaskExecutionEvents(
+                taskStarted: _ => eventHandled = true);
 
             var task = new TaskDefinition(
                 BasicTaskStep.Empty("Step"));
@@ -34,8 +34,8 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Arrange
             var eventHandled = false;
 
-            var events = new TaskExecutionEvents();
-            events.TaskStarted += _ => eventHandled = true;
+            var events = new TaskExecutionEvents(
+                taskStarted: _ => eventHandled = true);
 
             var task = new TaskDefinition(
                 BasicTaskStep.Empty("Step"));
@@ -53,12 +53,12 @@ namespace Manisero.Navvy.Tests.Telemetry
         {
             // Arrange
             var globalEventHandled = false;
-            var globalEvents = new TaskExecutionEvents();
-            globalEvents.TaskStarted += _ => globalEventHandled = true;
+            var globalEvents = new TaskExecutionEvents(
+                taskStarted: _ => globalEventHandled = true);
 
             var oneTimeEventHandled = false;
-            var oneTimeEvents = new TaskExecutionEvents();
-            oneTimeEvents.TaskStarted += _ => oneTimeEventHandled = true;
+            var oneTimeEvents = new TaskExecutionEvents(
+                taskStarted: _ => oneTimeEventHandled = true);
 
             var task = new TaskDefinition(
                 BasicTaskStep.Empty("Step"));

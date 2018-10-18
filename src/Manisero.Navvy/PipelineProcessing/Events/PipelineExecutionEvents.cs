@@ -59,48 +59,48 @@ namespace Manisero.Navvy.PipelineProcessing.Events
 
     public class PipelineExecutionEvents : IExecutionEvents
     {
-        public event ExecutionEventHandler<ItemMaterializedEvent> ItemMaterialized;
-        public event ExecutionEventHandler<ItemEndedEvent> ItemEnded;
-        public event ExecutionEventHandler<BlockStartedEvent> BlockStarted;
-        public event ExecutionEventHandler<BlockEndedEvent> BlockEnded;
-        public event ExecutionEventHandler<PipelineEndedEvent> PipelineEnded;
+        private readonly Action<ItemMaterializedEvent> _itemMaterialized;
+        private readonly Action<ItemEndedEvent> _itemEnded;
+        private readonly Action<BlockStartedEvent> _blockStarted;
+        private readonly Action<BlockEndedEvent> _blockEnded;
+        private readonly Action<PipelineEndedEvent> _pipelineEnded;
 
         public PipelineExecutionEvents(
-            ExecutionEventHandler<ItemMaterializedEvent> itemMaterialized = null,
-            ExecutionEventHandler<ItemEndedEvent> itemEnded = null,
-            ExecutionEventHandler<BlockStartedEvent> blockStarted = null,
-            ExecutionEventHandler<BlockEndedEvent> blockEnded = null,
-            ExecutionEventHandler<PipelineEndedEvent> pipelineEnded = null)
+            Action<ItemMaterializedEvent> itemMaterialized = null,
+            Action<ItemEndedEvent> itemEnded = null,
+            Action<BlockStartedEvent> blockStarted = null,
+            Action<BlockEndedEvent> blockEnded = null,
+            Action<PipelineEndedEvent> pipelineEnded = null)
         {
             if (itemMaterialized != null)
             {
-                ItemMaterialized += itemMaterialized;
+                _itemMaterialized += itemMaterialized;
             }
 
             if (itemEnded != null)
             {
-                ItemEnded += itemEnded;
+                _itemEnded += itemEnded;
             }
 
             if (blockStarted != null)
             {
-                BlockStarted += blockStarted;
+                _blockStarted += blockStarted;
             }
 
             if (blockEnded != null)
             {
-                BlockEnded += blockEnded;
+                _blockEnded += blockEnded;
             }
 
             if (pipelineEnded != null)
             {
-                PipelineEnded += pipelineEnded;
+                _pipelineEnded += pipelineEnded;
             }
         }
 
         public void OnItemMaterialized(int itemNumber, object item, DateTimeOffset itemStartTimestamp, TimeSpan materializationDuration, ITaskStep step, TaskDefinition task)
         {
-            ItemMaterialized?.Invoke(new ItemMaterializedEvent
+            _itemMaterialized?.Invoke(new ItemMaterializedEvent
             {
                 ItemNumber = itemNumber,
                 Item = item,
@@ -114,7 +114,7 @@ namespace Manisero.Navvy.PipelineProcessing.Events
 
         public void OnItemEnded(int itemNumber, object item, ITaskStep step, TaskDefinition task, TimeSpan duration)
         {
-            ItemEnded?.Invoke(new ItemEndedEvent
+            _itemEnded?.Invoke(new ItemEndedEvent
             {
                 ItemNumber = itemNumber,
                 Item = item,
@@ -127,7 +127,7 @@ namespace Manisero.Navvy.PipelineProcessing.Events
 
         public void OnBlockStarted(IPipelineBlock block, int itemNumber, object item, ITaskStep step, TaskDefinition task)
         {
-            BlockStarted?.Invoke(new BlockStartedEvent
+            _blockStarted?.Invoke(new BlockStartedEvent
             {
                 Block = block,
                 ItemNumber = itemNumber,
@@ -140,7 +140,7 @@ namespace Manisero.Navvy.PipelineProcessing.Events
 
         public void OnBlockEnded(IPipelineBlock block, int itemNumber, object item, ITaskStep step, TaskDefinition task, TimeSpan duration)
         {
-            BlockEnded?.Invoke(new BlockEndedEvent
+            _blockEnded?.Invoke(new BlockEndedEvent
             {
                 Block = block,
                 ItemNumber = itemNumber,
@@ -154,7 +154,7 @@ namespace Manisero.Navvy.PipelineProcessing.Events
 
         public void OnPipelineEnded(TimeSpan totalInputMaterializationDuration, IReadOnlyDictionary<string, TimeSpan> totalBlockDurations, ITaskStep step, TaskDefinition task)
         {
-            PipelineEnded?.Invoke(new PipelineEndedEvent
+            _pipelineEnded?.Invoke(new PipelineEndedEvent
             {
                 TotalInputMaterializationDuration = totalInputMaterializationDuration,
                 TotalBlockDurations = totalBlockDurations,

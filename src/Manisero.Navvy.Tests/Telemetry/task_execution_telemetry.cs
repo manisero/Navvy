@@ -17,9 +17,9 @@ namespace Manisero.Navvy.Tests.Telemetry
             TaskStartedEvent? startedEvent = null;
             TaskEndedEvent? endedEvent = null;
 
-            var events = new TaskExecutionEvents();
-            events.TaskStarted += x => startedEvent = x;
-            events.TaskEnded += x => endedEvent = x;
+            var events = new TaskExecutionEvents(
+                taskStarted: x => startedEvent = x,
+                taskEnded: x => endedEvent = x);
 
             var task = new TaskDefinition(
                 BasicTaskStep.Empty("Step"));
@@ -43,9 +43,9 @@ namespace Manisero.Navvy.Tests.Telemetry
             StepStartedEvent? startedEvent = null;
             StepEndedEvent? endedEvent = null;
 
-            var events = new TaskExecutionEvents();
-            events.StepStarted += x => startedEvent = x;
-            events.StepEnded += x => endedEvent = x;
+            var events = new TaskExecutionEvents(
+                stepStarted: x => startedEvent = x,
+                stepEnded: x => endedEvent = x);
 
             var task = new TaskDefinition(
                 BasicTaskStep.Empty("Step"));
@@ -68,8 +68,8 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Arrange
             StepSkippedEvent? skippedEvent = null;
 
-            var events = new TaskExecutionEvents();
-            events.StepSkipped += x => skippedEvent = x;
+            var events = new TaskExecutionEvents(
+                stepSkipped: x => skippedEvent = x);
 
             var task = new TaskDefinition(
                 new BasicTaskStep(
@@ -91,8 +91,8 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Arrange
             StepCanceledEvent? canceledEvent = null;
 
-            var events = new TaskExecutionEvents();
-            events.StepCanceled += x => canceledEvent = x;
+            var events = new TaskExecutionEvents(
+                stepCanceled: x => canceledEvent = x);
 
             var cancellationSource = new CancellationTokenSource();
 
@@ -115,8 +115,8 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Arrange
             StepFailedEvent? failedEvent = null;
 
-            var events = new TaskExecutionEvents();
-            events.StepFailed += x => failedEvent = x;
+            var events = new TaskExecutionEvents(
+                stepFailed: x => failedEvent = x);
 
             var exception = new Exception();
 

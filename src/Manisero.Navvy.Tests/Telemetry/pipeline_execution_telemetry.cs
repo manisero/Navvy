@@ -20,9 +20,9 @@ namespace Manisero.Navvy.Tests.Telemetry
             ItemMaterializedEvent? startedEvent = null;
             ItemEndedEvent? endedEvent = null;
 
-            var events = new PipelineExecutionEvents();
-            events.ItemMaterialized += x => startedEvent = x;
-            events.ItemEnded += x => endedEvent = x;
+            var events = new PipelineExecutionEvents(
+                itemMaterialized: x => startedEvent = x,
+                itemEnded: x => endedEvent = x);
 
             var item = 1;
 
@@ -56,9 +56,9 @@ namespace Manisero.Navvy.Tests.Telemetry
             BlockStartedEvent? startedEvent = null;
             BlockEndedEvent? endedEvent = null;
 
-            var events = new PipelineExecutionEvents();
-            events.BlockStarted += x => startedEvent = x;
-            events.BlockEnded += x => endedEvent = x;
+            var events = new PipelineExecutionEvents(
+                blockStarted: x => startedEvent = x,
+                blockEnded: x => endedEvent = x);
 
             var block = new PipelineBlock<int>(
                 "Block",
@@ -90,8 +90,8 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Arrange
             PipelineEndedEvent? endedEvent = null;
 
-            var events = new PipelineExecutionEvents();
-            events.PipelineEnded += x => endedEvent = x;
+            var events = new PipelineExecutionEvents(
+                pipelineEnded: x => endedEvent = x);
 
             var block1 = new PipelineBlock<int>(
                 "Block1",
