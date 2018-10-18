@@ -1,6 +1,6 @@
 ﻿namespace Manisero.Navvy.Utils
 {
-    internal static class IntExtensions
+    internal static class IntUtils
     {
         public static byte ToPercentageOf(this int value, int total) => (byte)(value * 100 / total);
     }

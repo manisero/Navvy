@@ -4,7 +4,7 @@ using System.Runtime.ExceptionServices;
 
 namespace Manisero.Navvy.Utils
 {
-    internal static class MethodInfoExtensions
+    internal static class MethodInfoUtils
     {
         [System.Diagnostics.DebuggerStepThrough]
         public static void InvokeAsGeneric(

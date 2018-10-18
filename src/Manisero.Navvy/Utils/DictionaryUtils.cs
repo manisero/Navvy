@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Manisero.Navvy.Utils
 {
-    internal static class DictionaryExtensions
+    internal static class DictionaryUtils
     {
         public static TValue GetValueOrDefault<TKey, TValue>(
             this IDictionary<TKey, TValue> dict,
