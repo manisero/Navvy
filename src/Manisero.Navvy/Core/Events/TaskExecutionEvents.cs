@@ -24,6 +24,15 @@ namespace Manisero.Navvy.Core.Events
         public DateTime Timestamp;
     }
 
+    public struct StepProgressedEvent
+    {
+        public byte ProgressPercentage;
+        public TimeSpan DurationSoFar;
+        public ITaskStep Step;
+        public TaskDefinition Task;
+        public DateTime Timestamp;
+    }
+
     public struct StepEndedEvent
     {
         public ITaskStep Step;
@@ -59,6 +68,7 @@ namespace Manisero.Navvy.Core.Events
         private readonly Action<TaskStartedEvent> _taskStarted;
         private readonly Action<TaskEndedEvent> _taskEnded;
         private readonly Action<StepStartedEvent> _stepStarted;
+        private readonly Action<StepProgressedEvent> _stepProgressed;
         private readonly Action<StepEndedEvent> _stepEnded;
         private readonly Action<StepSkippedEvent> _stepSkipped;
         private readonly Action<StepCanceledEvent> _stepCanceled;
@@ -68,6 +78,7 @@ namespace Manisero.Navvy.Core.Events
             Action<TaskStartedEvent> taskStarted = null,
             Action<TaskEndedEvent> taskEnded = null,
             Action<StepStartedEvent> stepStarted = null,
+            Action<StepProgressedEvent> stepProgressed = null,
             Action<StepEndedEvent> stepEnded = null,
             Action<StepSkippedEvent> stepSkipped = null,
             Action<StepCanceledEvent> stepCanceled = null,
@@ -86,6 +97,11 @@ namespace Manisero.Navvy.Core.Events
             if (stepStarted != null)
             {
                 _stepStarted = stepStarted;
+            }
+
+            if (stepProgressed != null)
+            {
+                _stepProgressed = stepProgressed;
             }
 
             if (stepEnded != null)
@@ -133,6 +149,18 @@ namespace Manisero.Navvy.Core.Events
         {
             _stepStarted?.Invoke(new StepStartedEvent
             {
+                Step = step,
+                Task = task,
+                Timestamp = DateTimeUtils.Now
+            });
+        }
+
+        public void OnStepProgressed(byte progressPercentage, TimeSpan durationSoFar, ITaskStep step, TaskDefinition task)
+        {
+            _stepProgressed?.Invoke(new StepProgressedEvent
+            {
+                ProgressPercentage = progressPercentage,
+                DurationSoFar = durationSoFar,
                 Step = step,
                 Task = task,
                 Timestamp = DateTimeUtils.Now
