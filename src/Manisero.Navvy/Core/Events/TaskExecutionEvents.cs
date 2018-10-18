@@ -225,5 +225,10 @@ namespace Manisero.Navvy.Core.Events
             this ITaskExecutorBuilder builder,
             TaskExecutionEvents events)
             => builder.RegisterEvents(events);
+
+        public static ITaskExecutorBuilder RegisterProgressHandler(
+            this ITaskExecutorBuilder builder,
+            Action<StepProgressedEvent> handler)
+            => builder.RegisterEvents(new TaskExecutionEvents(stepProgressed: handler));
     }
 }
