@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
+using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.Dataflow.StepExecution;
 using Manisero.Navvy.PipelineProcessing;
@@ -27,6 +28,7 @@ namespace Manisero.Navvy.Dataflow
             var dataflowExecutionContext = new DataflowExecutionContext
             {
                 StepContext = context,
+                TaskEvents = context.EventsBag.TryGetEvents<TaskExecutionEvents>(),
                 Events = events,
                 TotalBlockDurations = new ConcurrentDictionary<string, TimeSpan>(
                     step.Blocks.Select(x => x.Name).Distinct().Select(
