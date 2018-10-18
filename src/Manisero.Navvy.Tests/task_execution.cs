@@ -37,6 +37,7 @@ namespace Manisero.Navvy.Tests
                 .RegisterPipelineExecution(resolverType)
                 .UseTaskExecutionLogger()
                 .UseTaskExecutionReporter()
+                .RegisterProgressHandler(x => _output.WriteLine($"{x.Step.Name}: {x.ProgressPercentage}%"))
                 .Build();
 
             var task = new TaskDefinition(
@@ -55,8 +56,7 @@ namespace Manisero.Navvy.Tests
                     () => { completed = true; }));
 
             task.Extras.Set("Id", 1);
-
-            var progress = new SynchronousProgress<TaskProgress>(x => _output.WriteLine($"{x.StepName}: {x.ProgressPercentage}%"));
+            
             var cancellationSource = new CancellationTokenSource();
 
             var events = new IExecutionEvents[]
@@ -74,7 +74,7 @@ namespace Manisero.Navvy.Tests
             };
 
             // Act
-            var result = executor.Execute(task, progress, cancellationSource.Token, events);
+            var result = executor.Execute(task, cancellationSource.Token, events);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Successful);

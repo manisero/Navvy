@@ -20,7 +20,6 @@ namespace Manisero.Navvy.Dataflow
         public void Execute(
             PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
-            IProgress<byte> progress,
             CancellationToken cancellation)
         {
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
@@ -35,7 +34,7 @@ namespace Manisero.Navvy.Dataflow
                         x => new KeyValuePair<string, TimeSpan>(x, TimeSpan.Zero)))
             };
             
-            var pipeline = _dataflowPipelineBuilder.Build(step, dataflowExecutionContext, progress, cancellation);
+            var pipeline = _dataflowPipelineBuilder.Build(step, dataflowExecutionContext, cancellation);
             var itemNumber = 0;
             var totalInputMaterializationDuration = TimeSpan.Zero;
 

@@ -14,7 +14,6 @@ namespace Manisero.Navvy.PipelineProcessing
         public void Execute(
             PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
-            IProgress<byte> progress,
             CancellationToken cancellation)
         {
             var itemNumber = 0;
@@ -67,7 +66,6 @@ namespace Manisero.Navvy.PipelineProcessing
                     itemSw.Stop();
                     events?.Raise(x => x.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed));
                     taskEvents?.Raise(x => x.OnStepProgressed(itemNumber, step.Input.ExpectedItemsCount, itemSw.Elapsed, step, context.Task));
-                    PipelineProcessingUtils.ReportProgress(itemNumber, step.Input.ExpectedItemsCount, progress);
                 }
             }
 
