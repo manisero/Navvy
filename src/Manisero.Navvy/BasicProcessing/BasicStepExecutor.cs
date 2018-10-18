@@ -11,7 +11,6 @@ namespace Manisero.Navvy.BasicProcessing
         public void Execute(
             BasicTaskStep step,
             TaskStepExecutionContext context,
-            IProgress<byte> progress,
             CancellationToken cancellation)
         {
             var events = context.EventsBag.TryGetEvents<TaskExecutionEvents>();
@@ -28,7 +27,6 @@ namespace Manisero.Navvy.BasicProcessing
 
             sw.Stop();
             events?.Raise(x => x.OnStepProgressed(100, sw.Elapsed, step, context.Task));
-            progress.Report(100);
             cancellation.ThrowIfCancellationRequested();
         }
     }

@@ -27,15 +27,9 @@ namespace Manisero.Navvy.Core
 
         public TaskResult Execute(
             TaskDefinition task,
-            IProgress<TaskProgress> progress = null,
             CancellationToken? cancellation = null,
             params IExecutionEvents[] events)
         {
-            if (progress == null)
-            {
-                progress = new EmptyProgress<TaskProgress>();
-            }
-
             if (cancellation == null)
             {
                 cancellation = CancellationToken.None;
@@ -68,7 +62,7 @@ namespace Manisero.Navvy.Core
                     ExecuteStepMethod.InvokeAsGeneric(
                         this,
                         new[] { step.GetType() },
-                        step, task, progress, cancellation, eventsBag);
+                        step, task, cancellation, eventsBag);
                 }
                 catch (OperationCanceledException e)
                 {
@@ -108,7 +102,6 @@ namespace Manisero.Navvy.Core
         private void ExecuteStep<TStep>(
             TStep step,
             TaskDefinition task,
-            IProgress<TaskProgress> progress,
             CancellationToken cancellation,
             ExecutionEventsBag eventsBag)
             where TStep : ITaskStep
@@ -120,11 +113,8 @@ namespace Manisero.Navvy.Core
                 Task = task,
                 EventsBag = eventsBag
             };
-
-            var stepProgress = new SynchronousProgress<byte>(
-                x => progress.Report(new TaskProgress(step.Name, x)));
             
-            stepExecutor.Execute(step, context, stepProgress, cancellation);
+            stepExecutor.Execute(step, context, cancellation);
         }
     }
 }

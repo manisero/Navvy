@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 
 namespace Manisero.Navvy.Core.StepExecution
 {
@@ -9,7 +8,6 @@ namespace Manisero.Navvy.Core.StepExecution
         void Execute(
             TTaskStep step,
             TaskStepExecutionContext context,
-            IProgress<byte> progress,
             CancellationToken cancellation);
     }
 }
