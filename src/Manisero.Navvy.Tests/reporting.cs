@@ -41,6 +41,7 @@ namespace Manisero.Navvy.Tests
             reports.Should().Contain(x => x.Name == "charts.html");
             reports.Should().Contain(x => x.Name == "Pipeline1_charts.html");
             reports.Should().Contain(x => x.Name == "Pipeline2_charts.html");
+            reports.Should().OnlyContain(x => x.Content.StartsWith("<html>"));
         }
 
         [Fact]
