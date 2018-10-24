@@ -20,7 +20,7 @@
         if (Math.max(...stepEnds) < 1000) {
             // Google Timeline does not render if timeline is shorter than 1000ms.
             // Force timeline to last 1000ms:
-            reportData.StepTimesData.push(["_", 1000, 1000]);
+            reportData.StepTimesData.push([reportData.StepTimesData[1][0], 1000, 1000]);
         }
 
         var stepsCount = new Set(reportData.StepTimesData.map(x => x[0])).size - 1;
