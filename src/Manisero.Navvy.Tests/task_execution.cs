@@ -42,7 +42,7 @@ namespace Manisero.Navvy.Tests
 
             var task = new TaskDefinition(
                 "TestTask",
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Initialize",
                     () => { initialized = true; }),
                 PipelineTaskStep
@@ -51,7 +51,7 @@ namespace Manisero.Navvy.Tests
                     .WithBlock("Sum", x => sum += x)
                     .WithBlock("Log", x => _output.WriteLine(x.ToString()))
                     .Build(),
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Complete",
                     () => { completed = true; }));
 

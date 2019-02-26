@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Manisero.Navvy.Core;
 
 namespace Manisero.Navvy.BasicProcessing
 {
@@ -33,5 +34,22 @@ namespace Manisero.Navvy.BasicProcessing
         {
             return new BasicTaskStep(name, () => { });
         }
+    }
+
+    public static class TaskStepBuilderUtils
+    {
+        public static BasicTaskStep Basic(
+            this TaskStepBuilder builder,
+            string name,
+            Action body,
+            Func<TaskOutcome, bool> executionCondition = null)
+            => new BasicTaskStep(name, body, executionCondition);
+
+        public static BasicTaskStep Basic(
+            this TaskStepBuilder builder,
+            string name,
+            Action<IProgress<byte>, CancellationToken> body,
+            Func<TaskOutcome, bool> executionCondition = null)
+            => new BasicTaskStep(name, body, executionCondition);
     }
 }
