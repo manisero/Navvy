@@ -14,7 +14,7 @@ namespace Manisero.Navvy.BasicProcessing
             CancellationToken cancellation)
         {
             var events = context.EventsBag.TryGetEvents<TaskExecutionEvents>();
-            var sw = new Stopwatch();
+            var sw = Stopwatch.StartNew();
 
             try
             {
