@@ -13,12 +13,27 @@ namespace Manisero.Navvy.Tests.Telemetry
     public class progress_reporting
     {
         [Fact]
-        public void basic()
+        public void basic_automatic()
         {
             test(
                 ResolverType.Sequential,
                 BasicTaskStep.Empty("Step"),
                 new byte[] { 100 });
+        }
+
+        [Fact]
+        public void basic_manual()
+        {
+            test(
+                ResolverType.Sequential,
+                new BasicTaskStep(
+                    "Step",
+                    (p, c) =>
+                    {
+                        p.Report(50);
+                        p.Report(100);
+                    }),
+                new byte[] { 50, 100, 100 });
         }
 
         [Theory]
