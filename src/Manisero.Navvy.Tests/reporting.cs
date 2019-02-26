@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
+using Manisero.Navvy.Core;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Models;
@@ -49,7 +50,8 @@ namespace Manisero.Navvy.Tests
         {
             // Arrange
             var task = new TaskDefinition(
-                PipelineTaskStep.Builder<int>("Pipeline")
+                TaskStepBuilder.Build.Pipeline<int>(
+                        "Pipeline")
                     .WithInput(new[] { 1 })
                     .WithBlock("Failing block", x => throw new Exception())
                     .Build());

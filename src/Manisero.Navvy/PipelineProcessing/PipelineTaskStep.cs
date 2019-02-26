@@ -9,28 +9,6 @@ namespace Manisero.Navvy.PipelineProcessing
         IReadOnlyCollection<IPipelineBlock> Blocks { get; }
     }
 
-    public static class PipelineTaskStep
-    {
-        public static PipelineTaskStepBuilder<TItem> Builder<TItem>(
-            string name = null,
-            Func<TaskOutcome, bool> executionCondition = null)
-        {
-            var builder = new PipelineTaskStepBuilder<TItem>();
-
-            if (name != null)
-            {
-                builder = builder.WithName(name);
-            }
-
-            if (executionCondition != null)
-            {
-                builder = builder.WithExecutionCondition(executionCondition);
-            }
-
-            return builder;
-        }
-    }
-
     public class PipelineTaskStep<TItem> : IPipelineTaskStep
     {
         public string Name { get; }

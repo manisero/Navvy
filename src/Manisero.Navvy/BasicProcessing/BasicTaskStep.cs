@@ -39,14 +39,14 @@ namespace Manisero.Navvy.BasicProcessing
     public static class TaskStepBuilderUtils
     {
         public static BasicTaskStep Basic(
-            this TaskStepBuilder builder,
+            this TaskStepBuilder _,
             string name,
             Action body,
             Func<TaskOutcome, bool> executionCondition = null)
             => new BasicTaskStep(name, body, executionCondition);
 
         public static BasicTaskStep Basic(
-            this TaskStepBuilder builder,
+            this TaskStepBuilder _,
             string name,
             Action<IProgress<byte>, CancellationToken> body,
             Func<TaskOutcome, bool> executionCondition = null)

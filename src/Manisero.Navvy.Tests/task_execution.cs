@@ -45,8 +45,8 @@ namespace Manisero.Navvy.Tests
                 TaskStepBuilder.Build.Basic(
                     "Initialize",
                     () => { initialized = true; }),
-                PipelineTaskStep
-                    .Builder<int>("Pipeline")
+                TaskStepBuilder.Build.Pipeline<int>(
+                        "Pipeline")
                     .WithInput(new[] { 1, 2, 3, 4, 5, 6 })
                     .WithBlock("Sum", x => sum += x)
                     .WithBlock("Log", x => _output.WriteLine(x.ToString()))

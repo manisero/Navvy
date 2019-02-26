@@ -1,9 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using Manisero.Navvy.Core;
 using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.PipelineProcessing
 {
+    public static class TaskStepBuilderUtils
+    {
+        public static PipelineTaskStepBuilder<TItem> Pipeline<TItem>(
+            this TaskStepBuilder _,
+            string name = null,
+            Func<TaskOutcome, bool> executionCondition = null)
+        {
+            var builder = new PipelineTaskStepBuilder<TItem>();
+
+            if (name != null)
+            {
+                builder = builder.WithName(name);
+            }
+
+            if (executionCondition != null)
+            {
+                builder = builder.WithExecutionCondition(executionCondition);
+            }
+
+            return builder;
+        }
+    }
+
     public class PipelineTaskStepBuilder<TItem>
     {
         private string _name;
@@ -63,7 +87,7 @@ namespace Manisero.Navvy.PipelineProcessing
         {
             if (_input == null)
             {
-                throw new InvalidOperationException($"Error while building {nameof(PipelineTaskStep)}<{typeof(TItem).Name}> '{_name}'. {nameof(PipelineTaskStep<TItem>.Input)} is not configured.");
+                throw new InvalidOperationException($"Error while building {nameof(PipelineTaskStep<TItem>)}<{typeof(TItem).Name}> '{_name}'. {nameof(PipelineTaskStep<TItem>.Input)} is not configured.");
             }
 
             return new PipelineTaskStep<TItem>(
