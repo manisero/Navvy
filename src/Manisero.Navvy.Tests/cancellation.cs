@@ -17,7 +17,7 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void basic(ResolverType resolverType)
+        public void basic_automatic(ResolverType resolverType)
         {
             var task = new TaskDefinition(
                 new BasicTaskStep(
@@ -26,6 +26,24 @@ namespace Manisero.Navvy.Tests
                 new BasicTaskStep(
                     "Complete",
                     () => { _completed = true; }));
+
+            test(task, resolverType);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public void basic_manual(ResolverType resolverType)
+        {
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Cancel",
+                    (p, c) =>
+                    {
+                        _cancellationSource.Cancel();
+                        c.ThrowIfCancellationRequested();
+                        _completed = true;
+                    }));
 
             test(task, resolverType);
         }

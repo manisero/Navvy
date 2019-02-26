@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Manisero.Navvy.BasicProcessing
 {
@@ -8,11 +9,19 @@ namespace Manisero.Navvy.BasicProcessing
 
         public Func<TaskOutcome, bool> ExecutionCondition { get; }
 
-        public Action Body { get; }
+        public Action<IProgress<byte>, CancellationToken> Body { get; }
 
         public BasicTaskStep(
             string name,
             Action body,
+            Func<TaskOutcome, bool> executionCondition = null)
+            : this(name, (p, c) => body(), executionCondition)
+        {
+        }
+
+        public BasicTaskStep(
+            string name,
+            Action<IProgress<byte>, CancellationToken> body,
             Func<TaskOutcome, bool> executionCondition = null)
         {
             Name = name;
