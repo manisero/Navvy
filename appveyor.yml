@@ -1,6 +1,28 @@
 version: '{build}'
 image: Visual Studio 2017
 
+init:
+- ps: >-
+    if ($env:APPVEYOR_REPO_TAG -eq "true") {
+      $env:PackageVersionBase = ${env:APPVEYOR_REPO_TAG_NAME}.Substring(1)
+      $env:PackageVersionSuffix = ""
+    }
+
+    else {
+      $env:PackageVersionBase = "0.0.0"
+      $env:PackageVersionSuffix = "-b${env:APPVEYOR_BUILD_NUMBER}"
+    }
+
+    "PackageVersionBase: ${env:PackageVersionBase}"
+
+    "PackageVersionSuffix: ${env:PackageVersionSuffix}"
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: $(PackageVersionBase)$(PackageVersionSuffix)
+  file_version: $(PackageVersionBase).{build}
+
 build_script:
 - cmd: >-
     cd src
