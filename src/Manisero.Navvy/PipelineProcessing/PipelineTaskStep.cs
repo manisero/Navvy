@@ -13,6 +13,7 @@ namespace Manisero.Navvy.PipelineProcessing
     {
         public string Name { get; }
 
+        /// <inheritdoc />
         public Func<TaskOutcome, bool> ExecutionCondition { get; }
 
         public IPipelineInput<TItem> Input { get; }
@@ -21,6 +22,7 @@ namespace Manisero.Navvy.PipelineProcessing
 
         IReadOnlyCollection<IPipelineBlock> IPipelineTaskStep.Blocks => Blocks;
 
+        /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public PipelineTaskStep(
             string name,
             IPipelineInput<TItem> input,
@@ -28,11 +30,12 @@ namespace Manisero.Navvy.PipelineProcessing
             Func<TaskOutcome, bool> executionCondition = null)
         {
             Name = name;
-            ExecutionCondition = executionCondition ?? (x => x == TaskOutcome.Successful);
+            ExecutionCondition = executionCondition ?? TaskStepUtils.DefaultExecutionCondition;
             Input = input;
             Blocks = blocks;
         }
 
+        /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public PipelineTaskStep(
             string name,
             IEnumerable<TItem> input,
@@ -43,6 +46,7 @@ namespace Manisero.Navvy.PipelineProcessing
         {
         }
 
+        /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public PipelineTaskStep(
             string name,
             ICollection<TItem> input,

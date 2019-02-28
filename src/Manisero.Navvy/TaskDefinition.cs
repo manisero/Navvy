@@ -3,7 +3,7 @@ using Manisero.Navvy.Core;
 
 namespace Manisero.Navvy
 {
-    /// <summary>Definition of the task to be executed. It can be executed by <see cref="ITaskExecutor"/>.</summary>
+    /// <summary>Definition of the task to be executed. It can be executed by <see cref="ITaskExecutor"/>. Consists of <see cref="ITaskStep"/>s (use <see cref="TaskStepBuilder"/> to build them).</summary>
     public class TaskDefinition
     {
         public string Name { get; }

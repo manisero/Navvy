@@ -6,6 +6,8 @@ namespace Manisero.Navvy.PipelineProcessing
 {
     public static class TaskStepBuilderUtils
     {
+        /// <summary>See <see cref="PipelineTaskStep{TItem}"/>.</summary>
+        /// <param name="executionCondition">See <see cref="ITaskStep.ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public static PipelineTaskStepBuilder<TItem> Pipeline<TItem>(
             this TaskStepBuilder _,
             string name = null,
