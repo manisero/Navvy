@@ -19,6 +19,7 @@ namespace Manisero.Navvy
         ITaskExecutor Build();
     }
 
+    /// <summary>Builds default implementation of <see cref="ITaskExecutor"/>. Returned executor is stateless, can be used to execute multiple tasks.</summary>
     public class TaskExecutorBuilder : ITaskExecutorBuilder
     {
         private readonly IDictionary<Type, ITaskStepExecutorResolver> _stepExecutorResolvers
