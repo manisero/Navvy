@@ -1,4 +1,4 @@
-﻿namespace Manisero.Navvy.Core
+﻿namespace Manisero.Navvy
 {
     public class TaskStepBuilder
     {

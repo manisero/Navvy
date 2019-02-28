@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Manisero.Navvy.Core;
 
 namespace Manisero.Navvy.BasicProcessing
 {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
-using Manisero.Navvy.Core;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Models;
