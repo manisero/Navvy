@@ -12,4 +12,9 @@
     <PackageTags>task process longrunning</PackageTags>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1701;1702;CS1591;CS1573</NoWarn>
+  </PropertyGroup>
+
 </Project>

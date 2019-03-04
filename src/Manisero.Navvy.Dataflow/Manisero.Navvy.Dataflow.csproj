@@ -12,6 +12,11 @@
     <PackageTags>task process longrunning Dataflow</PackageTags>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1701;1702;CS1591;CS1573</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.9.0" />
   </ItemGroup>

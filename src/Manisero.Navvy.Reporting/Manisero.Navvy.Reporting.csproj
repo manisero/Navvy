@@ -12,6 +12,11 @@
     <PackageTags>task process longrunning reporting reports</PackageTags>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1701;1702;CS1591;CS1573</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="TaskReporting\Templates\charts.html" />
   </ItemGroup>
