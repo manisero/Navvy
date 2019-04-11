@@ -11,6 +11,8 @@ namespace Manisero.Navvy.Dataflow.StepExecution
     {
         public TaskStepExecutionContext StepContext { get; set; }
 
+        public int ExpectedItemsCount { get; set; }
+
         public ExecutionEventsGroup<TaskExecutionEvents> TaskEvents { get; set; }
 
         public ExecutionEventsGroup<PipelineExecutionEvents> Events { get; set; }

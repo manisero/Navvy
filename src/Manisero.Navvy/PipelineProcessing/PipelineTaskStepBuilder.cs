@@ -58,17 +58,22 @@ namespace Manisero.Navvy.PipelineProcessing
         }
 
         public PipelineTaskStepBuilder<TItem> WithInput(
-            IEnumerable<TItem> input,
-            int expectedItemsCount) 
-            => WithInput(new PipelineInput<TItem>(input, expectedItemsCount));
+            Func<PipelineInputItems<TItem>> itemsFactory,
+            string name = null)
+            => WithInput(new PipelineInput<TItem>(itemsFactory, name));
 
         public PipelineTaskStepBuilder<TItem> WithInput(
-            ICollection<TItem> input)
-            => WithInput(new PipelineInput<TItem>(input));
+            IEnumerable<TItem> items,
+            int expectedItemsCount,
+            string name = null)
+            => WithInput(
+                () => new PipelineInputItems<TItem>(items, expectedItemsCount),
+                name);
 
         public PipelineTaskStepBuilder<TItem> WithInput(
-            Func<IPipelineInput<TItem>> inputFactory)
-            => WithInput(new LazyPipelineInput<TItem>(inputFactory));
+            ICollection<TItem> items,
+            string name = null)
+            => WithInput(items, items.Count, name);
 
         public PipelineTaskStepBuilder<TItem> WithBlock(
             PipelineBlock<TItem> block)

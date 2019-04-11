@@ -3,46 +3,60 @@ using System.Collections.Generic;
 
 namespace Manisero.Navvy.PipelineProcessing.Models
 {
-    public interface IPipelineInput<TItem>
+    public interface IPipelineInput
     {
-        IEnumerable<TItem> Input { get; }
+        string Name { get; }
+    }
 
-        int ExpectedItemsCount { get; }
+    public interface IPipelineInput<TItem> : IPipelineInput
+    {
+        Func<PipelineInputItems<TItem>> ItemsFactory { get; }
+    }
+
+    public class PipelineInputItems<TItem>
+    {
+        public IEnumerable<TItem> Items { get; }
+
+        public int ExpectedCount { get; }
+
+        public PipelineInputItems(
+            IEnumerable<TItem> items,
+            int expectedCount)
+        {
+            Items = items;
+            ExpectedCount = expectedCount;
+        }
     }
 
     public class PipelineInput<TItem> : IPipelineInput<TItem>
     {
-        public IEnumerable<TItem> Input { get; }
+        public const string DefaultName = "Input";
 
-        public int ExpectedItemsCount { get; }
+        public string Name { get; }
+
+        public Func<PipelineInputItems<TItem>> ItemsFactory { get; }
 
         public PipelineInput(
-            IEnumerable<TItem> input,
-            int expectedItemsCount)
+            Func<PipelineInputItems<TItem>> itemsFactory,
+            string name = DefaultName)
         {
-            Input = input;
-            ExpectedItemsCount = expectedItemsCount;
+            Name = name;
+            ItemsFactory = itemsFactory;
         }
 
         public PipelineInput(
-            ICollection<TItem> input)
-            : this(input, input.Count)
+            IEnumerable<TItem> items,
+            int expectedItemsCount,
+            string name = DefaultName)
+            : this(() => new PipelineInputItems<TItem>(items, expectedItemsCount), name)
         {
         }
-    }
 
-    internal class LazyPipelineInput<TItem> : IPipelineInput<TItem>
-    {
-        private readonly Lazy<IPipelineInput<TItem>> _lazyInput;
-        
-        public IEnumerable<TItem> Input => _lazyInput.Value.Input;
-
-        public int ExpectedItemsCount => _lazyInput.Value.ExpectedItemsCount;
-
-        public LazyPipelineInput(
-            Func<IPipelineInput<TItem>> inputFactory)
+        public PipelineInput(
+            ICollection<TItem> items,
+            string name = DefaultName)
+            : this(items, items.Count, name)
         {
-            _lazyInput = new Lazy<IPipelineInput<TItem>>(inputFactory);
         }
     }
 }

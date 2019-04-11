@@ -16,6 +16,7 @@ namespace Manisero.Navvy.PipelineProcessing
             TaskStepExecutionContext context,
             CancellationToken cancellation)
         {
+            var items = step.Input.ItemsFactory();
             var itemNumber = 0;
             var taskEvents = context.EventsBag.TryGetEvents<TaskExecutionEvents>();
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
@@ -24,7 +25,7 @@ namespace Manisero.Navvy.PipelineProcessing
             var totalInputMaterializationDuration = TimeSpan.Zero;
             var totalBlockDurations = step.Blocks.Select(x => x.Name).Distinct().ToDictionary(x => x, _ => TimeSpan.Zero);
 
-            using (var inputEnumerator = step.Input.Input.GetEnumerator())
+            using (var inputEnumerator = items.Items.GetEnumerator())
             {
                 while (true)
                 {
@@ -65,7 +66,7 @@ namespace Manisero.Navvy.PipelineProcessing
 
                     itemSw.Stop();
                     events?.Raise(x => x.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed));
-                    taskEvents?.Raise(x => x.OnStepProgressed(itemNumber, step.Input.ExpectedItemsCount, itemSw.Elapsed, step, context.Task));
+                    taskEvents?.Raise(x => x.OnStepProgressed(itemNumber, items.ExpectedCount, itemSw.Elapsed, step, context.Task));
                 }
             }
 

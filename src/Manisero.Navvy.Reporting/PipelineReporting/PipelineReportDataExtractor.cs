@@ -17,32 +17,32 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
     internal class PipelineReportDataExtractor : IPipelineReportDataExtractor
     {
-        private const string MaterializationBlockName = "Materialization";
-
         public PipelineReportData Extract(
             IPipelineTaskStep pipeline,
             TaskExecutionLog log)
         {
             var stepLog = log.StepLogs[pipeline.Name];
+            var materializationBlockName = pipeline.Input.Name;
             var blockNames = pipeline.Blocks.Select(x => x.Name).ToArray();
 
             return new PipelineReportData
             {
-                ItemTimesData = GetItemTimesData(stepLog, blockNames).ToArray(),
-                BlockTimesData = GetBlockTimesData(stepLog, blockNames).ToArray(),
+                ItemTimesData = GetItemTimesData(stepLog, materializationBlockName, blockNames).ToArray(),
+                BlockTimesData = GetBlockTimesData(stepLog, materializationBlockName, blockNames).ToArray(),
                 MemoryData = GetMemoryData(stepLog.Duration, log.Diagnostics).ToArray()
             };
         }
 
         private IEnumerable<ICollection<object>> GetItemTimesData(
             TaskStepLog stepLog,
+            string materializationBlockName,
             IEnumerable<string> blockNames)
         {
             var headerRow = new[] { "Item", "Step", "Start" + PipelineReportingUtils.MsUnit, "End" + PipelineReportingUtils.MsUnit };
 
             var dataRows = stepLog
                 .ItemLogs
-                .Select(x => GetItemTimesItemRows(x.Key, x.Value, blockNames, stepLog.Duration.StartTs))
+                .Select(x => GetItemTimesItemRows(x.Key, x.Value, materializationBlockName, blockNames, stepLog.Duration.StartTs))
                 .SelectMany(rows => rows);
 
             return headerRow.ToEnumerable().Concat(dataRows);
@@ -51,6 +51,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
         private IEnumerable<ICollection<object>> GetItemTimesItemRows(
             int itemNumber,
             PipelineItemLog itemLog,
+            string materializationBlockName,
             IEnumerable<string> blockNames,
             DateTime stepStartTs)
         {
@@ -59,7 +60,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             yield return new[]
             {
                 itemNumberString,
-                MaterializationBlockName,
+                materializationBlockName,
                 (itemLog.Duration.StartTs - stepStartTs).GetLogValue(),
                 (itemLog.Duration.StartTs + itemLog.MaterializationDuration - stepStartTs).GetLogValue()
             };
@@ -80,10 +81,11 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
         private IEnumerable<ICollection<object>> GetBlockTimesData(
             TaskStepLog stepLog,
+            string materializationBlockName,
             IEnumerable<string> blockNames)
         {
             yield return new[] { "Step", "Total duration" + PipelineReportingUtils.MsUnit };
-            yield return new[] { MaterializationBlockName, stepLog.BlockTotals.MaterializationDuration.GetLogValue() };
+            yield return new[] { materializationBlockName, stepLog.BlockTotals.MaterializationDuration.GetLogValue() };
 
             foreach (var blockName in blockNames)
             {

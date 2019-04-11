@@ -209,8 +209,9 @@ namespace Manisero.Navvy.Benchmarks
             return new TaskDefinition(
                 new PipelineTaskStep<long>(
                     "Sum",
-                    GetInput_NotBatched_NotMaterialized(),
-                    TotalCount,
+                    new PipelineInput<long>(
+                        GetInput_NotBatched_NotMaterialized(),
+                        TotalCount),
                     new List<PipelineBlock<long>>
                     {
                         new PipelineBlock<long>(
@@ -230,8 +231,9 @@ namespace Manisero.Navvy.Benchmarks
             return new TaskDefinition(
                 new PipelineTaskStep<ICollection<long>>(
                     "Sum",
-                    GetInput_Batched(),
-                    BatchesCount,
+                    new PipelineInput<ICollection<long>>(
+                        GetInput_Batched(),
+                        BatchesCount),
                     new List<PipelineBlock<ICollection<long>>>
                     {
                         new PipelineBlock<ICollection<long>>(
@@ -256,8 +258,9 @@ namespace Manisero.Navvy.Benchmarks
             return new TaskDefinition(
                 new PipelineTaskStep<NumbersWithTotal>(
                     "Sum",
-                    GetInput_Batched().Select(x => new NumbersWithTotal { Numbers = x }),
-                    BatchesCount,
+                    new PipelineInput<NumbersWithTotal>(
+                        GetInput_Batched().Select(x => new NumbersWithTotal { Numbers = x }),
+                        BatchesCount),
                     new List<PipelineBlock<NumbersWithTotal>>
                     {
                         new PipelineBlock<NumbersWithTotal>(

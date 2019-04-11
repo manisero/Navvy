@@ -6,6 +6,8 @@ namespace Manisero.Navvy.PipelineProcessing
 {
     public interface IPipelineTaskStep : ITaskStep
     {
+        IPipelineInput Input { get; }
+
         IReadOnlyCollection<IPipelineBlock> Blocks { get; }
     }
 
@@ -17,6 +19,8 @@ namespace Manisero.Navvy.PipelineProcessing
         public Func<TaskOutcome, bool> ExecutionCondition { get; }
 
         public IPipelineInput<TItem> Input { get; }
+
+        IPipelineInput IPipelineTaskStep.Input => Input;
 
         public IReadOnlyList<PipelineBlock<TItem>> Blocks { get; }
 
@@ -38,31 +42,21 @@ namespace Manisero.Navvy.PipelineProcessing
         /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public PipelineTaskStep(
             string name,
-            IEnumerable<TItem> input,
-            int expectedItemsCount,
+            IEnumerable<TItem> inputItems,
+            int expectedInputItemsCount,
             IReadOnlyList<PipelineBlock<TItem>> blocks,
             Func<TaskOutcome, bool> executionCondition = null)
-            : this(name, new PipelineInput<TItem>(input, expectedItemsCount), blocks, executionCondition)
+            : this(name, new PipelineInput<TItem>(inputItems, expectedInputItemsCount), blocks, executionCondition)
         {
         }
 
         /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public PipelineTaskStep(
             string name,
-            ICollection<TItem> input,
+            ICollection<TItem> inputItems,
             IReadOnlyList<PipelineBlock<TItem>> blocks,
             Func<TaskOutcome, bool> executionCondition = null)
-            : this(name, new PipelineInput<TItem>(input), blocks, executionCondition)
-        {
-        }
-
-        /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
-        public PipelineTaskStep(
-            string name,
-            Func<IPipelineInput<TItem>> inputFactory,
-            IReadOnlyList<PipelineBlock<TItem>> blocks,
-            Func<TaskOutcome, bool> executionCondition = null)
-            : this(name, new LazyPipelineInput<TItem>(inputFactory), blocks, executionCondition)
+            : this(name, new PipelineInput<TItem>(inputItems), blocks, executionCondition)
         {
         }
     }

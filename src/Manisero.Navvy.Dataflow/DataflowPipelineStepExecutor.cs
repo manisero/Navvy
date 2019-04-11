@@ -22,11 +22,13 @@ namespace Manisero.Navvy.Dataflow
             TaskStepExecutionContext context,
             CancellationToken cancellation)
         {
+            var items = step.Input.ItemsFactory();
             var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
             var dataflowExecutionContext = new DataflowExecutionContext
             {
                 StepContext = context,
+                ExpectedItemsCount = items.ExpectedCount,
                 TaskEvents = context.EventsBag.TryGetEvents<TaskExecutionEvents>(),
                 Events = events,
                 TotalBlockDurations = new ConcurrentDictionary<string, TimeSpan>(
@@ -38,7 +40,7 @@ namespace Manisero.Navvy.Dataflow
             var itemNumber = 0;
             var totalInputMaterializationDuration = TimeSpan.Zero;
 
-            using (var inputEnumerator = step.Input.Input.GetEnumerator())
+            using (var inputEnumerator = items.Items.GetEnumerator())
             {
                 while (true)
                 {
