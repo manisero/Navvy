@@ -37,7 +37,7 @@ namespace Manisero.Navvy.Tests
                 .RegisterPipelineExecution(resolverType)
                 .UseTaskExecutionLogger()
                 .UseTaskExecutionReporter()
-                .RegisterProgressHandler(x => _output.WriteLine($"{x.Step.Name}: {x.ProgressPercentage}%"))
+                .RegisterProgressHandler(x => _output.WriteLine($"{x.Step.Name}: {x.Progress * 100f}%"))
                 .Build();
 
             var task = new TaskDefinition(

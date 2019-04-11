@@ -18,7 +18,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             test(
                 ResolverType.Sequential,
                 BasicTaskStep.Empty("Step"),
-                new byte[] { 100 });
+                new[] { 1f });
         }
 
         [Fact]
@@ -30,10 +30,10 @@ namespace Manisero.Navvy.Tests.Telemetry
                     "Step",
                     (p, c) =>
                     {
-                        p.Report(50);
-                        p.Report(100);
+                        p.Report(0.5f);
+                        p.Report(1f);
                     }),
-                new byte[] { 50, 100, 100 });
+                new[] { 0.5f, 1f, 1f });
         }
 
         [Theory]
@@ -43,8 +43,8 @@ namespace Manisero.Navvy.Tests.Telemetry
         {
             test(
                 resolverType,
-                GetPipelineStep(3),
-                new byte[] { 33, 66, 100 });
+                GetPipelineStep(4),
+                new[] { 0.25f, 0.5f, 0.75f, 1f });
         }
 
         [Theory]
@@ -55,7 +55,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             test(
                 resolverType,
                 GetPipelineStep(3, 2),
-                new byte[] { 50, 100, 100 });
+                new[] { 0.5f, 1f, 1f });
         }
 
         [Theory]
@@ -66,13 +66,13 @@ namespace Manisero.Navvy.Tests.Telemetry
             test(
                 resolverType,
                 GetPipelineStep(3, 4),
-                new byte[] { 25, 50, 75 });
+                new[] { 0.25f, 0.5f, 0.75f });
         }
 
         private void test(
             ResolverType resolverType,
             ITaskStep taskStep,
-            ICollection<byte> expectedProgressReports)
+            ICollection<float> expectedProgressReports)
         {
             // Arrange
             var progressReports = new List<StepProgressedEvent>();
@@ -86,7 +86,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             // Assert
             progressReports.Should().HaveCount(expectedProgressReports.Count);
             progressReports.Select(x => x.Step.Name).Should().OnlyContain(x => x == taskStep.Name);
-            progressReports.Select(x => x.ProgressPercentage).Should().BeEquivalentTo(expectedProgressReports);
+            progressReports.Select(x => x.Progress).Should().BeEquivalentTo(expectedProgressReports);
         }
 
         private ITaskStep GetPipelineStep(int actualItemsCount, int? expectedItemsCount = null)

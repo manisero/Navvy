@@ -16,7 +16,7 @@ namespace Manisero.Navvy.BasicProcessing
         {
             var events = context.EventsBag.TryGetEvents<TaskExecutionEvents>();
             var sw = new Stopwatch();
-            var progress = new SynchronousProgress<byte>(p => events?.Raise(x => x.OnStepProgressed(p, sw.Elapsed, step, context.Task)));
+            var progress = new SynchronousProgress<float>(p => events?.Raise(x => x.OnStepProgressed(p, sw.Elapsed, step, context.Task)));
 
             sw.Start();
 
@@ -34,7 +34,7 @@ namespace Manisero.Navvy.BasicProcessing
             }
 
             sw.Stop();
-            progress.Report(100);
+            progress.Report(1f);
             cancellation.ThrowIfCancellationRequested();
         }
     }

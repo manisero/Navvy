@@ -26,7 +26,8 @@ namespace Manisero.Navvy.Core.Events
 
     public struct StepProgressedEvent
     {
-        public byte ProgressPercentage;
+        /// <summary>From 0.0f to 1.0f (1.0f means 100%).</summary>
+        public float Progress;
         public TimeSpan DurationSoFar;
         public ITaskStep Step;
         public TaskDefinition Task;
@@ -155,11 +156,11 @@ namespace Manisero.Navvy.Core.Events
             });
         }
 
-        public void OnStepProgressed(byte progressPercentage, TimeSpan durationSoFar, ITaskStep step, TaskDefinition task)
+        public void OnStepProgressed(float progress, TimeSpan durationSoFar, ITaskStep step, TaskDefinition task)
         {
             _stepProgressed?.Invoke(new StepProgressedEvent
             {
-                ProgressPercentage = progressPercentage,
+                Progress = progress,
                 DurationSoFar = durationSoFar,
                 Step = step,
                 Task = task,
@@ -170,8 +171,8 @@ namespace Manisero.Navvy.Core.Events
         public void OnStepProgressed(int itemNumber, int expectedItemsCount, TimeSpan durationSoFar, ITaskStep step, TaskDefinition task)
         {
             var progress = itemNumber < expectedItemsCount
-                ? itemNumber.ToPercentageOf(expectedItemsCount)
-                : (byte)100;
+                ? (float)itemNumber / expectedItemsCount
+                : 1f;
 
             OnStepProgressed(progress, durationSoFar, step, task);
         }
