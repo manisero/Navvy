@@ -52,7 +52,17 @@ namespace Manisero.Navvy.PipelineProcessing
             ICollection<TItem> input,
             IReadOnlyList<PipelineBlock<TItem>> blocks,
             Func<TaskOutcome, bool> executionCondition = null)
-            : this(name, input, input.Count, blocks, executionCondition)
+            : this(name, new PipelineInput<TItem>(input), blocks, executionCondition)
+        {
+        }
+
+        /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
+        public PipelineTaskStep(
+            string name,
+            Func<IPipelineInput<TItem>> inputFactory,
+            IReadOnlyList<PipelineBlock<TItem>> blocks,
+            Func<TaskOutcome, bool> executionCondition = null)
+            : this(name, new LazyPipelineInput<TItem>(inputFactory), blocks, executionCondition)
         {
         }
     }

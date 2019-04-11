@@ -23,24 +23,26 @@ namespace Manisero.Navvy.PipelineProcessing.Models
             Input = input;
             ExpectedItemsCount = expectedItemsCount;
         }
+
+        public PipelineInput(
+            ICollection<TItem> input)
+            : this(input, input.Count)
+        {
+        }
     }
 
-    public class LazyPipelineInput<TItem> : IPipelineInput<TItem>
+    internal class LazyPipelineInput<TItem> : IPipelineInput<TItem>
     {
-        private readonly Lazy<IEnumerable<TItem>> _lazyInput;
+        private readonly Lazy<IPipelineInput<TItem>> _lazyInput;
+        
+        public IEnumerable<TItem> Input => _lazyInput.Value.Input;
 
-        private readonly Lazy<int> _lazyExpectedItemsCount;
-
-        public IEnumerable<TItem> Input => _lazyInput.Value;
-
-        public int ExpectedItemsCount => _lazyExpectedItemsCount.Value;
+        public int ExpectedItemsCount => _lazyInput.Value.ExpectedItemsCount;
 
         public LazyPipelineInput(
-            Func<IEnumerable<TItem>> inputFactory,
-            Func<int> expectedItemsCountFactory)
+            Func<IPipelineInput<TItem>> inputFactory)
         {
-            _lazyInput = new Lazy<IEnumerable<TItem>>(inputFactory);
-            _lazyExpectedItemsCount = new Lazy<int>(expectedItemsCountFactory);
+            _lazyInput = new Lazy<IPipelineInput<TItem>>(inputFactory);
         }
     }
 }
