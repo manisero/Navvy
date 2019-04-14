@@ -10,22 +10,14 @@ namespace Manisero.Navvy.PipelineProcessing.Models
 
     public interface IPipelineInput<TItem> : IPipelineInput
     {
-        Func<PipelineInputItems<TItem>> ItemsFactory { get; }
+        Func<IPipelineInputItems<TItem>> ItemsFactory { get; }
     }
 
-    public class PipelineInputItems<TItem>
+    public interface IPipelineInputItems<TItem>
     {
-        public IEnumerable<TItem> Items { get; }
+        IEnumerable<TItem> Items { get; }
 
-        public int ExpectedCount { get; }
-
-        public PipelineInputItems(
-            IEnumerable<TItem> items,
-            int expectedCount)
-        {
-            Items = items;
-            ExpectedCount = expectedCount;
-        }
+        int ExpectedCount { get; }
     }
 
     public class PipelineInput<TItem> : IPipelineInput<TItem>
@@ -34,10 +26,10 @@ namespace Manisero.Navvy.PipelineProcessing.Models
 
         public string Name { get; }
 
-        public Func<PipelineInputItems<TItem>> ItemsFactory { get; }
+        public Func<IPipelineInputItems<TItem>> ItemsFactory { get; }
 
         public PipelineInput(
-            Func<PipelineInputItems<TItem>> itemsFactory,
+            Func<IPipelineInputItems<TItem>> itemsFactory,
             string name = DefaultName)
         {
             Name = name;
@@ -57,6 +49,21 @@ namespace Manisero.Navvy.PipelineProcessing.Models
             string name = DefaultName)
             : this(items, items.Count, name)
         {
+        }
+    }
+
+    public class PipelineInputItems<TItem> : IPipelineInputItems<TItem>
+    {
+        public IEnumerable<TItem> Items { get; }
+
+        public int ExpectedCount { get; }
+
+        public PipelineInputItems(
+            IEnumerable<TItem> items,
+            int expectedCount)
+        {
+            Items = items;
+            ExpectedCount = expectedCount;
         }
     }
 }
