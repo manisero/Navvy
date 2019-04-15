@@ -58,7 +58,7 @@ namespace Manisero.Navvy.PipelineProcessing
         }
 
         public PipelineTaskStepBuilder<TItem> WithInput(
-            Func<PipelineInputItems<TItem>> itemsFactory,
+            Func<IPipelineInputItems<TItem>> itemsFactory,
             string name = null)
             => WithInput(new PipelineInput<TItem>(itemsFactory, name));
 
