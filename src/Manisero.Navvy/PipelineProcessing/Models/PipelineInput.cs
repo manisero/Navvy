@@ -20,17 +20,20 @@ namespace Manisero.Navvy.PipelineProcessing.Models
         int ExpectedCount { get; }
     }
 
-    public class PipelineInput<TItem> : IPipelineInput<TItem>
+    public static class PipelineInput
     {
         public const string DefaultName = "Input";
+    }
 
+    public class PipelineInput<TItem> : IPipelineInput<TItem>
+    {
         public string Name { get; }
 
         public Func<IPipelineInputItems<TItem>> ItemsFactory { get; }
 
         public PipelineInput(
             Func<IPipelineInputItems<TItem>> itemsFactory,
-            string name = DefaultName)
+            string name = PipelineInput.DefaultName)
         {
             Name = name;
             ItemsFactory = itemsFactory;
@@ -39,14 +42,14 @@ namespace Manisero.Navvy.PipelineProcessing.Models
         public PipelineInput(
             IEnumerable<TItem> items,
             int expectedItemsCount,
-            string name = DefaultName)
+            string name = PipelineInput.DefaultName)
             : this(() => new PipelineInputItems<TItem>(items, expectedItemsCount), name)
         {
         }
 
         public PipelineInput(
             ICollection<TItem> items,
-            string name = DefaultName)
+            string name = PipelineInput.DefaultName)
             : this(items, items.Count, name)
         {
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
+using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Reporting.Shared;
 using Manisero.Navvy.Reporting.Utils;
 
@@ -22,7 +23,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             TaskExecutionLog log)
         {
             var stepLog = log.StepLogs[pipeline.Name];
-            var materializationBlockName = pipeline.Input.Name;
+            var materializationBlockName = pipeline.Input.Name ?? PipelineInput.DefaultName;
             var blockNames = pipeline.Blocks.Select(x => x.Name).ToArray();
 
             return new PipelineReportData
