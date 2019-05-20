@@ -11,46 +11,60 @@
 
 <script language="JavaScript">
     function drawCharts() {
-
         var reportData = @ReportDataJson;
 
-        // ItemTimes
+        tryDrawItemTimesChart(reportData.ItemTimesData);
+        tryDrawMemoryChart(reportData.MemoryData);
+        tryDrawBlockTimesChart(reportData.BlockTimesData);
+    }
 
-        var itemEnds = reportData.ItemTimesData.slice(1).map(x => x[3]);
-
-        if (Math.max(...itemEnds) < 1000)
-        {
-            // Google Timeline does not render if timeline is shorter than 1000ms.
-            // Force timeline to last 1000ms:
-            reportData.ItemTimesData.push([reportData.ItemTimesData[1][0], "[Google Charts fix. Ignore it.]", 1000, 1000]);
+    function tryDrawItemTimesChart(data) {
+        if (data.length === 1) {
+            return;
         }
 
-        var itemsCount = new Set(reportData.ItemTimesData.map(x => x[0])).size - 1;
+        var itemEnds = data.slice(1).map(x => x[3]);
+
+        if (Math.max(...itemEnds) < 1000) {
+            // Google Timeline does not render if timeline is shorter than 1000ms.
+            // Force timeline to last 1000ms:
+            data.push([data[1][0], "[Google Charts fix. Ignore it.]", 1000, 1000]);
+        }
+
+        var itemsCount = new Set(data.map(x => x[0])).size - 1;
 
         var itemTimesOptions = {
             height: itemsCount * 41 + 50
         };
 
         var itemTimesChart = new google.visualization.Timeline(document.getElementById('itemTimesContainer'));
-        itemTimesChart.draw(google.visualization.arrayToDataTable(reportData.ItemTimesData), itemTimesOptions);
+        itemTimesChart.draw(google.visualization.arrayToDataTable(data), itemTimesOptions);
+    }
 
-        // Memory
-        
+    function tryDrawMemoryChart(data) {
+        if (data.length === 1) {
+            return;
+        }
+
         var memoryOptions = {
             title: 'Memory',
             legend: { position: 'top' },
             hAxis: {
-                title: reportData.MemoryData[0][0],
+                title: data[0][0],
                 viewWindowMode: 'maximized'
             },
-            vAxis: { minValue: 0}
+            vAxis: { minValue: 0 }
         };
 
         var memoryChart = new google.visualization.ScatterChart(document.getElementById('memoryContainer'));
-        memoryChart.draw(google.visualization.arrayToDataTable(reportData.MemoryData), memoryOptions);
+        memoryChart.draw(google.visualization.arrayToDataTable(data), memoryOptions);
+    }
 
-        // BlockTimes
-        
+    function tryDrawBlockTimesChart(data) {
+        if (data.length === 1) {
+            return;
+        }
+
         var blockTimesOptions = {
             title: 'Block total durations',
             legend: { position: 'top' },
@@ -58,7 +72,7 @@
         };
 
         var blockTimesChart = new google.visualization.ColumnChart(document.getElementById('blockTimesContainer'));
-        blockTimesChart.draw(google.visualization.arrayToDataTable(reportData.BlockTimesData), blockTimesOptions);
+        blockTimesChart.draw(google.visualization.arrayToDataTable(data), blockTimesOptions);
     }
 
     google.charts.load('current', { packages: ['corechart', 'timeline'] });

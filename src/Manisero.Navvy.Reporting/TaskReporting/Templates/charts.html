@@ -10,42 +10,52 @@
 
 <script language="JavaScript">
     function drawCharts() {
-
         var reportData = @ReportDataJson;
 
-        // StepTimes
+        tryDrawStepTimesChart(reportData.StepTimesData);
+        tryDrawMemoryChart(reportData.MemoryData);
+    }
 
-        var stepEnds = reportData.StepTimesData.slice(1).map(x => x[2]);
+    function tryDrawStepTimesChart(data) {
+        if (data.length === 1) {
+            return;
+        }
+
+        var stepEnds = data.slice(1).map(x => x[2]);
 
         if (Math.max(...stepEnds) < 1000) {
             // Google Timeline does not render if timeline is shorter than 1000ms.
             // Force timeline to last 1000ms:
-            reportData.StepTimesData.push([reportData.StepTimesData[1][0], 1000, 1000]);
+            data.push([data[1][0], 1000, 1000]);
         }
 
-        var stepsCount = new Set(reportData.StepTimesData.map(x => x[0])).size - 1;
+        var stepsCount = new Set(data.map(x => x[0])).size - 1;
 
         var stepTimesOptions = {
             height: stepsCount * 41 + 50
         };
 
         var stepTimesChart = new google.visualization.Timeline(document.getElementById('stepTimesContainer'));
-        stepTimesChart.draw(google.visualization.arrayToDataTable(reportData.StepTimesData), stepTimesOptions);
+        stepTimesChart.draw(google.visualization.arrayToDataTable(data), stepTimesOptions);
+    }
 
-        // Memory
+    function tryDrawMemoryChart(data) {
+        if (data.length === 1) {
+            return;
+        }
 
         var memoryOptions = {
             title: 'Memory',
             legend: { position: 'top' },
             hAxis: {
-                title: reportData.MemoryData[0][0],
+                title: data[0][0],
                 viewWindowMode: 'maximized'
             },
-            vAxis: { minValue: 0}
+            vAxis: { minValue: 0 }
         };
 
         var memoryChart = new google.visualization.ScatterChart(document.getElementById('memoryContainer'));
-        memoryChart.draw(google.visualization.arrayToDataTable(reportData.MemoryData), memoryOptions);
+        memoryChart.draw(google.visualization.arrayToDataTable(data), memoryOptions);
     }
 
     google.charts.load('current', { packages: ['corechart', 'timeline'] });
