@@ -17,7 +17,10 @@
     }
 
     function tryDrawStepTimesChart(data) {
+        var container = document.getElementById('stepTimesContainer');
+
         if (data.length === 1) {
+            container.innerHTML = 'No "Step times" data.';
             return;
         }
 
@@ -35,12 +38,15 @@
             height: stepsCount * 41 + 50
         };
 
-        var stepTimesChart = new google.visualization.Timeline(document.getElementById('stepTimesContainer'));
+        var stepTimesChart = new google.visualization.Timeline(container);
         stepTimesChart.draw(google.visualization.arrayToDataTable(data), stepTimesOptions);
     }
 
     function tryDrawMemoryChart(data) {
+        var container = document.getElementById('memoryContainer');
+
         if (data.length === 1) {
+            container.innerHTML = 'No "Memory" data.';
             return;
         }
 
@@ -54,7 +60,7 @@
             vAxis: { minValue: 0 }
         };
 
-        var memoryChart = new google.visualization.ScatterChart(document.getElementById('memoryContainer'));
+        var memoryChart = new google.visualization.ScatterChart(container);
         memoryChart.draw(google.visualization.arrayToDataTable(data), memoryOptions);
     }
 

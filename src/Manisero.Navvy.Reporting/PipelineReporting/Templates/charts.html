@@ -19,7 +19,10 @@
     }
 
     function tryDrawItemTimesChart(data) {
+        var container = document.getElementById('itemTimesContainer');
+
         if (data.length === 1) {
+            container.innerHTML = 'No "Item times" data.';
             return;
         }
 
@@ -28,7 +31,7 @@
         if (Math.max(...itemEnds) < 1000) {
             // Google Timeline does not render if timeline is shorter than 1000ms.
             // Force timeline to last 1000ms:
-            data.push([data[1][0], "[Google Charts fix. Ignore it.]", 1000, 1000]);
+            data.push([data[1][0], '[Google Charts fix. Ignore it.]', 1000, 1000]);
         }
 
         var itemsCount = new Set(data.map(x => x[0])).size - 1;
@@ -37,12 +40,15 @@
             height: itemsCount * 41 + 50
         };
 
-        var itemTimesChart = new google.visualization.Timeline(document.getElementById('itemTimesContainer'));
+        var itemTimesChart = new google.visualization.Timeline(container);
         itemTimesChart.draw(google.visualization.arrayToDataTable(data), itemTimesOptions);
     }
 
     function tryDrawMemoryChart(data) {
+        var container = document.getElementById('memoryContainer');
+
         if (data.length === 1) {
+            container.innerHTML = 'No "Memory" data.';
             return;
         }
 
@@ -56,12 +62,15 @@
             vAxis: { minValue: 0 }
         };
 
-        var memoryChart = new google.visualization.ScatterChart(document.getElementById('memoryContainer'));
+        var memoryChart = new google.visualization.ScatterChart(container);
         memoryChart.draw(google.visualization.arrayToDataTable(data), memoryOptions);
     }
 
     function tryDrawBlockTimesChart(data) {
+        var container = document.getElementById('blockTimesContainer');
+
         if (data.length === 1) {
+            container.innerHTML = 'No "Block total durations" data.';
             return;
         }
 
@@ -71,7 +80,7 @@
             vAxis: { minValue: 0 }
         };
 
-        var blockTimesChart = new google.visualization.ColumnChart(document.getElementById('blockTimesContainer'));
+        var blockTimesChart = new google.visualization.ColumnChart(container);
         blockTimesChart.draw(google.visualization.arrayToDataTable(data), blockTimesOptions);
     }
 
