@@ -37,7 +37,7 @@ namespace Manisero.Navvy.Reporting.Shared
         {
             var reportTemplates = _templates.GetOrAdd(
                 templatesNamespaceMarker,
-                x => GetReportTemplates(x).ToArray());
+                x => GetReportTemplates(x));
 
             var reportDataJson = reportData.ToJson();
 
@@ -49,7 +49,7 @@ namespace Manisero.Navvy.Reporting.Shared
             }
         }
 
-        private static IEnumerable<ReportTemplate> GetReportTemplates(
+        private static ICollection<ReportTemplate> GetReportTemplates(
             Type templatesNamespaceMarker)
         {
             var templatesAssembly = templatesNamespaceMarker.Assembly;
@@ -59,18 +59,22 @@ namespace Manisero.Navvy.Reporting.Shared
                 .GetManifestResourceNames()
                 .Where(x => x.StartsWith(templateResourceNamePrefix));
 
+            var result = new List<ReportTemplate>();
+
             foreach (var resourceName in templateResourceNames)
             {
                 using (var resourceStream = templatesAssembly.GetManifestResourceStream(resourceName))
                 using (var reader = new StreamReader(resourceStream))
                 {
-                    yield return new ReportTemplate
+                    result.Add(new ReportTemplate
                     {
                         FileName = resourceName.Substring(templateResourceNamePrefix.Length),
                         Body = reader.ReadToEnd()
-                    };
+                    });
                 }
             }
+
+            return result;
         }
     }
 }
