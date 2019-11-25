@@ -19,7 +19,9 @@ namespace Manisero.Navvy.Reporting.TaskReporting
             TaskDefinition task,
             TaskExecutionLog log)
         {
-            var stepNames = task.Steps.Select(x => x.Name);
+            var stepNames = task.Steps
+                .Select(x => x.Name)
+                .Where(x => log.StepLogs.ContainsKey(x));
 
             return new TaskReportData
             {

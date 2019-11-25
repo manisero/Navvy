@@ -50,7 +50,9 @@ namespace Manisero.Navvy.Reporting
                 yield return report;
             }
 
-            foreach (var pipeline in successfulTask.Steps.Where(x => x is IPipelineTaskStep).Cast<IPipelineTaskStep>())
+            foreach (var pipeline in successfulTask.Steps
+                .Where(x => log.StepLogs.ContainsKey(x.Name) && x is IPipelineTaskStep)
+                .Cast<IPipelineTaskStep>())
             {
                 var pipelineReports = _pipelineReportsGenerator.Generate(pipeline, log);
 
