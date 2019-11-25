@@ -45,6 +45,53 @@ namespace Manisero.Navvy.Tests
         }
 
         [Fact]
+        public void step_ignored___report_still_generated()
+        {
+            // Arrange
+            var task = new TaskDefinition(
+                BasicTaskStep.Empty("Basic"),
+                new BasicTaskStep(
+                    "Ignored",
+                    () => { },
+                    x => false));
+
+            var loggerEvents = TaskExecutionLogger.CreateEvents();
+            var reporterEvents = TaskExecutionReporter.CreateEvents();
+
+            // Act
+            task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+
+            // Assert
+            var reports = task.GetExecutionReports();
+            reports.Should().NotBeNull().And.NotBeEmpty();
+        }
+
+        [Fact]
+        public void all_steps_ignored___report_still_generated()
+        {
+            // Arrange
+            var task = new TaskDefinition(
+                new BasicTaskStep(
+                    "Ignored1",
+                    () => { },
+                    x => false),
+                new BasicTaskStep(
+                    "Ignored2",
+                    () => { },
+                    x => false));
+
+            var loggerEvents = TaskExecutionLogger.CreateEvents();
+            var reporterEvents = TaskExecutionReporter.CreateEvents();
+
+            // Act
+            task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+
+            // Assert
+            var reports = task.GetExecutionReports();
+            reports.Should().NotBeNull().And.NotBeEmpty();
+        }
+
+        [Fact]
         public void task_fails___no_report()
         {
             // Arrange
