@@ -46,8 +46,7 @@ namespace Manisero.Navvy.Tests
                 GetStepForOutcome(secondStepOutcome, TaskStepUtils.AlwaysExecuteCondition),
                 new BasicTaskStep(
                     "TestedBody",
-                    x => actualOutcomePassedToBody = x,
-                    TaskStepUtils.AlwaysExecuteCondition),
+                    x => actualOutcomePassedToBody = x),
                 new BasicTaskStep(
                     "TestedConditionalStep",
                     () => { },
