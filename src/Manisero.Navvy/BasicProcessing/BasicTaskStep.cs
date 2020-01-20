@@ -11,7 +11,7 @@ namespace Manisero.Navvy.BasicProcessing
         public Func<TaskOutcome, bool> ExecutionCondition { get; }
 
         public Action<TaskOutcome, IProgress<float>, CancellationToken> Body { get; }
-
+        
         /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public BasicTaskStep(
             string name,
@@ -21,6 +21,7 @@ namespace Manisero.Navvy.BasicProcessing
         {
         }
 
+        /// <param name="body">TaskOutcome parameter is most severe outcome among previous steps.</param>
         /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public BasicTaskStep(
             string name,
@@ -40,7 +41,7 @@ namespace Manisero.Navvy.BasicProcessing
         {
         }
 
-        /// <param name="body">Reported progress values should be between 0.0f and 1.0f (1.0f meaning 100%).</param>
+        /// <param name="body">TaskOutcome parameter is most severe outcome among previous steps. Reported progress values should be between 0.0f and 1.0f (1.0f meaning 100%).</param>
         /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public BasicTaskStep(
             string name,
@@ -70,7 +71,7 @@ namespace Manisero.Navvy.BasicProcessing
             => new BasicTaskStep(name, body, executionCondition);
 
         /// <summary>Builds <see cref="BasicTaskStep"/>.</summary>
-        /// <param name="body">Reported progress values should be between 0.0f and 1.0f (1.0f meaning 100%).</param>
+        /// <param name="body">TaskOutcome parameter is most severe outcome among previous steps.</param>
         /// <param name="executionCondition">See <see cref="ITaskStep.ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public static BasicTaskStep Basic(
             this TaskStepBuilder _,
@@ -90,7 +91,7 @@ namespace Manisero.Navvy.BasicProcessing
             => new BasicTaskStep(name, body, executionCondition);
 
         /// <summary>Builds <see cref="BasicTaskStep"/>.</summary>
-        /// <param name="body">Reported progress values should be between 0.0f and 1.0f (1.0f meaning 100%).</param>
+        /// <param name="body">TaskOutcome parameter is most severe outcome among previous steps. Reported progress values should be between 0.0f and 1.0f (1.0f meaning 100%).</param>
         /// <param name="executionCondition">See <see cref="ITaskStep.ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
         public static BasicTaskStep Basic(
             this TaskStepBuilder _,

@@ -18,8 +18,8 @@ namespace Manisero.Navvy.PipelineProcessing
         {
             var items = step.Input.ItemsFactory();
             var itemNumber = 0;
-            var taskEvents = context.Parameters.EventsBag.TryGetEvents<TaskExecutionEvents>();
-            var events = context.Parameters.EventsBag.TryGetEvents<PipelineExecutionEvents>();
+            var taskEvents = context.EventsBag.TryGetEvents<TaskExecutionEvents>();
+            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
             var itemSw = new Stopwatch();
             var blockSw = new Stopwatch();
             var totalInputMaterializationDuration = TimeSpan.Zero;
@@ -42,11 +42,11 @@ namespace Manisero.Navvy.PipelineProcessing
                     var item = inputEnumerator.Current;
                     var materializationDuration = itemSw.Elapsed;
                     totalInputMaterializationDuration += materializationDuration;
-                    events?.Raise(x => x.OnItemMaterialized(itemNumber, item, itemStartTs, materializationDuration, step, context.Parameters.Task));
+                    events?.Raise(x => x.OnItemMaterialized(itemNumber, item, itemStartTs, materializationDuration, step, context.Task));
 
                     foreach (var block in step.Blocks)
                     {
-                        events?.Raise(x => x.OnBlockStarted(block, itemNumber, item, step, context.Parameters.Task));
+                        events?.Raise(x => x.OnBlockStarted(block, itemNumber, item, step, context.Task));
                         blockSw.Restart();
 
                         try
@@ -60,17 +60,17 @@ namespace Manisero.Navvy.PipelineProcessing
 
                         blockSw.Stop();
                         totalBlockDurations[block.Name] += blockSw.Elapsed;
-                        events?.Raise(x => x.OnBlockEnded(block, itemNumber, item, step, context.Parameters.Task, blockSw.Elapsed));
+                        events?.Raise(x => x.OnBlockEnded(block, itemNumber, item, step, context.Task, blockSw.Elapsed));
                         cancellation.ThrowIfCancellationRequested();
                     }
 
                     itemSw.Stop();
-                    events?.Raise(x => x.OnItemEnded(itemNumber, item, step, context.Parameters.Task, itemSw.Elapsed));
-                    taskEvents?.Raise(x => x.OnStepProgressed(itemNumber, items.ExpectedCount, itemSw.Elapsed, step, context.Parameters.Task));
+                    events?.Raise(x => x.OnItemEnded(itemNumber, item, step, context.Task, itemSw.Elapsed));
+                    taskEvents?.Raise(x => x.OnStepProgressed(itemNumber, items.ExpectedCount, itemSw.Elapsed, step, context.Task));
                 }
             }
 
-            events?.Raise(x => x.OnPipelineEnded(totalInputMaterializationDuration, totalBlockDurations, step, context.Parameters.Task));
+            events?.Raise(x => x.OnPipelineEnded(totalInputMaterializationDuration, totalBlockDurations, step, context.Task));
         }
     }
 }

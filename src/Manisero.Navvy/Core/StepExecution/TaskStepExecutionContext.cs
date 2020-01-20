@@ -2,28 +2,20 @@
 {
     public class TaskStepExecutionContext
     {
-        public TaskStepExecutionParameters Parameters { get; }
-
-        public TaskExecutionState State { get; }
-
         public TaskStepExecutionContext(
-            TaskStepExecutionParameters parameters,
-            TaskExecutionState state)
+            TaskDefinition task,
+            ExecutionEventsBag eventsBag,
+            TaskOutcome outcomeSoFar)
         {
-            Parameters = parameters;
-            State = state;
+            Task = task;
+            EventsBag = eventsBag;
+            OutcomeSoFar = outcomeSoFar;
         }
-    }
 
-    public class TaskStepExecutionParameters
-    {
-        public TaskDefinition Task { get; set; }
+        public TaskDefinition Task { get; }
 
-        public ExecutionEventsBag EventsBag { get; set; }
-    }
+        public ExecutionEventsBag EventsBag { get; }
 
-    public class TaskExecutionState
-    {
-        public TaskOutcome OutcomeSoFar { get; set; }
+        public TaskOutcome OutcomeSoFar { get; }
     }
 }

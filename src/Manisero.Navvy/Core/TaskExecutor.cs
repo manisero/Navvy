@@ -37,7 +37,7 @@ namespace Manisero.Navvy.Core
 
             var eventsBag = new ExecutionEventsBag(_globalEventsBag, new ExecutionEventsBag(events));
 
-            var currentOutcome = TaskOutcome.Successful;
+            var outcomeSoFar = TaskOutcome.Successful;
             var errors = new List<TaskExecutionException>();
             var taskEvents = eventsBag.TryGetEvents<TaskExecutionEvents>();
             var taskSw = new Stopwatch();
@@ -48,7 +48,7 @@ namespace Manisero.Navvy.Core
 
             foreach (var step in task.Steps)
             {
-                if (!step.ExecutionCondition(currentOutcome))
+                if (!step.ExecutionCondition(outcomeSoFar))
                 {
                     taskEvents?.Raise(x => x.OnStepSkipped(step, task));
                     continue;
@@ -62,13 +62,13 @@ namespace Manisero.Navvy.Core
                     ExecuteStepMethod.InvokeAsGeneric(
                         this,
                         new[] { step.GetType() },
-                        step, task, cancellation, eventsBag);
+                        step, task, outcomeSoFar, cancellation, eventsBag);
                 }
                 catch (OperationCanceledException e)
                 {
-                    if (currentOutcome < TaskOutcome.Canceled)
+                    if (outcomeSoFar < TaskOutcome.Canceled)
                     {
-                        currentOutcome = TaskOutcome.Canceled;
+                        outcomeSoFar = TaskOutcome.Canceled;
                     }
 
                     taskEvents?.Raise(x => x.OnStepCanceled(step, task));
@@ -77,9 +77,9 @@ namespace Manisero.Navvy.Core
                 {
                     errors.Add(e);
 
-                    if (currentOutcome < TaskOutcome.Failed)
+                    if (outcomeSoFar < TaskOutcome.Failed)
                     {
-                        currentOutcome = TaskOutcome.Failed;
+                        outcomeSoFar = TaskOutcome.Failed;
                     }
 
                     taskEvents?.Raise(x => x.OnStepFailed(e, step, task));
@@ -90,7 +90,7 @@ namespace Manisero.Navvy.Core
             }
 
             var result = new TaskResult(
-                currentOutcome == TaskOutcome.Canceled,
+                outcomeSoFar == TaskOutcome.Canceled,
                 errors);
 
             taskSw.Stop();
@@ -102,6 +102,7 @@ namespace Manisero.Navvy.Core
         private void ExecuteStep<TStep>(
             TStep step,
             TaskDefinition task,
+            TaskOutcome outcomeSoFar,
             CancellationToken cancellation,
             ExecutionEventsBag eventsBag)
             where TStep : ITaskStep
@@ -109,15 +110,9 @@ namespace Manisero.Navvy.Core
             var stepExecutor = _taskStepExecutorResolver.Resolve<TStep>();
 
             var context = new TaskStepExecutionContext(
-                new TaskStepExecutionParameters
-                {
-                    Task = task,
-                    EventsBag = eventsBag
-                },
-                new TaskExecutionState
-                {
-                    OutcomeSoFar = TaskOutcome.Successful
-                });
+                task,
+                eventsBag,
+                outcomeSoFar);
             
             stepExecutor.Execute(step, context, cancellation);
         }

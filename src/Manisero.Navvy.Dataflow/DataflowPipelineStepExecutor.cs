@@ -23,13 +23,13 @@ namespace Manisero.Navvy.Dataflow
             CancellationToken cancellation)
         {
             var items = step.Input.ItemsFactory();
-            var events = context.Parameters.EventsBag.TryGetEvents<PipelineExecutionEvents>();
+            var events = context.EventsBag.TryGetEvents<PipelineExecutionEvents>();
 
             var dataflowExecutionContext = new DataflowExecutionContext
             {
                 StepContext = context,
                 ExpectedItemsCount = items.ExpectedCount,
-                TaskEvents = context.Parameters.EventsBag.TryGetEvents<TaskExecutionEvents>(),
+                TaskEvents = context.EventsBag.TryGetEvents<TaskExecutionEvents>(),
                 Events = events,
                 TotalBlockDurations = new ConcurrentDictionary<string, TimeSpan>(
                     step.Blocks.Select(x => x.Name).Distinct().Select(
@@ -62,7 +62,7 @@ namespace Manisero.Navvy.Dataflow
 
                     var materializationDuration = sw.Elapsed;
                     totalInputMaterializationDuration += materializationDuration;
-                    events?.Raise(x => x.OnItemMaterialized(pipelineItem.Number, pipelineItem.Item, itemStartTs, materializationDuration, step, context.Parameters.Task));
+                    events?.Raise(x => x.OnItemMaterialized(pipelineItem.Number, pipelineItem.Item, itemStartTs, materializationDuration, step, context.Task));
 
                     pipeline.InputBlock.SendAsync(pipelineItem).Wait();
 
@@ -88,7 +88,7 @@ namespace Manisero.Navvy.Dataflow
                 throw flat;
             }
 
-            events?.Raise(x => x.OnPipelineEnded(totalInputMaterializationDuration, dataflowExecutionContext.TotalBlockDurations, step, context.Parameters.Task));
+            events?.Raise(x => x.OnPipelineEnded(totalInputMaterializationDuration, dataflowExecutionContext.TotalBlockDurations, step, context.Task));
         }
     }
 }
