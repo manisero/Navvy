@@ -31,20 +31,25 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Streaming, TaskOutcome.Failed, TaskOutcome.Successful, TaskOutcome.Failed)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Failed, TaskOutcome.Canceled, TaskOutcome.Failed)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Failed, TaskOutcome.Failed, TaskOutcome.Failed)]
-        public void TaskExecutionCondition_gets_most_severe_previous_step_outcome(
+        public void TaskExecutionCondition_and_BasicTaskStep_body_get_most_severe_previous_step_outcome(
             ResolverType resolverType,
             TaskOutcome firstStepOutcome,
             TaskOutcome secondStepOutcome,
             TaskOutcome outcomePassedToThirdStepCondition)
         {
             // Arrange
+            var actualOutcomePassedToBody = (TaskOutcome?)null;
             var actualOutcomePassedToCondition = (TaskOutcome?)null;
 
             var task = new TaskDefinition(
                 GetStepForOutcome(firstStepOutcome),
                 GetStepForOutcome(secondStepOutcome, TaskStepUtils.AlwaysExecuteCondition),
                 new BasicTaskStep(
-                    "TestedStep",
+                    "TestedBody",
+                    x => actualOutcomePassedToBody = x,
+                    TaskStepUtils.AlwaysExecuteCondition),
+                new BasicTaskStep(
+                    "TestedConditionalStep",
                     () => { },
                     x =>
                     {
@@ -56,7 +61,8 @@ namespace Manisero.Navvy.Tests
             task.Execute(resolverType, cancellation: _cancellationSource);
 
             // Assert
-            actualOutcomePassedToCondition.Should().Be(outcomePassedToThirdStepCondition);
+            actualOutcomePassedToBody.Should().Be(outcomePassedToThirdStepCondition, nameof(actualOutcomePassedToBody));
+            actualOutcomePassedToCondition.Should().Be(outcomePassedToThirdStepCondition, nameof(actualOutcomePassedToCondition));
         }
 
         [Theory]
