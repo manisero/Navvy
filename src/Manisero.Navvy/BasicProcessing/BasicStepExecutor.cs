@@ -14,15 +14,15 @@ namespace Manisero.Navvy.BasicProcessing
             TaskStepExecutionContext context,
             CancellationToken cancellation)
         {
-            var events = context.EventsBag.TryGetEvents<TaskExecutionEvents>();
+            var events = context.Parameters.EventsBag.TryGetEvents<TaskExecutionEvents>();
             var sw = new Stopwatch();
-            var progress = new SynchronousProgress<float>(p => events?.Raise(x => x.OnStepProgressed(p, sw.Elapsed, step, context.Task)));
+            var progress = new SynchronousProgress<float>(p => events?.Raise(x => x.OnStepProgressed(p, sw.Elapsed, step, context.Parameters.Task)));
 
             sw.Start();
 
             try
             {
-                step.Body(progress, cancellation);
+                step.Body(context.State.OutcomeSoFar, progress, cancellation);
             }
             catch (OperationCanceledException e)
             {

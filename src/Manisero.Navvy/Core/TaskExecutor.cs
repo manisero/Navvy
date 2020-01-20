@@ -108,11 +108,16 @@ namespace Manisero.Navvy.Core
         {
             var stepExecutor = _taskStepExecutorResolver.Resolve<TStep>();
 
-            var context = new TaskStepExecutionContext
-            {
-                Task = task,
-                EventsBag = eventsBag
-            };
+            var context = new TaskStepExecutionContext(
+                new TaskStepExecutionParameters
+                {
+                    Task = task,
+                    EventsBag = eventsBag
+                },
+                new TaskExecutionState
+                {
+                    OutcomeSoFar = TaskOutcome.Successful
+                });
             
             stepExecutor.Execute(step, context, cancellation);
         }
