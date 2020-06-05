@@ -30,12 +30,12 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___catches_error(ResolverType resolverType)
+        public void pipeline___catches_error_in_first_block(ResolverType resolverType)
         {
             var task = new TaskDefinition(
                 new PipelineTaskStep<int>(
                     FailingStepName,
-                    new[] { 0 },
+                    new[] { 0, 1, 2 },
                     new List<PipelineBlock<int>>
                     {
                         new PipelineBlock<int>(
@@ -49,6 +49,28 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
+        public void pipeline___catches_error_in_non_first_block(ResolverType resolverType)
+        {
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    FailingStepName,
+                    new[] { 0, 1, 2 },
+                    new List<PipelineBlock<int>>
+                    {
+                        new PipelineBlock<int>(
+                            "Block",
+                            _ => { }),
+                        new PipelineBlock<int>(
+                            "Errors",
+                            _ => throw _error)
+                    }));
+
+            test(task, resolverType);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
         public void pipeline___item_following_invalid_item_is_not_processed(ResolverType resolverType)
         {
             var completed = false;
@@ -56,7 +78,7 @@ namespace Manisero.Navvy.Tests
             var task = new TaskDefinition(
                 new PipelineTaskStep<int>(
                     FailingStepName,
-                    new[] { 0, 1 },
+                    new[] { 0, 1, 2 },
                     new List<PipelineBlock<int>>
                     {
                         new PipelineBlock<int>(
@@ -89,7 +111,7 @@ namespace Manisero.Navvy.Tests
             var task = new TaskDefinition(
                 new PipelineTaskStep<int>(
                     FailingStepName,
-                    new[] { 0 },
+                    new[] { 0, 1, 2 },
                     new List<PipelineBlock<int>>
                     {
                         new PipelineBlock<int>(
