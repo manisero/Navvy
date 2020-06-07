@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
@@ -9,64 +10,96 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 {
     internal class DataflowPipelineBuilder
     {
-        public DataflowPipeline<TItem> Build<TItem>(
+        public DataflowPipeline Build<TItem>(
+            IEnumerator<TItem> inputEnumerator,
             PipelineTaskStep<TItem> step,
             DataflowExecutionContext context,
             CancellationToken cancellation)
         {
-            return step.Blocks.Count != 0
-                ? BuildNotEmpty(step, context, cancellation)
-                : BuildEmpty(step, context, cancellation);
-        }
+            var inputBlock = BuildInputBlock<TItem>(cancellation);
 
-        private DataflowPipeline<TItem> BuildNotEmpty<TItem>(
-            PipelineTaskStep<TItem> step,
-            DataflowExecutionContext context,
-            CancellationToken cancellation)
-        {
-            var firstBlock = ToTransformBlock(step, 0, context, cancellation);
-            var previousBlock = firstBlock;
+            var postNextInputBlock = BuildPostNextInputBlock(inputEnumerator, inputBlock, step, context, cancellation);
+            inputBlock.LinkTo(postNextInputBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
-            for (var i = 1; i <= step.Blocks.Count - 1; i++)
+            var previousBlock = postNextInputBlock;
+
+            foreach (var block in step.Blocks)
             {
-                var currentBlock = ToTransformBlock(step, i, context, cancellation);
+                var currentBlock = BuildProcessingBlock(block, step, context, cancellation);
                 previousBlock.LinkTo(currentBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
                 previousBlock = currentBlock;
             }
 
-            var progressBlock = CreateProgressBlock(step, context, cancellation);
+            var progressBlock = BuildProgressBlock(step, context, cancellation);
             previousBlock.LinkTo(progressBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
-            return new DataflowPipeline<TItem>
+            return new DataflowPipeline
             {
-                InputBlock = firstBlock,
-                Completion = progressBlock.Completion
+                Execute = () =>
+                {
+                    PostNextInput(
+                        inputEnumerator,
+                        1,
+                        inputBlock,
+                        step,
+                        context,
+                        cancellation);
+
+                    return progressBlock.Completion;
+                }
             };
         }
 
-        private DataflowPipeline<TItem> BuildEmpty<TItem>(
+        private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> BuildInputBlock<TItem>(
+            CancellationToken cancellation)
+        {
+            return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
+                x => x,
+                new ExecutionDataflowBlockOptions
+                {
+                    NameFormat = "Input",
+                    BoundedCapacity = 1,
+                    EnsureOrdered = true,
+                    CancellationToken = cancellation
+                });
+        }
+
+        private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> BuildPostNextInputBlock<TItem>(
+            IEnumerator<TItem> inputEnumerator,
+            ITargetBlock<PipelineItem<TItem>> inputBlock,
             PipelineTaskStep<TItem> step,
             DataflowExecutionContext context,
             CancellationToken cancellation)
         {
-            var progressBlock = CreateProgressBlock(step, context, cancellation);
+            return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
+                x =>
+                {
+                    PostNextInput(
+                        inputEnumerator,
+                        x.Number + 1,
+                        inputBlock,
+                        step,
+                        context,
+                        cancellation);
 
-            return new DataflowPipeline<TItem>
-            {
-                InputBlock = progressBlock,
-                Completion = progressBlock.Completion
-            };
+                    return x;
+                },
+                new ExecutionDataflowBlockOptions
+                {
+                    NameFormat = "PostNextInput",
+                    BoundedCapacity = 1,
+                    EnsureOrdered = true,
+                    CancellationToken = cancellation
+                });
         }
 
-        private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> ToTransformBlock<TItem>(
+        private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> BuildProcessingBlock<TItem>(
+            PipelineBlock<TItem> block,
             PipelineTaskStep<TItem> step,
-            int blockIndex,
             DataflowExecutionContext context,
             CancellationToken cancellation)
         {
-            var block = step.Blocks[blockIndex];
-
             return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
                 x =>
                 {
@@ -98,7 +131,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                 });
         }
 
-        private ActionBlock<PipelineItem<TItem>> CreateProgressBlock<TItem>(
+        private ActionBlock<PipelineItem<TItem>> BuildProgressBlock<TItem>(
             PipelineTaskStep<TItem> step,
             DataflowExecutionContext context,
             CancellationToken cancellation)
@@ -117,6 +150,41 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                     EnsureOrdered = true,
                     CancellationToken = cancellation
                 });
+        }
+
+        private void PostNextInput<TItem>(
+            IEnumerator<TItem> inputEnumerator,
+            int itemNumber,
+            ITargetBlock<PipelineItem<TItem>> inputBlock,
+            PipelineTaskStep<TItem> step,
+            DataflowExecutionContext context,
+            CancellationToken cancellation)
+        {
+            var itemStartTs = DateTimeOffset.UtcNow;
+            var sw = Stopwatch.StartNew();
+
+            if (inputEnumerator.MoveNext())
+            {
+                var pipelineItem = new PipelineItem<TItem>
+                {
+                    Number = itemNumber,
+                    Item = inputEnumerator.Current,
+                    ProcessingStopwatch = sw
+                };
+
+                var materializationDuration = sw.Elapsed;
+                context.TotalInputMaterializationDuration += materializationDuration;
+                context.Events?.Raise(x => x.OnItemMaterialized(pipelineItem.Number, pipelineItem.Item, itemStartTs, materializationDuration, step, context.StepContext.Task));
+
+                inputBlock.Post(pipelineItem);
+
+                cancellation.ThrowIfCancellationRequested();
+            }
+            else
+            {
+                sw.Stop();
+                inputBlock.Complete();
+            }
         }
     }
 }

@@ -1,12 +1,10 @@
-﻿using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Manisero.Navvy.Dataflow.StepExecution
 {
-    internal class DataflowPipeline<TItem>
+    internal class DataflowPipeline
     {
-        public ITargetBlock<PipelineItem<TItem>> InputBlock { get; set; }
-
-        public Task Completion { get; set; }
+        public Func<Task> Execute { get; set; }
     }
 }

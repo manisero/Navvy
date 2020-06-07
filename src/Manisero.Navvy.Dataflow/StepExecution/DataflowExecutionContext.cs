@@ -17,6 +17,8 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
         public ExecutionEventsGroup<PipelineExecutionEvents> Events { get; set; }
 
+        public TimeSpan TotalInputMaterializationDuration { get; set; }
+
         public ConcurrentDictionary<string, TimeSpan> TotalBlockDurations { get; set; }
     }
 }
