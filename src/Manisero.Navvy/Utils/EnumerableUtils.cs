@@ -5,7 +5,7 @@ namespace Manisero.Navvy.Utils
 {
     internal static class EnumerableUtils
     {
-        public static IEnumerable<ICollection<TSource>> Batch<TSource>(
+        public static IEnumerable<List<TSource>> Batch<TSource>(
             this IEnumerable<TSource> source,
             int batchSize)
         {
@@ -24,6 +24,7 @@ namespace Manisero.Navvy.Utils
 
             if (batch.Any())
             {
+                batch.TrimExcess();
                 yield return batch;
             }
         }
