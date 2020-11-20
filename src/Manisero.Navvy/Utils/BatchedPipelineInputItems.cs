@@ -28,6 +28,14 @@ namespace Manisero.Navvy.Utils
             : this(items, items.Count, batchSize, batchFactory)
         {
         }
+
+        public BatchedPipelineInputItems(
+            IReadOnlyCollection<TItem> items,
+            int batchSize,
+            Func<ICollection<TItem>, TBatch> batchFactory)
+            : this(items, items.Count, batchSize, batchFactory)
+        {
+        }
     }
 
     public class BatchedPipelineInputItems<TItem> : BatchedPipelineInputItems<TItem, ICollection<TItem>>
@@ -37,6 +45,13 @@ namespace Manisero.Navvy.Utils
             int expectedItemsCount,
             int batchSize) 
             : base(items, expectedItemsCount, batchSize, x => x)
+        {
+        }
+
+        public BatchedPipelineInputItems(
+            IReadOnlyCollection<TItem> items,
+            int batchSize)
+            : this(items, items.Count, batchSize)
         {
         }
 
