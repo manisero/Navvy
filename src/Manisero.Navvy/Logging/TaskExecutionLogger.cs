@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Manisero.Navvy.Core;
 using Manisero.Navvy.Core.Events;
+using Manisero.Navvy.Logging.Diagnostics;
 using Manisero.Navvy.PipelineProcessing.Events;
 
 namespace Manisero.Navvy.Logging
@@ -29,9 +29,10 @@ namespace Manisero.Navvy.Logging
         private static void HandleTaskStarted(
             TaskStartedEvent e)
         {
-            var log = new TaskExecutionLog();
+            var diagnostic = DiagnosticsProvider.GetFirstDiagnostic();
+
+            var log = new TaskExecutionLog(diagnostic);
             log.TaskDuration.SetStart(e.Timestamp);
-            AddDiagnostic(log);
 
             e.Task.SetExecutionLog(log);
         }
@@ -118,11 +119,8 @@ namespace Manisero.Navvy.Logging
         private static void AddDiagnostic(
             TaskExecutionLog log)
         {
-            log.Diagnostics.Add(
-                new DiagnosticLog(
-                    DateTime.UtcNow,
-                    System.Diagnostics.Process.GetCurrentProcess().WorkingSet64,
-                    GC.GetTotalMemory(false)));
+            var diagnostic = DiagnosticsProvider.GetDiagnostic(log.LatestDiagnostic);
+            log.AddDiagnostic(diagnostic);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Manisero.Navvy.Logging;
+using Manisero.Navvy.Logging.Diagnostics;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Reporting.Shared;
@@ -96,7 +97,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
         private IEnumerable<ICollection<object>> GetMemoryData(
             DurationLog stepDuration,
-            IEnumerable<DiagnosticLog> diagnostics)
+            IEnumerable<Diagnostic> diagnostics)
         {
             yield return new[]
             {

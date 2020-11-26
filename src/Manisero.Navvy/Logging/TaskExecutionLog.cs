@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Manisero.Navvy.Logging.Diagnostics;
 
 namespace Manisero.Navvy.Logging
 {
@@ -11,7 +12,23 @@ namespace Manisero.Navvy.Logging
         /// <summary>StepName -> Log</summary>
         public ConcurrentDictionary<string, TaskStepLog> StepLogs { get; } = new ConcurrentDictionary<string, TaskStepLog>();
 
-        public ConcurrentBag<DiagnosticLog> Diagnostics { get; } = new ConcurrentBag<DiagnosticLog>();
+        public ConcurrentBag<Diagnostic> Diagnostics { get; } = new ConcurrentBag<Diagnostic>();
+
+        /// <summary>Note: usage of this property is not thread-safe.</summary>
+        internal Diagnostic LatestDiagnostic { get; set; }
+
+        public TaskExecutionLog(
+            Diagnostic firstDiagnostic)
+        {
+            AddDiagnostic(firstDiagnostic);
+        }
+
+        public void AddDiagnostic(
+            Diagnostic diagnostic)
+        {
+            Diagnostics.Add(diagnostic);
+            LatestDiagnostic = diagnostic;
+        }
     }
 
     public class TaskStepLog
@@ -60,25 +77,6 @@ namespace Manisero.Navvy.Logging
         {
             EndTs = endTs;
             Duration = duration;
-        }
-    }
-
-    public struct DiagnosticLog
-    {
-        public DateTime Timestamp;
-
-        public long ProcessWorkingSet;
-
-        public long GcAllocatedSet;
-
-        public DiagnosticLog(
-            DateTime timestamp,
-            long processWorkingSet,
-            long gcAllocatedSet)
-        {
-            Timestamp = timestamp;
-            ProcessWorkingSet = processWorkingSet;
-            GcAllocatedSet = gcAllocatedSet;
         }
     }
 }

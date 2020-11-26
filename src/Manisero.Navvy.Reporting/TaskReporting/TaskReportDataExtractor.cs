@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Manisero.Navvy.Logging;
+using Manisero.Navvy.Logging.Diagnostics;
 using Manisero.Navvy.Reporting.Shared;
 using Manisero.Navvy.Reporting.Utils;
 
@@ -67,7 +68,7 @@ namespace Manisero.Navvy.Reporting.TaskReporting
 
         private IEnumerable<ICollection<object>> GetMemoryData(
             DurationLog taskDuration,
-            IEnumerable<DiagnosticLog> diagnostics)
+            IEnumerable<Diagnostic> diagnostics)
         {
             yield return new[]
             {
