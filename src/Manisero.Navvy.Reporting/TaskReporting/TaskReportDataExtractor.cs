@@ -25,12 +25,12 @@ namespace Manisero.Navvy.Reporting.TaskReporting
 
             return new TaskReportData
             {
-                StepTimesData = GetStepTimesData(log, stepNames).ToArray(),
+                StepsTimelineData = GetStepsTimelineData(log, stepNames).ToArray(),
                 MemoryData = GetMemoryData(log.TaskDuration, log.Diagnostics).ToArray()
             };
         }
 
-        private IEnumerable<ICollection<object>> GetStepTimesData(
+        private IEnumerable<ICollection<object>> GetStepsTimelineData(
             TaskExecutionLog log,
             IEnumerable<string> stepNames)
         {

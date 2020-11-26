@@ -5,33 +5,33 @@
 </head>
 
 <body>
-<div id="stepTimesContainer" style="width: 95%; margin: auto"></div>
+<div id="stepsTimelineContainer" style="width: 95%; margin: auto"></div>
 <div id="memoryContainer" style="width: 95%; margin: auto"></div>
 
 <script language="JavaScript">
     function drawCharts() {
         var reportData = @ReportDataJson;
 
-        tryDrawStepTimesChart(reportData.StepTimesData);
+        tryDrawStepsTimelineChart(reportData.StepsTimelineData);
         tryDrawMemoryChart(reportData.MemoryData);
     }
 
-    function tryDrawStepTimesChart(data) {
-        var container = document.getElementById('stepTimesContainer');
+    function tryDrawStepsTimelineChart(data) {
+        var container = document.getElementById('stepsTimelineContainer');
 
         if (data.length === 1) {
-            container.innerHTML = 'No "Step times" data.';
+            container.innerHTML = 'No "Steps timeline" data.';
             return;
         }
 
         var stepsCount = new Set(data.map(x => x[0])).size - 1;
 
-        var stepTimesOptions = {
+        var stepsTimelineOptions = {
             height: stepsCount * 41 + 50
         };
 
-        var stepTimesChart = new google.visualization.Timeline(container);
-        stepTimesChart.draw(google.visualization.arrayToDataTable(data), stepTimesOptions);
+        var stepsTimelineChart = new google.visualization.Timeline(container);
+        stepsTimelineChart.draw(google.visualization.arrayToDataTable(data), stepsTimelineOptions);
     }
 
     function tryDrawMemoryChart(data) {
