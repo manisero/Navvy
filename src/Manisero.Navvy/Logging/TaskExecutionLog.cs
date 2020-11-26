@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Manisero.Navvy.Logging.Diagnostics;
+using Manisero.Navvy.Utils;
 
 namespace Manisero.Navvy.Logging
 {
@@ -14,8 +15,8 @@ namespace Manisero.Navvy.Logging
 
         public ConcurrentBag<Diagnostic> Diagnostics { get; } = new ConcurrentBag<Diagnostic>();
 
-        /// <summary>Note: usage of this property is not thread-safe.</summary>
-        internal Diagnostic LatestDiagnostic { get; set; }
+        /// <summary>Note: wrapped in reference type to ensure atomic access to Diagnostic.</summary>
+        private Wrapper<Diagnostic> LatestDiagnostic { get; set; }
 
         public TaskExecutionLog(
             Diagnostic firstDiagnostic)
@@ -27,8 +28,10 @@ namespace Manisero.Navvy.Logging
             Diagnostic diagnostic)
         {
             Diagnostics.Add(diagnostic);
-            LatestDiagnostic = diagnostic;
+            LatestDiagnostic = new Wrapper<Diagnostic>(diagnostic);
         }
+
+        public Diagnostic GetLatestDiagnostic() => LatestDiagnostic.Wrapped;
     }
 
     public class TaskStepLog

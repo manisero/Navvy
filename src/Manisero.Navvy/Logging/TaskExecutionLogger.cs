@@ -119,7 +119,7 @@ namespace Manisero.Navvy.Logging
         private static void AddDiagnostic(
             TaskExecutionLog log)
         {
-            var diagnostic = DiagnosticsProvider.GetDiagnostic(log.LatestDiagnostic);
+            var diagnostic = DiagnosticsProvider.GetDiagnostic(log.GetLatestDiagnostic());
             log.AddDiagnostic(diagnostic);
         }
     }
