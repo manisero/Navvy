@@ -69,7 +69,9 @@
         }
 
         var cpuUsageOptions = {
-            title: 'CPU usage'
+            title: 'CPU usage',
+            legend: { position: 'top' },
+            vAxis: { minValue: 0, maxValue: 100 }
         };
 
         var cpuUsageChart = new google.visualization.LineChart(container);
