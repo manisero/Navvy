@@ -59,7 +59,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
         {
             var itemNumberString = $"Item {itemNumber}";
 
-            yield return new[]
+            yield return new object[]
             {
                 itemNumberString,
                 materializationBlockName,
@@ -71,7 +71,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             {
                 var blockDuration = itemLog.BlockDurations[blockName];
 
-                yield return new[]
+                yield return new object[]
                 {
                     itemNumberString,
                     blockName,
@@ -86,12 +86,12 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             string materializationBlockName,
             IEnumerable<string> blockNames)
         {
-            yield return new[] { "Block", "Total duration" + PipelineReportingUtils.MsUnit };
-            yield return new[] { materializationBlockName, stepLog.BlockTotals.MaterializationDuration.GetLogValue() };
+            yield return new object[] { "Block", "Total duration" + PipelineReportingUtils.MsUnit };
+            yield return new object[] { materializationBlockName, stepLog.BlockTotals.MaterializationDuration.GetLogValue() };
 
             foreach (var blockName in blockNames)
             {
-                yield return new[] { blockName, stepLog.BlockTotals.BlockDurations[blockName].GetLogValue() };
+                yield return new object[] { blockName, stepLog.BlockTotals.BlockDurations[blockName].GetLogValue() };
             }
         }
 
@@ -112,7 +112,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
             foreach (var diagnostic in relevantDiagnostics)
             {
-                yield return new[]
+                yield return new object[]
                 {
                     (diagnostic.Timestamp - stepDuration.StartTs).GetLogValue(),
                     diagnostic.ProcessWorkingSet.ToMb(),

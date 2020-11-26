@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.Logging.Diagnostics;
@@ -25,11 +26,14 @@ namespace Manisero.Navvy.Reporting.TaskReporting
                 .Where(x => log.StepLogs.ContainsKey(x))
                 .ToArray();
 
+            var diagnosticChartsData = GetDiagnosticChartsData(log.TaskDuration, log.Diagnostics);
+
             return new TaskReportData
             {
                 StepsTimelineData = GetStepsTimelineData(log, stepNames).ToArray(),
                 StepTimesData = GetStepTimesData(log, stepNames).ToArray(),
-                MemoryData = GetMemoryData(log.TaskDuration, log.Diagnostics).ToArray()
+                MemoryData = diagnosticChartsData.Item1,
+                CpuUsageData = diagnosticChartsData.Item2
             };
         }
 
@@ -45,7 +49,7 @@ namespace Manisero.Navvy.Reporting.TaskReporting
             {
                 var stepDuration = log.StepLogs[stepName].Duration;
 
-                yield return new[]
+                yield return new object[]
                 {
                     stepName,
                     (stepDuration.StartTs - taskStartTs).GetLogValue(),
@@ -62,34 +66,78 @@ namespace Manisero.Navvy.Reporting.TaskReporting
 
             foreach (var stepName in stepNames)
             {
-                yield return new[] { stepName, log.StepLogs[stepName].Duration.Duration.GetLogValue() };
+                yield return new object[] { stepName, log.StepLogs[stepName].Duration.Duration.GetLogValue() };
             }
         }
 
-        private IEnumerable<ICollection<object>> GetMemoryData(
+        private Tuple<ICollection<ICollection<object>>, ICollection<ICollection<object>>> GetDiagnosticChartsData(
             DurationLog taskDuration,
             IEnumerable<Diagnostic> diagnostics)
         {
-            yield return new[]
+            var memoryData = new List<ICollection<object>>
             {
-                "Time" + PipelineReportingUtils.MsUnit,
-                "Process working set" + PipelineReportingUtils.MbUnit,
-                "GC allocated set" + PipelineReportingUtils.MbUnit
+                new[]
+                {
+                    "Time" + PipelineReportingUtils.MsUnit,
+                    "Process working set" + PipelineReportingUtils.MbUnit,
+                    "GC allocated set" + PipelineReportingUtils.MbUnit
+                }
+            };
+            
+            var cpuUsageData = new List<ICollection<object>>
+            {
+                new[]
+                {
+                    "Time" + PipelineReportingUtils.MsUnit,
+                    "Cpu usage" + PipelineReportingUtils.PercentUnit
+                }
             };
 
             var relevantDiagnostics = diagnostics
                 .Where(x => x.Timestamp.IsBetween(taskDuration.StartTs, taskDuration.EndTs))
                 .OrderBy(x => x.Timestamp);
+            
+            double? prevCpuDiagnosticTime = null;
 
             foreach (var diagnostic in relevantDiagnostics)
             {
-                yield return new[]
+                var time = (diagnostic.Timestamp - taskDuration.StartTs).GetLogValue();
+
+                memoryData.Add(new object[]
                 {
-                    (diagnostic.Timestamp - taskDuration.StartTs).GetLogValue(),
+                    time,
                     diagnostic.ProcessWorkingSet.ToMb(),
                     diagnostic.GcAllocatedSet.ToMb()
-                };
+                });
+
+                if (prevCpuDiagnosticTime == null)
+                {
+                    prevCpuDiagnosticTime = time;
+                    continue;
+                }
+
+                if (diagnostic.CpuUsage.HasValue)
+                {
+                    var cpuUsage = diagnostic.CpuUsage.Value.ToPercentage();
+
+                    cpuUsageData.Add(new object[]
+                    {
+                        prevCpuDiagnosticTime,
+                        cpuUsage
+                    });
+
+                    cpuUsageData.Add(new object[]
+                    {
+                        time,
+                        cpuUsage
+                    });
+
+                    prevCpuDiagnosticTime = time;
+                }
             }
+
+            return new Tuple<ICollection<ICollection<object>>, ICollection<ICollection<object>>>(
+                memoryData, cpuUsageData);
         }
     }
 }

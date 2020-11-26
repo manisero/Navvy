@@ -9,5 +9,7 @@ namespace Manisero.Navvy.Reporting.TaskReporting
         public ICollection<ICollection<object>> StepTimesData { get; set; }
 
         public ICollection<ICollection<object>> MemoryData { get; set; }
+
+        public ICollection<ICollection<object>> CpuUsageData { get; set; }
     }
 }
