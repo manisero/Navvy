@@ -85,7 +85,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             string materializationBlockName,
             IEnumerable<string> blockNames)
         {
-            yield return new[] { "Step", "Total duration" + PipelineReportingUtils.MsUnit };
+            yield return new[] { "Block", "Total duration" + PipelineReportingUtils.MsUnit };
             yield return new[] { materializationBlockName, stepLog.BlockTotals.MaterializationDuration.GetLogValue() };
 
             foreach (var blockName in blockNames)

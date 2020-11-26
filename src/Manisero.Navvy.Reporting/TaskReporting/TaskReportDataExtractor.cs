@@ -21,11 +21,13 @@ namespace Manisero.Navvy.Reporting.TaskReporting
         {
             var stepNames = task.Steps
                 .Select(x => x.Name)
-                .Where(x => log.StepLogs.ContainsKey(x));
+                .Where(x => log.StepLogs.ContainsKey(x))
+                .ToArray();
 
             return new TaskReportData
             {
                 StepsTimelineData = GetStepsTimelineData(log, stepNames).ToArray(),
+                StepTimesData = GetStepTimesData(log, stepNames).ToArray(),
                 MemoryData = GetMemoryData(log.TaskDuration, log.Diagnostics).ToArray()
             };
         }
@@ -48,6 +50,18 @@ namespace Manisero.Navvy.Reporting.TaskReporting
                     (stepDuration.StartTs - taskStartTs).GetLogValue(),
                     (stepDuration.EndTs - taskStartTs).GetLogValue()
                 };
+            }
+        }
+
+        private IEnumerable<ICollection<object>> GetStepTimesData(
+            TaskExecutionLog log,
+            IEnumerable<string> stepNames)
+        {
+            yield return new[] { "Step", "Duration" + PipelineReportingUtils.MsUnit };
+
+            foreach (var stepName in stepNames)
+            {
+                yield return new[] { stepName, log.StepLogs[stepName].Duration.Duration.GetLogValue() };
             }
         }
 

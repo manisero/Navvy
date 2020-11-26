@@ -7,6 +7,7 @@
 <body>
 <div id="stepsTimelineContainer" style="width: 95%; margin: auto"></div>
 <div id="memoryContainer" style="width: 95%; margin: auto"></div>
+<div id="stepTimesContainer" style="width: 95%; margin: auto"></div>
 
 <script language="JavaScript">
     function drawCharts() {
@@ -14,6 +15,7 @@
 
         tryDrawStepsTimelineChart(reportData.StepsTimelineData);
         tryDrawMemoryChart(reportData.MemoryData);
+        tryDrawStepTimesChart(reportData.StepTimesData);
     }
 
     function tryDrawStepsTimelineChart(data) {
@@ -54,6 +56,24 @@
 
         var memoryChart = new google.visualization.ScatterChart(container);
         memoryChart.draw(google.visualization.arrayToDataTable(data), memoryOptions);
+    }
+
+    function tryDrawStepTimesChart(data) {
+        var container = document.getElementById('stepTimesContainer');
+
+        if (data.length === 1) {
+            container.innerHTML = 'No "Step times" data.';
+            return;
+        }
+
+        var stepTimesOptions = {
+            title: 'Step durations',
+            legend: { position: 'top' },
+            vAxis: { minValue: 0 }
+        };
+
+        var stepTimesChart = new google.visualization.ColumnChart(container);
+        stepTimesChart.draw(google.visualization.arrayToDataTable(data), stepTimesOptions);
     }
 
     google.charts.load('current', { packages: ['corechart', 'timeline'] });
