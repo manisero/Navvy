@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.IO;
+using System.Threading;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core;
@@ -26,7 +28,8 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void test(ResolverType resolverType)
+        //[InlineData(ResolverType.Sequential, @"c:\temp\Navvy_tests")]
+        public void test(ResolverType resolverType, string reportsFolderPath = null)
         {
             // Arrange
             var initialized = false;
@@ -36,7 +39,10 @@ namespace Manisero.Navvy.Tests
             var executor = new TaskExecutorBuilder()
                 .RegisterPipelineExecution(resolverType)
                 .UseTaskExecutionLogger()
-                .UseTaskExecutionReporter()
+                .UseTaskExecutionReporter(
+                    reportsFolderPath != null
+                        ? x => reportsFolderPath
+                        : (Func<TaskDefinition, string>) null)
                 .RegisterProgressHandler(x => _output.WriteLine($"{x.Step.Name}: {x.Progress * 100f}%"))
                 .Build();
 
