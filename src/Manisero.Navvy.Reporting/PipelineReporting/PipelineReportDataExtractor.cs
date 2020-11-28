@@ -31,7 +31,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             {
                 ItemsTimelineData = GetItemsTimelineData(stepLog, materializationBlockName, blockNames).ToArray(),
                 BlockTimesData = GetBlockTimesData(stepLog, materializationBlockName, blockNames).ToArray(),
-                MemoryData = GetMemoryData(stepLog.Duration, log.Diagnostics).ToArray()
+                MemoryData = GetMemoryData(stepLog.Duration, log.DiagnosticsLog.GetDiagnostics()).ToArray()
             };
         }
 

@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Manisero.Navvy.Logging.Diagnostics;
-using Manisero.Navvy.Utils;
 
 namespace Manisero.Navvy.Logging
 {
@@ -13,25 +12,13 @@ namespace Manisero.Navvy.Logging
         /// <summary>StepName -> Log</summary>
         public ConcurrentDictionary<string, TaskStepLog> StepLogs { get; } = new ConcurrentDictionary<string, TaskStepLog>();
 
-        public ConcurrentBag<Diagnostic> Diagnostics { get; } = new ConcurrentBag<Diagnostic>();
-
-        /// <summary>Note: wrapped in reference type to ensure atomic access to Diagnostic.</summary>
-        private Wrapper<Diagnostic> LatestDiagnostic { get; set; }
+        public DiagnosticsLog DiagnosticsLog { get; }
 
         public TaskExecutionLog(
             Diagnostic firstDiagnostic)
         {
-            AddDiagnostic(firstDiagnostic);
+            DiagnosticsLog = new DiagnosticsLog(firstDiagnostic);
         }
-
-        public void AddDiagnostic(
-            Diagnostic diagnostic)
-        {
-            Diagnostics.Add(diagnostic);
-            LatestDiagnostic = new Wrapper<Diagnostic>(diagnostic);
-        }
-
-        public Diagnostic GetLatestDiagnostic() => LatestDiagnostic.Wrapped;
     }
 
     public class TaskStepLog

@@ -116,22 +116,23 @@ namespace Manisero.Navvy.Logging
                 BlockDurations = e.TotalBlockDurations.ToDictionary(entry => entry.Key, entry => entry.Value)
             };
 
-            TryAddDiagnostic(e.Timestamp, log);
+            TryAddDiagnostic(e.Timestamp, log, true);
         }
 
         private static void TryAddDiagnostic(
             DateTime timestamp,
-            TaskExecutionLog log)
+            TaskExecutionLog log,
+            bool isLastDiagnostic = false)
         {
-            var latestDiagnostic = log.GetLatestDiagnostic();
+            var diagnosticsLog = log.DiagnosticsLog;
+            var latestDiagnostic = diagnosticsLog.GetLatestDiagnostic();
 
-            if (timestamp - latestDiagnostic.Timestamp < DiagnosticMinInterval)
+            if (isLastDiagnostic && diagnosticsLog.HasFirstDiagnosticOnly() ||
+                timestamp - latestDiagnostic.Timestamp >= DiagnosticMinInterval)
             {
-                return;
+                var diagnostic = DiagnosticsProvider.GetDiagnostic(latestDiagnostic);
+                diagnosticsLog.AddDiagnostic(diagnostic);
             }
-
-            var diagnostic = DiagnosticsProvider.GetDiagnostic(latestDiagnostic);
-            log.AddDiagnostic(diagnostic);
         }
     }
 }

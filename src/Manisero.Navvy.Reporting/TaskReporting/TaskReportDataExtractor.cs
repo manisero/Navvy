@@ -26,7 +26,9 @@ namespace Manisero.Navvy.Reporting.TaskReporting
                 .Where(x => log.StepLogs.ContainsKey(x))
                 .ToArray();
 
-            var diagnosticChartsData = GetDiagnosticChartsData(log.TaskDuration, log.Diagnostics);
+            var diagnosticChartsData = GetDiagnosticChartsData(
+                log.TaskDuration,
+                log.DiagnosticsLog.GetDiagnostics());
 
             return new TaskReportData
             {
