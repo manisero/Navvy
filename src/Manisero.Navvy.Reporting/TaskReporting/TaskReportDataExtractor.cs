@@ -65,6 +65,7 @@ namespace Manisero.Navvy.Reporting.TaskReporting
             IEnumerable<string> stepNames)
         {
             yield return new[] { "Step", "Duration" + PipelineReportingUtils.MsUnit };
+            yield return new object[] { "[Total]", log.TaskDuration.Duration.GetLogValue() };
 
             foreach (var stepName in stepNames)
             {
