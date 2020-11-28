@@ -4,6 +4,7 @@ namespace Manisero.Navvy.Logging.Diagnostics
 {
     public struct Diagnostic
     {
+        /// <summary>UTC.</summary>
         public DateTime Timestamp { get; }
 
         public long ProcessWorkingSet { get; }

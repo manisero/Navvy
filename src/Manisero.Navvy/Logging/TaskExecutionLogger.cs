@@ -9,7 +9,7 @@ namespace Manisero.Navvy.Logging
 {
     public static class TaskExecutionLogger
     {
-        public static TimeSpan DiagnosticMinInterval = TimeSpan.FromMilliseconds(5.0);
+        public static TimeSpan DiagnosticMinInterval = TimeSpan.FromMilliseconds(50.0);
 
         public static IExecutionEvents[] CreateEvents()
         {

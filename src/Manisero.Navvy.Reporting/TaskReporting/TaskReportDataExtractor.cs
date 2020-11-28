@@ -89,7 +89,7 @@ namespace Manisero.Navvy.Reporting.TaskReporting
                 new[]
                 {
                     "Time" + PipelineReportingUtils.MsUnit,
-                    "Cpu usage" + PipelineReportingUtils.PercentUnit
+                    "Avg CPU usage" + PipelineReportingUtils.PercentUnit
                 }
             };
 

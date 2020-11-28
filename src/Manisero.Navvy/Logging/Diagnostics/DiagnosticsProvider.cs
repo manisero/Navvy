@@ -17,7 +17,7 @@ namespace Manisero.Navvy.Logging.Diagnostics
                 process.TotalProcessorTime);
         }
 
-        /// <summary>Caution: for low interval between calls (c.a. less than 5 ms), cpu usage calculation is inaccurate.</summary>
+        /// <summary>Caution: for low interval between calls, cpu usage calculation is inaccurate. 50 ms interval should be fine</summary>
         public static Diagnostic GetDiagnostic(
             Diagnostic previousDiagnostic)
         {
