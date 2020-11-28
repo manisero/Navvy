@@ -100,18 +100,30 @@ namespace Manisero.Navvy.Reporting.TaskReporting
                 .Where(x => x.Timestamp.IsBetween(taskDuration.StartTs, taskDuration.EndTs))
                 .OrderBy(x => x.Timestamp);
             
+            FillDiagnosticData(
+                relevantDiagnostics,
+                taskDuration.StartTs,
+                memoryData,
+                cpuUsageData);
+
+            return new Tuple<ICollection<ICollection<object>>, ICollection<ICollection<object>>>(
+                memoryData, cpuUsageData);
+        }
+
+        private void FillDiagnosticData(
+            IEnumerable<Diagnostic> relevantDiagnosticsByTs,
+            DateTime taskStartTs,
+            ICollection<ICollection<object>> memoryDataToFill,
+            ICollection<ICollection<object>> cpuUsageDataToFill)
+        {
             double? prevCpuDiagnosticTime = null;
 
-            foreach (var diagnostic in relevantDiagnostics)
+            foreach (var diagnostic in relevantDiagnosticsByTs)
             {
-                var time = (diagnostic.Timestamp - taskDuration.StartTs).GetLogValue();
+                var time = (diagnostic.Timestamp - taskStartTs).GetLogValue();
 
-                memoryData.Add(new object[]
-                {
-                    time,
-                    diagnostic.ProcessWorkingSet.ToMb(),
-                    diagnostic.GcAllocatedSet.ToMb()
-                });
+                memoryDataToFill.Add(
+                    new object[] { time, diagnostic.ProcessWorkingSet.ToMb(), diagnostic.GcAllocatedSet.ToMb() });
 
                 if (prevCpuDiagnosticTime == null)
                 {
@@ -122,25 +134,12 @@ namespace Manisero.Navvy.Reporting.TaskReporting
                 if (diagnostic.CpuUsage.HasValue)
                 {
                     var cpuUsage = diagnostic.CpuUsage.Value.ToPercentage();
-
-                    cpuUsageData.Add(new object[]
-                    {
-                        prevCpuDiagnosticTime,
-                        cpuUsage
-                    });
-
-                    cpuUsageData.Add(new object[]
-                    {
-                        time,
-                        cpuUsage
-                    });
+                    cpuUsageDataToFill.Add(new object[] { prevCpuDiagnosticTime, cpuUsage });
+                    cpuUsageDataToFill.Add(new object[] { time, cpuUsage });
 
                     prevCpuDiagnosticTime = time;
                 }
             }
-
-            return new Tuple<ICollection<ICollection<object>>, ICollection<ICollection<object>>>(
-                memoryData, cpuUsageData);
         }
     }
 }

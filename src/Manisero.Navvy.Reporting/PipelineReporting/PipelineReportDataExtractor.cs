@@ -27,11 +27,16 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             var materializationBlockName = pipeline.Input.Name ?? PipelineInput.DefaultName;
             var blockNames = pipeline.Blocks.Select(x => x.Name).ToArray();
 
+            var diagnosticChartsData = GetDiagnosticChartsData(
+                stepLog.Duration,
+                log.DiagnosticsLog.GetDiagnostics());
+
             return new PipelineReportData
             {
                 ItemsTimelineData = GetItemsTimelineData(stepLog, materializationBlockName, blockNames).ToArray(),
                 BlockTimesData = GetBlockTimesData(stepLog, materializationBlockName, blockNames).ToArray(),
-                MemoryData = GetMemoryData(stepLog.Duration, log.DiagnosticsLog.GetDiagnostics()).ToArray()
+                MemoryData = diagnosticChartsData.Item1,
+                CpuUsageData = diagnosticChartsData.Item2
             };
         }
 
@@ -96,29 +101,72 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             }
         }
 
-        private IEnumerable<ICollection<object>> GetMemoryData(
+        private Tuple<ICollection<ICollection<object>>, ICollection<ICollection<object>>> GetDiagnosticChartsData(
             DurationLog stepDuration,
             IEnumerable<Diagnostic> diagnostics)
         {
-            yield return new[]
+            var memoryData = new List<ICollection<object>>
             {
-                "Time" + PipelineReportingUtils.MsUnit,
-                "Process working set" + PipelineReportingUtils.MbUnit,
-                "GC allocated set" + PipelineReportingUtils.MbUnit
+                new[]
+                {
+                    "Time" + PipelineReportingUtils.MsUnit,
+                    "Process working set" + PipelineReportingUtils.MbUnit,
+                    "GC allocated set" + PipelineReportingUtils.MbUnit
+                }
+            };
+
+            var cpuUsageData = new List<ICollection<object>>
+            {
+                new[]
+                {
+                    "Time" + PipelineReportingUtils.MsUnit,
+                    "Avg CPU usage" + PipelineReportingUtils.PercentUnit
+                }
             };
 
             var relevantDiagnostics = diagnostics
                 .Where(x => x.Timestamp.IsBetween(stepDuration.StartTs, stepDuration.EndTs))
                 .OrderBy(x => x.Timestamp);
 
-            foreach (var diagnostic in relevantDiagnostics)
+            FillDiagnosticData(
+                relevantDiagnostics,
+                stepDuration.StartTs,
+                memoryData,
+                cpuUsageData);
+
+            return new Tuple<ICollection<ICollection<object>>, ICollection<ICollection<object>>>(
+                memoryData, cpuUsageData);
+        }
+
+        private void FillDiagnosticData(
+            IEnumerable<Diagnostic> relevantDiagnosticsByTs,
+            DateTime taskStartTs,
+            ICollection<ICollection<object>> memoryDataToFill,
+            ICollection<ICollection<object>> cpuUsageDataToFill)
+        {
+            double? prevCpuDiagnosticTime = null;
+
+            foreach (var diagnostic in relevantDiagnosticsByTs)
             {
-                yield return new object[]
+                var time = (diagnostic.Timestamp - taskStartTs).GetLogValue();
+
+                memoryDataToFill.Add(
+                    new object[] { time, diagnostic.ProcessWorkingSet.ToMb(), diagnostic.GcAllocatedSet.ToMb() });
+
+                if (prevCpuDiagnosticTime == null)
                 {
-                    (diagnostic.Timestamp - stepDuration.StartTs).GetLogValue(),
-                    diagnostic.ProcessWorkingSet.ToMb(),
-                    diagnostic.GcAllocatedSet.ToMb()
-                };
+                    prevCpuDiagnosticTime = time;
+                    continue;
+                }
+
+                if (diagnostic.CpuUsage.HasValue)
+                {
+                    var cpuUsage = diagnostic.CpuUsage.Value.ToPercentage();
+                    cpuUsageDataToFill.Add(new object[] { prevCpuDiagnosticTime, cpuUsage });
+                    cpuUsageDataToFill.Add(new object[] { time, cpuUsage });
+
+                    prevCpuDiagnosticTime = time;
+                }
             }
         }
     }

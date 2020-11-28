@@ -7,6 +7,7 @@
 <body>
 <div id="itemsTimelineContainer" style="width: 95%; margin: auto"></div>
 <div id="memoryContainer" style="width: 95%; margin: auto"></div>
+<div id="cpuUsageContainer" style="width: 95%; margin: auto"></div>
 <div id="blockTimesContainer" style="width: 95%; margin: auto"></div>
 
 <script language="JavaScript">
@@ -15,6 +16,7 @@
 
         tryDrawItemsTimelineChart(reportData.ItemsTimelineData);
         tryDrawMemoryChart(reportData.MemoryData);
+        tryDrawCpuUsageChart(reportData.CpuUsageData);
         tryDrawBlockTimesChart(reportData.BlockTimesData);
     }
 
@@ -56,6 +58,25 @@
 
         var memoryChart = new google.visualization.ScatterChart(container);
         memoryChart.draw(google.visualization.arrayToDataTable(data), memoryOptions);
+    }
+
+    function tryDrawCpuUsageChart(data) {
+        var container = document.getElementById('cpuUsageContainer');
+
+        if (data.length === 1) {
+            container.innerHTML = 'No "CPU usage" data.';
+            return;
+        }
+
+        var cpuUsageOptions = {
+            title: 'CPU usage',
+            legend: { position: 'top' },
+            hAxis: { title: data[0][0] },
+            vAxis: { minValue: 0, maxValue: 100 }
+        };
+
+        var cpuUsageChart = new google.visualization.LineChart(container);
+        cpuUsageChart.draw(google.visualization.arrayToDataTable(data), cpuUsageOptions);
     }
 
     function tryDrawBlockTimesChart(data) {
