@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Manisero.Navvy.Core;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Logging.Diagnostics;
@@ -8,6 +9,8 @@ namespace Manisero.Navvy.Logging
 {
     public static class TaskExecutionLogger
     {
+        public static TimeSpan DiagnosticMinInterval = TimeSpan.FromMilliseconds(5.0);
+
         public static IExecutionEvents[] CreateEvents()
         {
             return new IExecutionEvents[]
@@ -42,7 +45,7 @@ namespace Manisero.Navvy.Logging
         {
             var log = e.Task.GetExecutionLog();
             log.TaskDuration.SetEnd(e.Timestamp, e.Duration);
-            AddDiagnostic(log);
+            TryAddDiagnostic(e.Timestamp, log);
         }
 
         private static void HandleStepStarted(
@@ -53,7 +56,7 @@ namespace Manisero.Navvy.Logging
 
             var log = e.Task.GetExecutionLog();
             log.StepLogs[e.Step.Name] = stepLog;
-            AddDiagnostic(log);
+            TryAddDiagnostic(e.Timestamp, log);
         }
 
         private static void HandleStepEnded(
@@ -61,7 +64,7 @@ namespace Manisero.Navvy.Logging
         {
             var log = e.Task.GetExecutionLog();
             log.StepLogs[e.Step.Name].Duration.SetEnd(e.Timestamp, e.Duration);
-            AddDiagnostic(log);
+            TryAddDiagnostic(e.Timestamp, log);
         }
 
         private static void HandleItemMaterialized(
@@ -73,7 +76,7 @@ namespace Manisero.Navvy.Logging
 
             var log = e.Task.GetExecutionLog();
             log.StepLogs[e.Step.Name].ItemLogs[e.ItemNumber] = itemLog;
-            AddDiagnostic(log);
+            TryAddDiagnostic(e.Timestamp, log);
         }
 
         private static void HandleItemEnded(
@@ -81,7 +84,7 @@ namespace Manisero.Navvy.Logging
         {
             var log = e.Task.GetExecutionLog();
             log.StepLogs[e.Step.Name].ItemLogs[e.ItemNumber].Duration.SetEnd(e.Timestamp, e.Duration);
-            AddDiagnostic(log);
+            TryAddDiagnostic(e.Timestamp, log);
         }
 
         private static void HandleBlockStarted(
@@ -92,7 +95,7 @@ namespace Manisero.Navvy.Logging
 
             var log = e.Task.GetExecutionLog();
             log.StepLogs[e.Step.Name].ItemLogs[e.ItemNumber].BlockDurations[e.Block.Name] = blockLog;
-            AddDiagnostic(log);
+            TryAddDiagnostic(e.Timestamp, log);
         }
 
         private static void HandleBlockEnded(
@@ -100,7 +103,7 @@ namespace Manisero.Navvy.Logging
         {
             var log = e.Task.GetExecutionLog();
             log.StepLogs[e.Step.Name].ItemLogs[e.ItemNumber].BlockDurations[e.Block.Name].SetEnd(e.Timestamp, e.Duration);
-            AddDiagnostic(log);
+            TryAddDiagnostic(e.Timestamp, log);
         }
 
         private static void HandlePipelineEnded(
@@ -113,13 +116,21 @@ namespace Manisero.Navvy.Logging
                 BlockDurations = e.TotalBlockDurations.ToDictionary(entry => entry.Key, entry => entry.Value)
             };
 
-            AddDiagnostic(log);
+            TryAddDiagnostic(e.Timestamp, log);
         }
 
-        private static void AddDiagnostic(
+        private static void TryAddDiagnostic(
+            DateTime timestamp,
             TaskExecutionLog log)
         {
-            var diagnostic = DiagnosticsProvider.GetDiagnostic(log.GetLatestDiagnostic());
+            var latestDiagnostic = log.GetLatestDiagnostic();
+
+            if (timestamp - latestDiagnostic.Timestamp < DiagnosticMinInterval)
+            {
+                return;
+            }
+
+            var diagnostic = DiagnosticsProvider.GetDiagnostic(latestDiagnostic);
             log.AddDiagnostic(diagnostic);
         }
     }

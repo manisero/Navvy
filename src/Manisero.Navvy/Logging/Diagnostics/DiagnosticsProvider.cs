@@ -17,6 +17,7 @@ namespace Manisero.Navvy.Logging.Diagnostics
                 process.TotalProcessorTime);
         }
 
+        /// <summary>Caution: for low interval between calls (c.a. less than 5 ms), cpu usage calculation is inaccurate.</summary>
         public static Diagnostic GetDiagnostic(
             Diagnostic previousDiagnostic)
         {
@@ -47,7 +48,7 @@ namespace Manisero.Navvy.Logging.Diagnostics
             var timeDelta = (currentTimestamp - prevTimestamp).Ticks;
             var processorTimeDelta = (currentTotalCpuUsage - prevTotalCpuUsage).Ticks;
 
-            return (double)processorTimeDelta / timeDelta * Environment.ProcessorCount;
+            return (double)processorTimeDelta / timeDelta / Environment.ProcessorCount;
         }
     }
 }
