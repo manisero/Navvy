@@ -22,7 +22,7 @@ namespace Manisero.Navvy.Benchmarks
             {
                 if (Program.IsTestRun)
                 {
-                    Add(Job.Dry);
+                    AddJob(Job.Dry);
                 }
             }
         }
