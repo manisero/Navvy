@@ -71,7 +71,18 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                     var itemStartTs = DateTimeOffset.UtcNow;
                     var sw = Stopwatch.StartNew();
 
-                    if (inputEnumerator.MoveNext())
+                    bool hasNextItem;
+
+                    try
+                    {
+                        hasNextItem = inputEnumerator.MoveNext();
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TaskExecutionException(e, step, step.GetInputExceptionData(i));
+                    }
+
+                    if (hasNextItem)
                     {
                         var pipelineItem = new PipelineItem<TItem>
                         {
@@ -126,7 +137,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                     }
                     catch (Exception e)
                     {
-                        throw new TaskExecutionException(e, step, block.GetExceptionData());
+                        throw new TaskExecutionException(e, step, block.GetExceptionData(x.Number));
                     }
 
                     sw.Stop();

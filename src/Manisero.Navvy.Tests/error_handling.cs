@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.PipelineProcessing;
@@ -28,9 +29,42 @@ namespace Manisero.Navvy.Tests
         }
 
         [Theory]
+        [InlineData(ResolverType.Sequential, 0)]
+        [InlineData(ResolverType.Sequential, 1)]
+        [InlineData(ResolverType.Streaming, 0)]
+        [InlineData(ResolverType.Streaming, 1)]
+        public void pipeline___catches_error_in_input_materialization(
+            ResolverType resolverType,
+            int invalidItemIndex)
+        {
+            var task = new TaskDefinition(
+                new PipelineTaskStep<int>(
+                    FailingStepName,
+                    new[] { 0, 1, 2 }.Select((x, i) =>
+                    {
+                        if (i == invalidItemIndex)
+                        {
+                            throw _error;
+                        }
+
+                        return x;
+                    }),
+                    3,
+                    new List<PipelineBlock<int>>
+                    {
+                        new PipelineBlock<int>(
+                            "Block",
+                            _ => { }),
+                    }));
+
+            test(task, resolverType);
+        }
+
+        [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___catches_error_in_first_block(ResolverType resolverType)
+        public void pipeline___catches_error_in_first_block(
+            ResolverType resolverType)
         {
             var task = new TaskDefinition(
                 new PipelineTaskStep<int>(
@@ -49,7 +83,8 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___catches_error_in_non_first_block(ResolverType resolverType)
+        public void pipeline___catches_error_in_non_first_block(
+            ResolverType resolverType)
         {
             var task = new TaskDefinition(
                 new PipelineTaskStep<int>(
@@ -71,7 +106,8 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___item_following_invalid_item_is_not_processed(ResolverType resolverType)
+        public void pipeline___item_following_invalid_item_is_not_processed(
+            ResolverType resolverType)
         {
             var completed = false;
 
@@ -104,7 +140,8 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___invalid_item_is_not_further_processed(ResolverType resolverType)
+        public void pipeline___invalid_item_is_not_further_processed(
+            ResolverType resolverType)
         {
             var completed = false;
 

@@ -60,4 +60,23 @@ namespace Manisero.Navvy.PipelineProcessing
         {
         }
     }
+
+    public class PipelineInputExceptionData
+    {
+        public string InputName { get; set; }
+
+        public int ItemNumber { get; set; }
+    }
+
+    public static class PipelineBlockExtensions
+    {
+        public static PipelineInputExceptionData GetInputExceptionData(
+            this IPipelineTaskStep step,
+            int itemNumber)
+            => new PipelineInputExceptionData
+            {
+                InputName = step.Input.Name,
+                ItemNumber = itemNumber
+            };
+    }
 }

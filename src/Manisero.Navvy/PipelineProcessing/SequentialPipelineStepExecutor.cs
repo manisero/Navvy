@@ -29,16 +29,28 @@ namespace Manisero.Navvy.PipelineProcessing
             {
                 while (true)
                 {
+                    itemNumber++;
+
                     var itemStartTs = DateTimeOffset.UtcNow;
                     itemSw.Restart();
+                    
+                    bool hasNextItem;
 
-                    if (!inputEnumerator.MoveNext())
+                    try
+                    {
+                        hasNextItem = inputEnumerator.MoveNext();
+                    }
+                    catch (Exception e)
+                    {
+                        throw new TaskExecutionException(e, step, step.GetInputExceptionData(itemNumber));
+                    }
+
+                    if (!hasNextItem)
                     {
                         itemSw.Stop();
                         break;
                     }
                     
-                    itemNumber++;
                     var item = inputEnumerator.Current;
                     var materializationDuration = itemSw.Elapsed;
                     totalInputMaterializationDuration += materializationDuration;
@@ -55,7 +67,7 @@ namespace Manisero.Navvy.PipelineProcessing
                         }
                         catch (Exception e)
                         {
-                            throw new TaskExecutionException(e, step, block.GetExceptionData());
+                            throw new TaskExecutionException(e, step, block.GetExceptionData(itemNumber));
                         }
 
                         blockSw.Stop();

@@ -29,15 +29,19 @@ namespace Manisero.Navvy.PipelineProcessing.Models
     public class PipelineBlockExceptionData
     {
         public string BlockName { get; set; }
+
+        public int ItemNumber { get; set; }
     }
 
     public static class PipelineBlockExtensions
     {
         public static PipelineBlockExceptionData GetExceptionData<TData>(
-            this PipelineBlock<TData> block)
+            this PipelineBlock<TData> block,
+            int itemNumber)
             => new PipelineBlockExceptionData
             {
-                BlockName = block.Name
+                BlockName = block.Name,
+                ItemNumber = itemNumber
             };
     }
 }
