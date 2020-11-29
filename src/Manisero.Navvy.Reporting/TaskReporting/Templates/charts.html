@@ -16,7 +16,7 @@
 
         tryDrawStepsTimelineChart(reportData.StepsTimelineData);
         tryDrawMemoryChart(reportData.MemoryData);
-        tryDrawCpuUsageChart(reportData.CpuUsageData);
+        tryDrawCpuUsageChart(reportData.GlobalData, reportData.CpuUsageData);
         tryDrawStepTimesChart(reportData.StepTimesData);
     }
 
@@ -60,7 +60,7 @@
         memoryChart.draw(google.visualization.arrayToDataTable(data), memoryOptions);
     }
 
-    function tryDrawCpuUsageChart(data) {
+    function tryDrawCpuUsageChart(globalData, data) {
         var container = document.getElementById('cpuUsageContainer');
 
         if (data.length === 1) {
@@ -69,7 +69,7 @@
         }
 
         var cpuUsageOptions = {
-            title: 'CPU usage',
+            title: `CPU usage (processor count: ${globalData.ProcessorCount})`,
             legend: { position: 'top' },
             hAxis: { title: data[0][0] },
             vAxis: { minValue: 0, maxValue: 100 }

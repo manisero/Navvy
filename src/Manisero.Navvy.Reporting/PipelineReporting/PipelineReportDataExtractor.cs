@@ -32,6 +32,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
 
             return new PipelineReportData
             {
+                GlobalData = log.DiagnosticsLog.GlobalDiagnostic,
                 ItemsTimelineData = GetItemsTimelineData(stepLog, materializationBlockName, blockNames).ToArray(),
                 BlockTimesData = GetBlockTimesData(stepLog, materializationBlockName, blockNames).ToArray(),
                 MemoryData = diagnosticChartsData.MemoryData,

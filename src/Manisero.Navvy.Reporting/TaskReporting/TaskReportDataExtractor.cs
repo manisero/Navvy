@@ -29,6 +29,7 @@ namespace Manisero.Navvy.Reporting.TaskReporting
 
             return new TaskReportData
             {
+                GlobalData = log.DiagnosticsLog.GlobalDiagnostic,
                 StepsTimelineData = GetStepsTimelineData(log, stepNames).ToArray(),
                 StepTimesData = GetStepTimesData(log, stepNames).ToArray(),
                 MemoryData = diagnosticChartsData.MemoryData,
