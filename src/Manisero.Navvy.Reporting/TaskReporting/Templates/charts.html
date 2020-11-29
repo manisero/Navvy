@@ -30,12 +30,12 @@
 
         var stepsCount = new Set(data.map(x => x[0])).size - 1;
 
-        var stepsTimelineOptions = {
+        var options = {
             height: stepsCount * 41 + 50
         };
 
-        var stepsTimelineChart = new google.visualization.Timeline(container);
-        stepsTimelineChart.draw(google.visualization.arrayToDataTable(data), stepsTimelineOptions);
+        var chart = new google.visualization.Timeline(container);
+        chart.draw(google.visualization.arrayToDataTable(data), options);
     }
 
     function tryDrawMemoryChart(data) {
@@ -46,7 +46,7 @@
             return;
         }
 
-        var memoryOptions = {
+        var options = {
             title: 'Memory',
             legend: { position: 'top' },
             hAxis: {
@@ -56,8 +56,8 @@
             vAxis: { minValue: 0 }
         };
 
-        var memoryChart = new google.visualization.ScatterChart(container);
-        memoryChart.draw(google.visualization.arrayToDataTable(data), memoryOptions);
+        var chart = new google.visualization.ScatterChart(container);
+        chart.draw(google.visualization.arrayToDataTable(data), options);
     }
 
     function tryDrawCpuUsageChart(globalData, data) {
@@ -68,15 +68,15 @@
             return;
         }
 
-        var cpuUsageOptions = {
+        var options = {
             title: `CPU usage (processor count: ${globalData.ProcessorCount})`,
             legend: { position: 'top' },
             hAxis: { title: data[0][0] },
             vAxis: { minValue: 0, maxValue: 100 }
         };
 
-        var cpuUsageChart = new google.visualization.LineChart(container);
-        cpuUsageChart.draw(google.visualization.arrayToDataTable(data), cpuUsageOptions);
+        var chart = new google.visualization.LineChart(container);
+        chart.draw(google.visualization.arrayToDataTable(data), options);
     }
 
     function tryDrawStepTimesChart(data) {
@@ -87,14 +87,14 @@
             return;
         }
 
-        var stepTimesOptions = {
+        var options = {
             title: 'Step durations',
             legend: { position: 'top' },
             vAxis: { minValue: 0 }
         };
 
-        var stepTimesChart = new google.visualization.ColumnChart(container);
-        stepTimesChart.draw(google.visualization.arrayToDataTable(data), stepTimesOptions);
+        var chart = new google.visualization.ColumnChart(container);
+        chart.draw(google.visualization.arrayToDataTable(data), options);
     }
 
     google.charts.load('current', { packages: ['corechart', 'timeline'] });
