@@ -16,12 +16,12 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             DataflowExecutionContext context,
             CancellationToken cancellation)
         {
-            var inputBlock = BuildInputBlock(inputEnumerator, step, context, cancellation);
+            var inputBlock = BuildInputBlock(cancellation);
 
-            var postNextInputBlock = BuildPostNextInputBlock<TItem>(inputBlock, cancellation);
-            inputBlock.LinkTo(postNextInputBlock, new DataflowLinkOptions { PropagateCompletion = true });
+            var materializeAndPostNextBlock = BuildMaterializeAndPostNextBlock(inputEnumerator, inputBlock, step, context, cancellation);
+            inputBlock.LinkTo(materializeAndPostNextBlock, new DataflowLinkOptions { PropagateCompletion = true });
 
-            var previousBlock = postNextInputBlock;
+            ISourceBlock<PipelineItem<TItem>> previousBlock = materializeAndPostNextBlock;
 
             foreach (var block in step.Blocks)
             {
@@ -44,8 +44,23 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             };
         }
 
-        private TransformBlock<int, PipelineItem<TItem>> BuildInputBlock<TItem>(
+        private TransformBlock<int, int> BuildInputBlock(
+            CancellationToken cancellation)
+        {
+            return new TransformBlock<int, int>(
+                i => i,
+                new ExecutionDataflowBlockOptions
+                {
+                    NameFormat = "Input",
+                    BoundedCapacity = -1, // A race condition was observed when BoundedCapacity was set to 1. Next block's "inputBlock.Post()" was rejected at random (probably first block was still "holding" the exact message the next block was already processing).
+                    EnsureOrdered = true,
+                    CancellationToken = cancellation
+                });
+        }
+
+        private TransformBlock<int, PipelineItem<TItem>> BuildMaterializeAndPostNextBlock<TItem>(
             IEnumerator<TItem> inputEnumerator,
+            ITargetBlock<int> inputBlock,
             PipelineTaskStep<TItem> step,
             DataflowExecutionContext context,
             CancellationToken cancellation)
@@ -69,44 +84,19 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                         context.TotalInputMaterializationDuration += materializationDuration;
                         context.Events?.Raise(x => x.OnItemMaterialized(pipelineItem.Number, pipelineItem.Item, itemStartTs, materializationDuration, step, context.StepContext.Task));
 
+                        inputBlock.Post(pipelineItem.Number + 1);
                         return pipelineItem;
                     }
                     else
                     {
                         sw.Stop();
+                        inputBlock.Complete();
                         return null;
                     }
                 },
                 new ExecutionDataflowBlockOptions
                 {
-                    NameFormat = "Input",
-                    BoundedCapacity = 1,
-                    EnsureOrdered = true,
-                    CancellationToken = cancellation
-                });
-        }
-
-        private TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>> BuildPostNextInputBlock<TItem>(
-            ITargetBlock<int> inputBlock,
-            CancellationToken cancellation)
-        {
-            return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
-                x =>
-                {
-                    if (x != null)
-                    {
-                        inputBlock.Post(x.Number + 1);
-                    }
-                    else
-                    {
-                        inputBlock.Complete();
-                    }
-
-                    return x;
-                },
-                new ExecutionDataflowBlockOptions
-                {
-                    NameFormat = "PostNextInput",
+                    NameFormat = "MaterializeAndPostNextBlock",
                     BoundedCapacity = 1,
                     EnsureOrdered = true,
                     CancellationToken = cancellation
