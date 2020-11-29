@@ -24,7 +24,7 @@ namespace Manisero.Navvy.Reporting.TaskReporting
                 .ToArray();
 
             var diagnosticChartsData = DiagnosticDataExtractor.Extract(
-                log.DiagnosticsLog.GetDiagnostics(),
+                log.DiagnosticsLog.Diagnostics,
                 log.TaskDuration);
 
             return new TaskReportData

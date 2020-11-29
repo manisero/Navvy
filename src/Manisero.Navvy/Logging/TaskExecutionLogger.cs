@@ -32,9 +32,11 @@ namespace Manisero.Navvy.Logging
         private static void HandleTaskStarted(
             TaskStartedEvent e)
         {
-            var diagnostic = DiagnosticsProvider.GetFirstDiagnostic();
+            var diagnosticsLog = new DiagnosticsLog(
+                DiagnosticsProvider.GetGlobalDiagnostic(),
+                DiagnosticsProvider.GetFirstDiagnostic());
 
-            var log = new TaskExecutionLog(diagnostic);
+            var log = new TaskExecutionLog(diagnosticsLog);
             log.TaskDuration.SetStart(e.Timestamp);
 
             e.Task.SetExecutionLog(log);

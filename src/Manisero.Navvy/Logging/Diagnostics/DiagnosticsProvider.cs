@@ -5,6 +5,12 @@ namespace Manisero.Navvy.Logging.Diagnostics
 {
     internal static class DiagnosticsProvider
     {
+        public static GlobalDiagnostic GetGlobalDiagnostic()
+        {
+            return new GlobalDiagnostic(
+                Environment.ProcessorCount);
+        }
+
         public static Diagnostic GetFirstDiagnostic()
         {
             var timestamp = DateTime.UtcNow;

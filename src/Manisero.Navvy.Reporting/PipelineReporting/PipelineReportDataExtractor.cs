@@ -27,7 +27,7 @@ namespace Manisero.Navvy.Reporting.PipelineReporting
             var blockNames = pipeline.Blocks.Select(x => x.Name).ToArray();
 
             var diagnosticChartsData = DiagnosticDataExtractor.Extract(
-                log.DiagnosticsLog.GetDiagnostics(),
+                log.DiagnosticsLog.Diagnostics,
                 stepLog.Duration);
 
             return new PipelineReportData

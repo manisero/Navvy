@@ -15,9 +15,9 @@ namespace Manisero.Navvy.Logging
         public DiagnosticsLog DiagnosticsLog { get; }
 
         public TaskExecutionLog(
-            Diagnostic firstDiagnostic)
+            DiagnosticsLog diagnosticsLog)
         {
-            DiagnosticsLog = new DiagnosticsLog(firstDiagnostic);
+            DiagnosticsLog = diagnosticsLog;
         }
     }
 

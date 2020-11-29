@@ -27,7 +27,7 @@ namespace Manisero.Navvy.Tests
             var log = task.GetExecutionLog();
             log.Should().NotBeNull();
             log.TaskDuration.StartTs.Should().BeOnOrAfter(startTs).And.BeOnOrBefore(endTs);
-            log.DiagnosticsLog.GetDiagnostics().Should().NotBeEmpty();
+            log.DiagnosticsLog.Diagnostics.Should().NotBeEmpty();
         }
 
         [Fact]
