@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
+using Manisero.Navvy.Core;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Models;
 
@@ -38,10 +39,23 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             {
                 Execute = () =>
                 {
-                    inputBlock.Post(1);
+                    PostNextInput(inputBlock, 1);
                     return progressBlock.Completion;
                 }
             };
+        }
+
+        private void PostNextInput(
+            ITargetBlock<int> inputBlock,
+            int itemNumber)
+        {
+            var posted = inputBlock.Post(itemNumber);
+
+            if (!posted)
+            {
+                throw new UnexpectedNavvyException(
+                    $"Dataflow pipeline execution error. Failed to post item {itemNumber} to pipeline. As a workaround, you can switch to sequential pipeline execution (i.e. disable Dataflow execution).");
+            }
         }
 
         private TransformBlock<int, int> BuildInputBlock(
@@ -95,7 +109,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
                         context.TotalInputMaterializationDuration += materializationDuration;
                         context.Events?.Raise(x => x.OnItemMaterialized(pipelineItem.Number, pipelineItem.Item, itemStartTs, materializationDuration, step, context.StepContext.Task));
 
-                        inputBlock.Post(pipelineItem.Number + 1);
+                        PostNextInput(inputBlock, pipelineItem.Number + 1);
                         return pipelineItem;
                     }
                     else
