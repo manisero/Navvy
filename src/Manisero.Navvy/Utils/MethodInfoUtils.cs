@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
 
 namespace Manisero.Navvy.Utils
 {
     internal static class MethodInfoUtils
     {
         [System.Diagnostics.DebuggerStepThrough]
-        public static void InvokeAsGeneric(
+        public static async Task InvokeAsGenericAsync(
             this MethodInfo method,
             object target,
             Type[] typeArguments,
             params object[] arguments)
-            => method.InvokeAsGeneric<object>(target, typeArguments, arguments);
+            => await method.InvokeAsGeneric<Task>(target, typeArguments, arguments);
 
         [System.Diagnostics.DebuggerStepThrough]
         public static TResult InvokeAsGeneric<TResult>(

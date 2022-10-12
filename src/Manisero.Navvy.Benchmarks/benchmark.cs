@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
@@ -58,9 +59,9 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult basic_processing()
+        public async Task<TaskResult> basic_processing()
         {
-            return _executor.Execute(_task);
+            return await _executor.Execute(_task);
         }
 
         [GlobalSetup(Target = nameof(pipeline_processing___sequential___not_batched))]
@@ -71,9 +72,9 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___sequential___not_batched()
+        public async Task<TaskResult> pipeline_processing___sequential___not_batched()
         {
-            return _executor.Execute(_task);
+            return await _executor.Execute(_task);
         }
 
         [GlobalSetup(Target = nameof(pipeline_processing___sequential___batched))]
@@ -84,9 +85,9 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___sequential___batched()
+        public async Task<TaskResult> pipeline_processing___sequential___batched()
         {
-            return _executor.Execute(_task);
+            return await _executor.Execute(_task);
         }
 
         [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___not_batched___not_parallel))]
@@ -100,9 +101,9 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___not_batched___not_parallel()
+        public async Task<TaskResult> pipeline_processing___Dataflow___not_batched___not_parallel()
         {
-            return _executor.Execute(_task);
+            return await _executor.Execute(_task);
         }
 
         [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___batched___not_parallel))]
@@ -116,9 +117,9 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___batched___not_parallel()
+        public async Task<TaskResult> pipeline_processing___Dataflow___batched___not_parallel()
         {
-            return _executor.Execute(_task);
+            return await _executor.Execute(_task);
         }
 
         [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___not_batched___parallel))]
@@ -132,9 +133,9 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___not_batched___parallel()
+        public async Task<TaskResult> pipeline_processing___Dataflow___not_batched___parallel()
         {
-            return _executor.Execute(_task);
+            return await _executor.Execute(_task);
         }
 
         [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___batched___parallel))]
@@ -148,9 +149,9 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___batched___parallel()
+        public async Task<TaskResult> pipeline_processing___Dataflow___batched___parallel()
         {
-            return _executor.Execute(_task);
+            return await _executor.Execute(_task);
         }
 
         [GlobalSetup(Target = nameof(pipeline_processing___Dataflow___batched___parallel___no_Interlock))]
@@ -164,9 +165,9 @@ namespace Manisero.Navvy.Benchmarks
         }
 
         [Benchmark]
-        public TaskResult pipeline_processing___Dataflow___batched___parallel___no_Interlock()
+        public async Task<TaskResult> pipeline_processing___Dataflow___batched___parallel___no_Interlock()
         {
-            return _executor.Execute(_task);
+            return await _executor.Execute(_task);
         }
 
         private ICollection<long> GetInput_NotBatched_Materialized()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.Utils;
@@ -9,7 +10,7 @@ namespace Manisero.Navvy.BasicProcessing
 {
     internal class BasicStepExecutor : ITaskStepExecutor<BasicTaskStep>
     {
-        public void Execute(
+        public async Task Execute(
             BasicTaskStep step,
             TaskStepExecutionContext context,
             CancellationToken cancellation)
@@ -22,7 +23,7 @@ namespace Manisero.Navvy.BasicProcessing
 
             try
             {
-                step.Body(context.OutcomeSoFar, progress, cancellation);
+                await step.Body(context.OutcomeSoFar, progress, cancellation);
             }
             catch (OperationCanceledException e)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.Utils;
@@ -25,7 +26,7 @@ namespace Manisero.Navvy.Core
             _globalEventsBag = globalEventsBag;
         }
 
-        public TaskResult Execute(
+        public async Task<TaskResult> Execute(
             TaskDefinition task,
             CancellationToken? cancellation = null,
             params IExecutionEvents[] events)
@@ -59,7 +60,7 @@ namespace Manisero.Navvy.Core
 
                 try
                 {
-                    ExecuteStepMethod.InvokeAsGeneric(
+                    await ExecuteStepMethod.InvokeAsGenericAsync(
                         this,
                         new[] { step.GetType() },
                         step, task, outcomeSoFar, cancellation, eventsBag);
@@ -99,7 +100,7 @@ namespace Manisero.Navvy.Core
             return result;
         }
 
-        private void ExecuteStep<TStep>(
+        private async Task ExecuteStep<TStep>(
             TStep step,
             TaskDefinition task,
             TaskOutcome outcomeSoFar,
@@ -114,7 +115,7 @@ namespace Manisero.Navvy.Core
                 eventsBag,
                 outcomeSoFar);
             
-            stepExecutor.Execute(step, context, cancellation);
+            await stepExecutor.Execute(step, context, cancellation);
         }
     }
 }
