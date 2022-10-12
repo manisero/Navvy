@@ -118,8 +118,8 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             endedEvent.Value.TotalBlockDurations.Should().NotBeNull();
             var totalBlockDurations = endedEvent.Value.TotalBlockDurations.ToDictionary(x => x.Key, x => x.Value);
-            totalBlockDurations.Should().ContainKey(block1.Name).WhichValue.Should().BePositive();
-            totalBlockDurations.Should().ContainKey(block2.Name).WhichValue.Should().BePositive();
+            totalBlockDurations.Should().ContainKey(block1.Name).WhoseValue.Should().BePositive();
+            totalBlockDurations.Should().ContainKey(block2.Name).WhoseValue.Should().BePositive();
         }
     }
 }
