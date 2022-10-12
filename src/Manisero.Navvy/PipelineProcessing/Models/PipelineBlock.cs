@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Manisero.Navvy.PipelineProcessing.Models
 {
@@ -11,13 +12,13 @@ namespace Manisero.Navvy.PipelineProcessing.Models
     {
         public string Name { get; }
 
-        public Action<TItem> Body { get; }
+        public Func<TItem, Task> Body { get; }
 
         public int MaxDegreeOfParallelism { get; }
 
         public PipelineBlock(
             string name,
-            Action<TItem> body,
+            Func<TItem, Task> body,
             int maxDegreeOfParallelism = 1)
         {
             Name = name;

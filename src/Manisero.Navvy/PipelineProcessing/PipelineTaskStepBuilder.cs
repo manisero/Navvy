@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.PipelineProcessing
@@ -85,6 +86,19 @@ namespace Manisero.Navvy.PipelineProcessing
         public PipelineTaskStepBuilder<TItem> WithBlock(
             string name,
             Action<TItem> body,
+            int maxDegreeOfParallelism = 1)
+            => WithBlock(new PipelineBlock<TItem>(
+                name,
+                x =>
+                {
+                    body(x);
+                    return Task.CompletedTask;
+                },
+                maxDegreeOfParallelism));
+
+        public PipelineTaskStepBuilder<TItem> WithBlock(
+            string name,
+            Func<TItem, Task> body,
             int maxDegreeOfParallelism = 1)
             => WithBlock(new PipelineBlock<TItem>(name, body, maxDegreeOfParallelism));
 

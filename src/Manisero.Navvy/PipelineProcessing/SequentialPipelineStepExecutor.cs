@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.PipelineProcessing.Events;
@@ -11,7 +12,7 @@ namespace Manisero.Navvy.PipelineProcessing
 {
     internal class SequentialPipelineStepExecutor<TItem> : ITaskStepExecutor<PipelineTaskStep<TItem>>
     {
-        public void Execute(
+        public async Task Execute(
             PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             CancellationToken cancellation)
@@ -63,7 +64,7 @@ namespace Manisero.Navvy.PipelineProcessing
 
                         try
                         {
-                            block.Body(item);
+                            await block.Body(item);
                         }
                         catch (Exception e)
                         {

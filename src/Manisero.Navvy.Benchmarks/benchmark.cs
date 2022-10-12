@@ -208,20 +208,20 @@ namespace Manisero.Navvy.Benchmarks
             var sum = 0L;
 
             return new TaskDefinition(
-                new PipelineTaskStep<long>(
-                    "Sum",
-                    new PipelineInput<long>(
-                        GetInput_NotBatched_NotMaterialized(),
-                        TotalCount),
-                    new List<PipelineBlock<long>>
-                    {
-                        new PipelineBlock<long>(
-                            "Update Sum",
-                            parallel
-                                ? (Action<long>)(x => Interlocked.Add(ref sum, x))
-                                : x => sum += x,
-                            parallel ? 6 : 1)
-                    }));
+                TaskStepBuilder.Build.Pipeline<long>(
+                        "Sum")
+                    .WithInput(
+                        new PipelineInput<long>(
+                            GetInput_NotBatched_NotMaterialized(),
+                            TotalCount))
+                    .WithBlock(
+                        "Update Sum",
+                        parallel
+                            ? (Action<long>)(x => Interlocked.Add(ref sum,
+                                x))
+                            : x => sum += x,
+                        parallel ? 6 : 1)
+                    .Build());
         }
 
         private TaskDefinition GetPipelineTask_Batched(
@@ -230,20 +230,20 @@ namespace Manisero.Navvy.Benchmarks
             var sum = 0L;
 
             return new TaskDefinition(
-                new PipelineTaskStep<ICollection<long>>(
-                    "Sum",
-                    new PipelineInput<ICollection<long>>(
-                        GetInput_Batched(),
-                        BatchesCount),
-                    new List<PipelineBlock<ICollection<long>>>
-                    {
-                        new PipelineBlock<ICollection<long>>(
-                            "Update Sum",
-                            parallel
-                                ? (Action<ICollection<long>>)(x => Interlocked.Add(ref sum, x.Sum()))
-                                : x => sum += x.Sum(),
-                            parallel ? 6 : 1)
-                    }));
+                TaskStepBuilder.Build.Pipeline<ICollection<long>>(
+                        "Sum")
+                    .WithInput(
+                        new PipelineInput<ICollection<long>>(
+                            GetInput_Batched(),
+                            BatchesCount))
+                    .WithBlock(
+                        "Update Sum",
+                        parallel
+                            ? (Action<ICollection<long>>)(x => Interlocked.Add(ref sum,
+                                x.Sum()))
+                            : x => sum += x.Sum(),
+                        parallel ? 6 : 1)
+                    .Build());
         }
 
         private struct NumbersWithTotal
@@ -257,21 +257,20 @@ namespace Manisero.Navvy.Benchmarks
             var sum = 0L;
 
             return new TaskDefinition(
-                new PipelineTaskStep<NumbersWithTotal>(
-                    "Sum",
-                    new PipelineInput<NumbersWithTotal>(
-                        GetInput_Batched().Select(x => new NumbersWithTotal { Numbers = x }),
-                        BatchesCount),
-                    new List<PipelineBlock<NumbersWithTotal>>
-                    {
-                        new PipelineBlock<NumbersWithTotal>(
-                            "Calculate Total",
-                            x => x.Total = x.Numbers.Sum(),
-                            6),
-                        new PipelineBlock<NumbersWithTotal>(
-                            "Update Sum",
-                            x => sum += x.Total)
-                    }));
+                TaskStepBuilder.Build.Pipeline<NumbersWithTotal>(
+                        "Sum")
+                    .WithInput(
+                        new PipelineInput<NumbersWithTotal>(
+                            GetInput_Batched().Select(x => new NumbersWithTotal { Numbers = x }),
+                            BatchesCount))
+                    .WithBlock(
+                        "Calculate Total",
+                        x => x.Total = x.Numbers.Sum(),
+                        6)
+                    .WithBlock(
+                        "Update Sum",
+                        x => sum += x.Total)
+                    .Build());
         }
     }
 }
