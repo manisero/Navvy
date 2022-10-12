@@ -50,7 +50,7 @@ namespace Manisero.Navvy.Tests
             // Arrange
             var task = new TaskDefinition(
                 BasicTaskStep.Empty("Basic"),
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Ignored",
                     () => { },
                     x => false));
@@ -71,11 +71,11 @@ namespace Manisero.Navvy.Tests
         {
             // Arrange
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Ignored1",
                     () => { },
                     x => false),
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Ignored2",
                     () => { },
                     x => false));

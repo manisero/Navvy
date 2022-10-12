@@ -21,7 +21,7 @@ namespace Manisero.Navvy.Tests
         public void basic(ResolverType resolverType)
         {
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     FailingStepName,
                     () => throw _error));
             

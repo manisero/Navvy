@@ -44,10 +44,10 @@ namespace Manisero.Navvy.Tests
             var task = new TaskDefinition(
                 GetStepForOutcome(firstStepOutcome),
                 GetStepForOutcome(secondStepOutcome, TaskStepUtils.AlwaysExecuteCondition),
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "TestedBody",
                     x => actualOutcomePassedToBody = x),
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "TestedConditionalStep",
                     () => { },
                     x =>
@@ -78,7 +78,7 @@ namespace Manisero.Navvy.Tests
         {
             var task = new TaskDefinition(
                 GetStepForOutcome(precedingStepOutcome),
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "TestedStep",
                     () => { _testedStepExecuted = true; }));
 
@@ -95,7 +95,7 @@ namespace Manisero.Navvy.Tests
             bool shouldExecute)
         {
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "TestedStep",
                     () => { _testedStepExecuted = true; },
                     _ => shouldExecute));
@@ -119,7 +119,7 @@ namespace Manisero.Navvy.Tests
             TaskOutcome outcome,
             Func<TaskOutcome, bool> executionCondition = null)
         {
-            return new BasicTaskStep(
+            return TaskStepBuilder.Build.Basic(
                 Guid.NewGuid().ToString(),
                 () =>
                 {

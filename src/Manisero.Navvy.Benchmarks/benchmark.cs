@@ -52,7 +52,7 @@ namespace Manisero.Navvy.Benchmarks
             var sum = 0L;
 
             _task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Sum",
                     () => sum = GetInput_NotBatched_Materialized().Sum()));
         }

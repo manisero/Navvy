@@ -72,7 +72,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                 stepSkipped: x => skippedEvent = x);
 
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Step",
                     () => { },
                     _ => false));
@@ -97,7 +97,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             var cancellationSource = new CancellationTokenSource();
 
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Step",
                     () => cancellationSource.Cancel()));
 
@@ -121,7 +121,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             var exception = new Exception();
 
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Step",
                     () => throw exception));
 

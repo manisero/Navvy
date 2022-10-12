@@ -35,7 +35,7 @@ namespace Manisero.Navvy.Tests
         {
             // Arrange
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Failing step",
                     () => throw new Exception()));
 

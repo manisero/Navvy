@@ -20,10 +20,10 @@ namespace Manisero.Navvy.Tests
         public void basic_automatic(ResolverType resolverType)
         {
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Cancel",
                     _cancellationSource.Cancel),
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Complete",
                     () => { _completed = true; }));
 
@@ -36,7 +36,7 @@ namespace Manisero.Navvy.Tests
         public void basic_manual(ResolverType resolverType)
         {
             var task = new TaskDefinition(
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Cancel",
                     (p, c) =>
                     {

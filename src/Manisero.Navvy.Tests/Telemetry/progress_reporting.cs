@@ -26,7 +26,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         {
             test(
                 ResolverType.Sequential,
-                new BasicTaskStep(
+                TaskStepBuilder.Build.Basic(
                     "Step",
                     (p, c) =>
                     {
