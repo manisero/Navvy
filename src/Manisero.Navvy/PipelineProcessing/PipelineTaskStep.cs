@@ -38,27 +38,6 @@ namespace Manisero.Navvy.PipelineProcessing
             Input = input;
             Blocks = blocks;
         }
-
-        /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
-        public PipelineTaskStep(
-            string name,
-            IEnumerable<TItem> inputItems,
-            int expectedInputItemsCount,
-            IReadOnlyList<PipelineBlock<TItem>> blocks,
-            Func<TaskOutcome, bool> executionCondition = null)
-            : this(name, new PipelineInput<TItem>(inputItems, expectedInputItemsCount), blocks, executionCondition)
-        {
-        }
-
-        /// <param name="executionCondition">See <see cref="ExecutionCondition"/>. If null, <see cref="TaskStepUtils.DefaultExecutionCondition"/> will be used.</param>
-        public PipelineTaskStep(
-            string name,
-            ICollection<TItem> inputItems,
-            IReadOnlyList<PipelineBlock<TItem>> blocks,
-            Func<TaskOutcome, bool> executionCondition = null)
-            : this(name, new PipelineInput<TItem>(inputItems), blocks, executionCondition)
-        {
-        }
     }
 
     public class PipelineInputExceptionData

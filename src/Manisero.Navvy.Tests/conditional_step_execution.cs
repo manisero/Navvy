@@ -44,10 +44,13 @@ namespace Manisero.Navvy.Tests
 
             var task = new TaskDefinition(
                 GetStepForOutcome(firstStepOutcome),
-                GetStepForOutcome(secondStepOutcome, TaskStepUtils.AlwaysExecuteCondition),
+                GetStepForOutcome(
+                    secondStepOutcome,
+                    TaskStepUtils.AlwaysExecuteCondition),
                 TaskStepBuilder.Build.Basic(
                     "TestedBody",
-                    x => actualOutcomePassedToBody = x),
+                    x => actualOutcomePassedToBody = x,
+                    TaskStepUtils.AlwaysExecuteCondition),
                 TaskStepBuilder.Build.Basic(
                     "TestedConditionalStep",
                     () => { },
