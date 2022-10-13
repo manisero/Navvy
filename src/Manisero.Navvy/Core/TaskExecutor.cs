@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Manisero.Navvy.Core.Events;
@@ -26,7 +28,7 @@ namespace Manisero.Navvy.Core
             _globalEventsBag = globalEventsBag;
         }
 
-        public async Task<TaskResult> Execute(
+        public async Task Execute(
             TaskDefinition task,
             CancellationToken? cancellation = null,
             params IExecutionEvents[] events)
@@ -98,8 +100,8 @@ namespace Manisero.Navvy.Core
 
             taskSw.Stop();
             taskEvents?.Raise(x => x.OnTaskEnded(task, result, taskSw.Elapsed));
-            
-            return result;
+
+            HandleTaskResult(result);
         }
 
         private async Task ExecuteStep<TStep>(
@@ -118,6 +120,30 @@ namespace Manisero.Navvy.Core
                 outcomeSoFar);
             
             await stepExecutor.Execute(step, context, cancellation);
+        }
+
+        private void HandleTaskResult(
+            TaskResult result)
+        {
+            if (result.Outcome == TaskOutcome.Failed)
+            {
+                var taskErrors = result.Errors;
+
+                if (taskErrors.Count == 1)
+                {
+                    ExceptionDispatchInfo
+                        .Capture(taskErrors.First())
+                        .Throw();
+                }
+                else
+                {
+                    throw new AggregateException(taskErrors);
+                }
+            }
+            else if (result.Outcome == TaskOutcome.Canceled)
+            {
+                throw new OperationCanceledException();
+            }
         }
     }
 }

@@ -43,7 +43,16 @@ namespace Manisero.Navvy.Tests
             var events = TaskExecutionLogger.CreateEvents();
 
             // Act
-            await task.Execute(events: events);
+            try
+            {
+                await task.Execute(events: events);
+            }
+            catch (TaskExecutionException)
+            {
+            }
+            catch (OperationCanceledException)
+            {
+            }
 
             // Assert
             var log = task.GetExecutionLog();

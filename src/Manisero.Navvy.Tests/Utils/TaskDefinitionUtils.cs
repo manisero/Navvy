@@ -6,7 +6,7 @@ namespace Manisero.Navvy.Tests.Utils
 {
     public static class TaskDefinitionUtils
     {
-        public static async Task<TaskResult> Execute(
+        public static async Task Execute(
             this TaskDefinition task,
             ResolverType resolverType = ResolverType.Sequential,
             CancellationTokenSource cancellation = null,
@@ -14,7 +14,7 @@ namespace Manisero.Navvy.Tests.Utils
         {
             var executor = TaskExecutorFactory.Create(resolverType);
             
-            return await executor.Execute(task, cancellation?.Token, events);
+            await executor.Execute(task, cancellation?.Token, events);
         }
     }
 }

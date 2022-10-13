@@ -106,7 +106,16 @@ namespace Manisero.Navvy.Tests
             var reporterEvents = TaskExecutionReporter.CreateEvents();
 
             // Act
-            await task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+            try
+            {
+                await task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+            }
+            catch (TaskExecutionException)
+            {
+            }
+            catch (OperationCanceledException)
+            {
+            }
 
             // Assert
             var reports = task.Extras.TryGet<IReadOnlyCollection<TaskExecutionReport>>(TaskExecutionReportingUtils.TaskExecutionReportsExtraKey);

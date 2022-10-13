@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
@@ -99,10 +100,10 @@ namespace Manisero.Navvy.Tests
             ResolverType resolverType)
         {
             // Act
-            var result = await task.Execute(resolverType, cancellation: _cancellationSource);
+            var act = () => task.Execute(resolverType, cancellation: _cancellationSource);
 
             // Assert
-            result.Outcome.Should().Be(TaskOutcome.Canceled);
+            await act.Should().ThrowAsync<OperationCanceledException>();
             _completed.Should().Be(false);
         }
     }

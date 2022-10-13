@@ -80,10 +80,9 @@ namespace Manisero.Navvy.Tests
             };
 
             // Act
-            var result = await executor.Execute(task, cancellationSource.Token, events);
+            await executor.Execute(task, cancellationSource.Token, events);
 
             // Assert
-            result.Outcome.Should().Be(TaskOutcome.Successful);
             initialized.Should().Be(true);
             sum.Should().Be(21);
             completed.Should().Be(true);

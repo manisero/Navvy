@@ -61,7 +61,20 @@ namespace Manisero.Navvy.Tests
                     }));
 
             // Act
-            await task.Execute(resolverType, cancellation: _cancellationSource);
+            try
+            {
+                await task.Execute(resolverType,
+                    cancellation: _cancellationSource);
+            }
+            catch (AggregateException)
+            {
+            }
+            catch (TaskExecutionException)
+            {
+            }
+            catch (OperationCanceledException)
+            {
+            }
 
             // Assert
             actualOutcomePassedToBody.Should().Be(outcomePassedToThirdStepCondition, nameof(actualOutcomePassedToBody));
@@ -113,7 +126,16 @@ namespace Manisero.Navvy.Tests
             bool testedStepExecuted)
         {
             // Act
-            await task.Execute(resolverType, cancellation: _cancellationSource);
+            try
+            {
+                await task.Execute(resolverType, cancellation: _cancellationSource);
+            }
+            catch (TaskExecutionException)
+            {
+            }
+            catch (OperationCanceledException)
+            {
+            }
 
             // Assert
             _testedStepExecuted.Should().Be(testedStepExecuted);

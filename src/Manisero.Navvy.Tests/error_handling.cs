@@ -159,11 +159,17 @@ namespace Manisero.Navvy.Tests
             ResolverType resolverType)
         {
             // Act
-            var result = await task.Execute(resolverType);
+            var act = () => task.Execute(resolverType);
 
             // Assert
-            result.Outcome.Should().Be(TaskOutcome.Failed);
-            var error = result.Errors.Should().NotBeNull().And.ContainSingle().Subject;
+            var errors =
+                (await act.Should().ThrowExactlyAsync<TaskExecutionException>())
+                .Subject
+                .ToArray();
+
+            errors.Should().HaveCount(1);
+
+            var error = errors.Single();
             error.StepName.Should().Be(FailingStepName);
             error.InnerException.Should().BeSameAs(_error);
         }

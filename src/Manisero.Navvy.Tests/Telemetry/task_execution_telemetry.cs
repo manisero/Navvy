@@ -103,7 +103,16 @@ namespace Manisero.Navvy.Tests.Telemetry
                     () => cancellationSource.Cancel()));
 
             // Act
-            await task.Execute(cancellation: cancellationSource, events: events);
+            try
+            {
+                await task.Execute(cancellation: cancellationSource, events: events);
+            }
+            catch (TaskExecutionException)
+            {
+            }
+            catch (OperationCanceledException)
+            {
+            }
 
             // Assert
             canceledEvent.Should().NotBeNull();
@@ -127,7 +136,16 @@ namespace Manisero.Navvy.Tests.Telemetry
                     () => throw exception));
 
             // Act
-            await task.Execute(events: events);
+            try
+            {
+                await task.Execute(events: events);
+            }
+            catch (TaskExecutionException)
+            {
+            }
+            catch (OperationCanceledException)
+            {
+            }
 
             // Assert
             failedEvent.Should().NotBeNull();
