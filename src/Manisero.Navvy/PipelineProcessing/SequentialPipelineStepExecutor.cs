@@ -26,7 +26,7 @@ namespace Manisero.Navvy.PipelineProcessing
             var totalInputMaterializationDuration = TimeSpan.Zero;
             var totalBlockDurations = step.Blocks.Select(x => x.Name).Distinct().ToDictionary(x => x, _ => TimeSpan.Zero);
 
-            using (var inputEnumerator = items.Items.GetEnumerator())
+            await using (var inputEnumerator = items.Items.GetAsyncEnumerator(cancellation))
             {
                 while (true)
                 {
@@ -39,7 +39,7 @@ namespace Manisero.Navvy.PipelineProcessing
 
                     try
                     {
-                        hasNextItem = inputEnumerator.MoveNext();
+                        hasNextItem = await inputEnumerator.MoveNextAsync();
                     }
                     catch (Exception e)
                     {

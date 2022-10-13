@@ -39,29 +39,6 @@ namespace Manisero.Navvy.PipelineProcessing.Models
             Name = name;
             ItemsFactory = itemsFactory;
         }
-
-        public PipelineInput(
-            IAsyncEnumerable<TItem> items,
-            int expectedItemsCount,
-            string name = PipelineInput.DefaultName)
-            : this(() => new PipelineInputItems<TItem>(items, expectedItemsCount), name)
-        {
-        }
-
-        public PipelineInput(
-            IEnumerable<TItem> items,
-            int expectedItemsCount,
-            string name = PipelineInput.DefaultName)
-            : this(items.ToAsyncEnumerable(), expectedItemsCount, name)
-        {
-        }
-
-        public PipelineInput(
-            ICollection<TItem> items,
-            string name = PipelineInput.DefaultName)
-            : this(items, items.Count, name)
-        {
-        }
     }
 
     public class PipelineInputItems<TItem> : IPipelineInputItems<TItem>
@@ -76,6 +53,13 @@ namespace Manisero.Navvy.PipelineProcessing.Models
         {
             Items = items;
             ExpectedCount = expectedCount;
+        }
+
+        public PipelineInputItems(
+            IEnumerable<TItem> items,
+            int expectedCount)
+            : this(items.ToAsyncEnumerable(), expectedCount)
+        {
         }
     }
 }

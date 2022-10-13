@@ -9,7 +9,6 @@ using BenchmarkDotNet.Jobs;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Dataflow;
 using Manisero.Navvy.PipelineProcessing;
-using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.Benchmarks
 {
@@ -211,9 +210,8 @@ namespace Manisero.Navvy.Benchmarks
                 TaskStepBuilder.Build.Pipeline<long>(
                         "Sum")
                     .WithInput(
-                        new PipelineInput<long>(
-                            GetInput_NotBatched_NotMaterialized(),
-                            TotalCount))
+                        GetInput_NotBatched_NotMaterialized(),
+                        TotalCount)
                     .WithBlock(
                         "Update Sum",
                         parallel
@@ -233,9 +231,8 @@ namespace Manisero.Navvy.Benchmarks
                 TaskStepBuilder.Build.Pipeline<ICollection<long>>(
                         "Sum")
                     .WithInput(
-                        new PipelineInput<ICollection<long>>(
-                            GetInput_Batched(),
-                            BatchesCount))
+                        GetInput_Batched(),
+                        BatchesCount)
                     .WithBlock(
                         "Update Sum",
                         parallel
@@ -260,9 +257,8 @@ namespace Manisero.Navvy.Benchmarks
                 TaskStepBuilder.Build.Pipeline<NumbersWithTotal>(
                         "Sum")
                     .WithInput(
-                        new PipelineInput<NumbersWithTotal>(
-                            GetInput_Batched().Select(x => new NumbersWithTotal { Numbers = x }),
-                            BatchesCount))
+                        GetInput_Batched().Select(x => new NumbersWithTotal { Numbers = x }),
+                        BatchesCount)
                     .WithBlock(
                         "Calculate Total",
                         x => x.Total = x.Numbers.Sum(),

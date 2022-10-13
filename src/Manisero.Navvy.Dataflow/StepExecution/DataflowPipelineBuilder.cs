@@ -12,7 +12,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
     internal class DataflowPipelineBuilder
     {
         public DataflowPipeline Build<TItem>(
-            IEnumerator<TItem> inputEnumerator,
+            IAsyncEnumerator<TItem> inputEnumerator,
             PipelineTaskStep<TItem> step,
             DataflowExecutionContext context,
             CancellationToken cancellation)
@@ -73,14 +73,14 @@ namespace Manisero.Navvy.Dataflow.StepExecution
         }
 
         private TransformBlock<int, PipelineItem<TItem>> BuildMaterializeAndPostNextBlock<TItem>(
-            IEnumerator<TItem> inputEnumerator,
+            IAsyncEnumerator<TItem> inputEnumerator,
             ITargetBlock<int> inputBlock,
             PipelineTaskStep<TItem> step,
             DataflowExecutionContext context,
             CancellationToken cancellation)
         {
             return new TransformBlock<int, PipelineItem<TItem>>(
-                i =>
+                async i =>
                 {
                     var itemStartTs = DateTimeOffset.UtcNow;
                     var sw = Stopwatch.StartNew();
@@ -89,7 +89,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
                     try
                     {
-                        hasNextItem = inputEnumerator.MoveNext();
+                        hasNextItem = await inputEnumerator.MoveNextAsync();
                     }
                     catch (Exception e)
                     {

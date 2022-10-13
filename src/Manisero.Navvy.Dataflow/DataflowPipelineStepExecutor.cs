@@ -36,7 +36,7 @@ namespace Manisero.Navvy.Dataflow
                         x => new KeyValuePair<string, TimeSpan>(x, TimeSpan.Zero)))
             };
             
-            using (var inputEnumerator = items.Items.GetEnumerator())
+            await using (var inputEnumerator = items.Items.GetAsyncEnumerator(cancellation))
             {
                 var pipeline = _dataflowPipelineBuilder.Build(
                     inputEnumerator,
