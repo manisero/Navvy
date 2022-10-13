@@ -36,7 +36,7 @@ build_script:
 test_script:
 - cmd: dotnet test Manisero.Navvy.Tests -c Release --no-build
 artifacts:
-- path: src/**/bin/Release/*.nuget
+- path: src/**/bin/Release/*.nupkg
 deploy:
 - provider: NuGet
   api_key:
