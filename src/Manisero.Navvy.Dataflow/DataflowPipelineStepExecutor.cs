@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Core.StepExecution;
 using Manisero.Navvy.Dataflow.StepExecution;
@@ -15,7 +16,7 @@ namespace Manisero.Navvy.Dataflow
     {
         private readonly DataflowPipelineBuilder _dataflowPipelineBuilder = new DataflowPipelineBuilder();
 
-        public void Execute(
+        public async Task Execute(
             PipelineTaskStep<TItem> step,
             TaskStepExecutionContext context,
             CancellationToken cancellation)
@@ -45,7 +46,7 @@ namespace Manisero.Navvy.Dataflow
                 
                 try
                 {
-                    pipeline.Execute().Wait();
+                    await pipeline.Execute();
                 }
                 catch (AggregateException e)
                 {

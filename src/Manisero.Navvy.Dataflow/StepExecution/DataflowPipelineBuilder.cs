@@ -135,7 +135,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
             CancellationToken cancellation)
         {
             return new TransformBlock<PipelineItem<TItem>, PipelineItem<TItem>>(
-                x =>
+                async x =>
                 {
                     if (x == null)
                     {
@@ -147,7 +147,7 @@ namespace Manisero.Navvy.Dataflow.StepExecution
 
                     try
                     {
-                        block.Body(x.Item);
+                        await block.Body(x.Item);
                     }
                     catch (Exception e)
                     {
