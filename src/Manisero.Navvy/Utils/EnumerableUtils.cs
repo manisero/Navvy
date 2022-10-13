@@ -7,6 +7,7 @@ namespace Manisero.Navvy.Utils
 {
     internal static class EnumerableUtils
     {
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public static async IAsyncEnumerable<TSource> ToAsyncEnumerable<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -15,6 +16,7 @@ namespace Manisero.Navvy.Utils
                 yield return item;
             }
         }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         public static async IAsyncEnumerable<TResult> Select<TSource, TResult>(
             this IAsyncEnumerable<TSource> source,

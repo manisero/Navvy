@@ -25,7 +25,9 @@ namespace Manisero.Navvy.BasicProcessing
             {
                 await step.Body(context.OutcomeSoFar, progress, cancellation);
             }
+#pragma warning disable CS0168
             catch (OperationCanceledException e)
+#pragma warning restore CS0168
             {
                 throw;
             }

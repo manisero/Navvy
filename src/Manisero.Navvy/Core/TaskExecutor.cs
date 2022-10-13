@@ -65,7 +65,9 @@ namespace Manisero.Navvy.Core
                         new[] { step.GetType() },
                         step, task, outcomeSoFar, cancellation, eventsBag);
                 }
+#pragma warning disable CS0168
                 catch (OperationCanceledException e)
+#pragma warning restore CS0168
                 {
                     if (outcomeSoFar < TaskOutcome.Canceled)
                     {
