@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Logging;
 using Manisero.Navvy.PipelineProcessing;
-using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Reporting;
 using Manisero.Navvy.Tests.Utils;
 using Xunit;
@@ -15,25 +15,25 @@ namespace Manisero.Navvy.Tests
     public class reporting
     {
         [Fact]
-        public void reporter_creates_and_fills_execution_reports()
+        public async Task reporter_creates_and_fills_execution_reports()
         {
             // Arrange
             var task = new TaskDefinition(
                 BasicTaskStep.Empty("Basic"),
-                new PipelineTaskStep<int>(
-                    "Pipeline1",
-                    new[] { 1 },
-                    new List<PipelineBlock<int>>()),
-                new PipelineTaskStep<int>(
-                    "Pipeline2",
-                    new[] { 1 },
-                    new List<PipelineBlock<int>>()));
+                TaskStepBuilder.Build.Pipeline<int>(
+                        "Pipeline1")
+                    .WithInput(new[] { 1 })
+                    .Build(),
+                TaskStepBuilder.Build.Pipeline<int>(
+                        "Pipeline2")
+                    .WithInput(new[] { 1 })
+                    .Build());
 
             var loggerEvents = TaskExecutionLogger.CreateEvents();
             var reporterEvents = TaskExecutionReporter.CreateEvents();
 
             // Act
-            task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+            await task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
 
             // Assert
             var reports = task.GetExecutionReports();
@@ -45,7 +45,7 @@ namespace Manisero.Navvy.Tests
         }
 
         [Fact]
-        public void step_ignored___report_still_generated()
+        public async Task step_ignored___report_still_generated()
         {
             // Arrange
             var task = new TaskDefinition(
@@ -59,7 +59,7 @@ namespace Manisero.Navvy.Tests
             var reporterEvents = TaskExecutionReporter.CreateEvents();
 
             // Act
-            task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+            await task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
 
             // Assert
             var reports = task.GetExecutionReports();
@@ -67,7 +67,7 @@ namespace Manisero.Navvy.Tests
         }
 
         [Fact]
-        public void all_steps_ignored___report_still_generated()
+        public async Task all_steps_ignored___report_still_generated()
         {
             // Arrange
             var task = new TaskDefinition(
@@ -84,7 +84,7 @@ namespace Manisero.Navvy.Tests
             var reporterEvents = TaskExecutionReporter.CreateEvents();
 
             // Act
-            task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+            await task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
 
             // Assert
             var reports = task.GetExecutionReports();
@@ -92,7 +92,7 @@ namespace Manisero.Navvy.Tests
         }
 
         [Fact]
-        public void task_fails___no_report()
+        public async Task task_fails___no_report()
         {
             // Arrange
             var task = new TaskDefinition(
@@ -106,7 +106,7 @@ namespace Manisero.Navvy.Tests
             var reporterEvents = TaskExecutionReporter.CreateEvents();
 
             // Act
-            task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
+            await task.Execute(events: loggerEvents.Concat(reporterEvents).ToArray());
 
             // Assert
             var reports = task.Extras.TryGet<IReadOnlyCollection<TaskExecutionReport>>(TaskExecutionReportingUtils.TaskExecutionReportsExtraKey);

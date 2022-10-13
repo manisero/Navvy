@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.PipelineProcessing;
-using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Tests.Utils;
 using Xunit;
 
@@ -18,14 +17,14 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void basic(ResolverType resolverType)
+        public async Task basic(ResolverType resolverType)
         {
             var task = new TaskDefinition(
                 TaskStepBuilder.Build.Basic(
                     FailingStepName,
                     () => throw _error));
             
-            test(task, resolverType);
+            await test(task, resolverType);
         }
 
         [Theory]
@@ -33,106 +32,99 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Sequential, 1)]
         [InlineData(ResolverType.Streaming, 0)]
         [InlineData(ResolverType.Streaming, 1)]
-        public void pipeline___catches_error_in_input_materialization(
+        public async Task pipeline___catches_error_in_input_materialization(
             ResolverType resolverType,
             int invalidItemIndex)
         {
             var task = new TaskDefinition(
-                new PipelineTaskStep<int>(
-                    FailingStepName,
-                    new[] { 0, 1, 2 }.Select((x, i) =>
-                    {
-                        if (i == invalidItemIndex)
+                TaskStepBuilder.Build.Pipeline<int>(
+                        FailingStepName)
+                    .WithInput(
+                        new[] { 0, 1, 2 }.Select((x, i) =>
                         {
-                            throw _error;
-                        }
-
-                        return x;
-                    }),
-                    3,
-                    new List<PipelineBlock<int>>
-                    {
-                        new PipelineBlock<int>(
-                            "Block",
-                            _ => { }),
-                    }));
-
-            test(task, resolverType);
-        }
-
-        [Theory]
-        [InlineData(ResolverType.Sequential)]
-        [InlineData(ResolverType.Streaming)]
-        public void pipeline___catches_error_in_first_block(
-            ResolverType resolverType)
-        {
-            var task = new TaskDefinition(
-                new PipelineTaskStep<int>(
-                    FailingStepName,
-                    new[] { 0, 1, 2 },
-                    new List<PipelineBlock<int>>
-                    {
-                        new PipelineBlock<int>(
-                            "Block",
-                            _ => throw _error)
-                    }));
-            
-            test(task, resolverType);
-        }
-
-        [Theory]
-        [InlineData(ResolverType.Sequential)]
-        [InlineData(ResolverType.Streaming)]
-        public void pipeline___catches_error_in_non_first_block(
-            ResolverType resolverType)
-        {
-            var task = new TaskDefinition(
-                new PipelineTaskStep<int>(
-                    FailingStepName,
-                    new[] { 0, 1, 2 },
-                    new List<PipelineBlock<int>>
-                    {
-                        new PipelineBlock<int>(
-                            "Block",
-                            _ => { }),
-                        new PipelineBlock<int>(
-                            "Errors",
-                            _ => throw _error)
-                    }));
-
-            test(task, resolverType);
-        }
-
-        [Theory]
-        [InlineData(ResolverType.Sequential)]
-        [InlineData(ResolverType.Streaming)]
-        public void pipeline___item_following_invalid_item_is_not_processed(
-            ResolverType resolverType)
-        {
-            var completed = false;
-
-            var task = new TaskDefinition(
-                new PipelineTaskStep<int>(
-                    FailingStepName,
-                    new[] { 0, 1, 2 },
-                    new List<PipelineBlock<int>>
-                    {
-                        new PipelineBlock<int>(
-                            "Errors / Complete",
-                            x =>
+                            if (i == invalidItemIndex)
                             {
-                                if (x == 0)
-                                {
-                                    throw _error;
-                                }
-                                else
-                                {
-                                    completed = true;
-                                }
-                            })
-                    }));
+                                throw _error;
+                            }
 
-            test(task, resolverType);
+                            return x;
+                        }),
+                        3)
+                    .WithBlock(
+                        "Block",
+                        _ => { })
+                    .Build());
+
+            await test(task, resolverType);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public async Task pipeline___catches_error_in_first_block(
+            ResolverType resolverType)
+        {
+            var task = new TaskDefinition(
+                TaskStepBuilder.Build.Pipeline<int>(
+                        FailingStepName)
+                    .WithInput(new[] { 0, 1, 2 })
+                    .WithBlock(
+                        "Block",
+                        _ => throw _error)
+                    .Build());
+            
+            await test(task, resolverType);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public async Task pipeline___catches_error_in_non_first_block(
+            ResolverType resolverType)
+        {
+            var task = new TaskDefinition(
+                TaskStepBuilder.Build.Pipeline<int>(
+                        FailingStepName)
+                    .WithInput(new[] { 0, 1, 2 })
+                    .WithBlock(
+                        "Block",
+                        _ => { })
+                    .WithBlock(
+                        "Errors",
+                        _ => throw _error)
+                    .Build());
+
+            await test(task, resolverType);
+        }
+
+        [Theory]
+        [InlineData(ResolverType.Sequential)]
+        [InlineData(ResolverType.Streaming)]
+        public async Task pipeline___item_following_invalid_item_is_not_processed(
+            ResolverType resolverType)
+        {
+            var completed = false;
+
+            var task = new TaskDefinition(
+                TaskStepBuilder.Build.Pipeline<int>(
+                        FailingStepName)
+                    .WithInput(new[] { 0, 1, 2 })
+                    .WithBlock(
+                        "Errors / Complete",
+                        x =>
+                        {
+                            if (x == 0)
+                            {
+                                throw _error;
+                            }
+                            else
+                            {
+                                completed = true;
+                            }
+                        })
+                    .Build());
+
+            await test(task, resolverType);
 
             completed.Should().Be(false);
         }
@@ -140,36 +132,34 @@ namespace Manisero.Navvy.Tests
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___invalid_item_is_not_further_processed(
+        public async Task pipeline___invalid_item_is_not_further_processed(
             ResolverType resolverType)
         {
             var completed = false;
 
             var task = new TaskDefinition(
-                new PipelineTaskStep<int>(
-                    FailingStepName,
-                    new[] { 0, 1, 2 },
-                    new List<PipelineBlock<int>>
-                    {
-                        new PipelineBlock<int>(
-                            "Errors",
-                            x => throw _error),
-                        new PipelineBlock<int>(
-                            "Complete",
-                            x => { completed = true; })
-                    }));
+                TaskStepBuilder.Build.Pipeline<int>(
+                        FailingStepName)
+                    .WithInput(new[] { 0, 1, 2 })
+                    .WithBlock(
+                        "Errors",
+                        x => throw _error)
+                    .WithBlock(
+                        "Complete",
+                        x => { completed = true; })
+                    .Build());
 
-            test(task, resolverType);
+            await test(task, resolverType);
 
             completed.Should().Be(false);
         }
 
-        private void test(
+        private async Task test(
             TaskDefinition task,
             ResolverType resolverType)
         {
             // Act
-            var result = task.Execute(resolverType);
+            var result = await task.Execute(resolverType);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Failed);

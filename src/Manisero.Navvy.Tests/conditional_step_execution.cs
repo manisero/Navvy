@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Tests.Utils;
@@ -31,7 +32,7 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Streaming, TaskOutcome.Failed, TaskOutcome.Successful, TaskOutcome.Failed)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Failed, TaskOutcome.Canceled, TaskOutcome.Failed)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Failed, TaskOutcome.Failed, TaskOutcome.Failed)]
-        public void TaskExecutionCondition_and_BasicTaskStep_body_get_most_severe_previous_step_outcome(
+        public async Task TaskExecutionCondition_and_BasicTaskStep_body_get_most_severe_previous_step_outcome(
             ResolverType resolverType,
             TaskOutcome firstStepOutcome,
             TaskOutcome secondStepOutcome,
@@ -57,7 +58,7 @@ namespace Manisero.Navvy.Tests
                     }));
 
             // Act
-            task.Execute(resolverType, cancellation: _cancellationSource);
+            await task.Execute(resolverType, cancellation: _cancellationSource);
 
             // Assert
             actualOutcomePassedToBody.Should().Be(outcomePassedToThirdStepCondition, nameof(actualOutcomePassedToBody));
@@ -71,7 +72,7 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Streaming, TaskOutcome.Successful, true)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Canceled, false)]
         [InlineData(ResolverType.Streaming, TaskOutcome.Failed, false)]
-        public void default_condition___executed_only_if_successful(
+        public async Task default_condition___executed_only_if_successful(
             ResolverType resolverType,
             TaskOutcome precedingStepOutcome,
             bool testedStepExecuted)
@@ -82,7 +83,7 @@ namespace Manisero.Navvy.Tests
                     "TestedStep",
                     () => { _testedStepExecuted = true; }));
 
-            test_conditional_execution(resolverType, task, testedStepExecuted);
+            await test_conditional_execution(resolverType, task, testedStepExecuted);
         }
 
         [Theory]
@@ -90,7 +91,7 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Sequential, false)]
         [InlineData(ResolverType.Streaming, true)]
         [InlineData(ResolverType.Streaming, false)]
-        public void custom_conditon(
+        public async Task custom_conditon(
             ResolverType resolverType,
             bool shouldExecute)
         {
@@ -100,16 +101,16 @@ namespace Manisero.Navvy.Tests
                     () => { _testedStepExecuted = true; },
                     _ => shouldExecute));
 
-            test_conditional_execution(resolverType, task, shouldExecute);
+            await test_conditional_execution(resolverType, task, shouldExecute);
         }
 
-        private void test_conditional_execution(
+        private async Task test_conditional_execution(
             ResolverType resolverType,
             TaskDefinition task,
             bool testedStepExecuted)
         {
             // Act
-            task.Execute(resolverType, cancellation: _cancellationSource);
+            await task.Execute(resolverType, cancellation: _cancellationSource);
 
             // Assert
             _testedStepExecuted.Should().Be(testedStepExecuted);

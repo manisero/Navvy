@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core;
@@ -28,7 +29,7 @@ namespace Manisero.Navvy.Tests
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
         //[InlineData(ResolverType.Sequential, @"c:\temp\Navvy_tests")]
-        public void test(ResolverType resolverType, string reportsFolderPath = null)
+        public async Task test(ResolverType resolverType, string reportsFolderPath = null)
         {
             // Arrange
             var initialized = false;
@@ -79,7 +80,7 @@ namespace Manisero.Navvy.Tests
             };
 
             // Act
-            var result = executor.Execute(task, cancellationSource.Token, events);
+            var result = await executor.Execute(task, cancellationSource.Token, events);
 
             // Assert
             result.Outcome.Should().Be(TaskOutcome.Successful);

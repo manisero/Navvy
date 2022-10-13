@@ -1,11 +1,12 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 using Manisero.Navvy.Core;
 
 namespace Manisero.Navvy.Tests.Utils
 {
     public static class TaskDefinitionUtils
     {
-        public static TaskResult Execute(
+        public static async Task<TaskResult> Execute(
             this TaskDefinition task,
             ResolverType resolverType = ResolverType.Sequential,
             CancellationTokenSource cancellation = null,
@@ -13,7 +14,7 @@ namespace Manisero.Navvy.Tests.Utils
         {
             var executor = TaskExecutorFactory.Create(resolverType);
             
-            return executor.Execute(task, cancellation?.Token, events);
+            return await executor.Execute(task, cancellation?.Token, events);
         }
     }
 }

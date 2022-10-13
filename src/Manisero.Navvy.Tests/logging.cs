@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Logging;
@@ -10,7 +11,7 @@ namespace Manisero.Navvy.Tests
     public class logging
     {
         [Fact]
-        public void logger_creates_and_fills_execution_log()
+        public async Task logger_creates_and_fills_execution_log()
         {
             // Arrange
             var task = new TaskDefinition(
@@ -20,7 +21,7 @@ namespace Manisero.Navvy.Tests
 
             // Act
             var startTs = DateTime.UtcNow;
-            task.Execute(events: events);
+            await task.Execute(events: events);
             var endTs = DateTime.UtcNow;
 
             // Assert
@@ -31,7 +32,7 @@ namespace Manisero.Navvy.Tests
         }
 
         [Fact]
-        public void task_fails___does_not_break()
+        public async Task task_fails___does_not_break()
         {
             // Arrange
             var task = new TaskDefinition(
@@ -42,7 +43,7 @@ namespace Manisero.Navvy.Tests
             var events = TaskExecutionLogger.CreateEvents();
 
             // Act
-            task.Execute(events: events);
+            await task.Execute(events: events);
 
             // Assert
             var log = task.GetExecutionLog();

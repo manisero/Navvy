@@ -89,11 +89,7 @@ namespace Manisero.Navvy.PipelineProcessing
             int maxDegreeOfParallelism = 1)
             => WithBlock(new PipelineBlock<TItem>(
                 name,
-                x =>
-                {
-                    body(x);
-                    return Task.CompletedTask;
-                },
+                body,
                 maxDegreeOfParallelism));
 
         public PipelineTaskStepBuilder<TItem> WithBlock(

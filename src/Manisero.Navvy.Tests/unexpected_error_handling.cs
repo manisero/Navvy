@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.StepExecution;
@@ -21,12 +22,12 @@ namespace Manisero.Navvy.Tests
         private class ThrowingStepExecutor<TTaskStep> : ITaskStepExecutor<TTaskStep>
             where TTaskStep : ITaskStep
         {
-            public void Execute(TTaskStep step, TaskStepExecutionContext context, CancellationToken cancellation)
+            public Task Execute(TTaskStep step, TaskStepExecutionContext context, CancellationToken cancellation)
                 => throw Error;
         }
 
         [Fact]
-        public void test()
+        public async Task test()
         {
             // Arrange
             var task = new TaskDefinition(
@@ -37,10 +38,10 @@ namespace Manisero.Navvy.Tests
                 .Build();
 
             // Act
-            Action act = () => executor.Execute(task);
+            Func<Task> act = () => executor.Execute(task);
 
             // Assert
-            act.Should().Throw<Exception>().Which.Should().BeSameAs(Error);
+            (await act.Should().ThrowAsync<Exception>()).Which.Should().BeSameAs(Error);
         }
     }
 }

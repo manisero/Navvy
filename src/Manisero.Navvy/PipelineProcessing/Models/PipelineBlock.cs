@@ -18,6 +18,21 @@ namespace Manisero.Navvy.PipelineProcessing.Models
 
         public PipelineBlock(
             string name,
+            Action<TItem> body,
+            int maxDegreeOfParallelism = 1)
+            : this(
+                name,
+                x =>
+                {
+                    body(x);
+                    return Task.CompletedTask;
+                },
+                maxDegreeOfParallelism)
+        {
+        }
+
+        public PipelineBlock(
+            string name,
             Func<TItem, Task> body,
             int maxDegreeOfParallelism = 1)
         {

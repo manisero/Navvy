@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.Tests.Utils;
@@ -9,7 +10,7 @@ namespace Manisero.Navvy.Tests.Telemetry
     public class events_registration
     {
         [Fact]
-        public void events_can_be_passed_for_single_task_execution()
+        public async Task events_can_be_passed_for_single_task_execution()
         {
             // Arrange
             var eventHandled = false;
@@ -22,14 +23,14 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Act
             var executor = TaskExecutorFactory.Create(ResolverType.Sequential);
-            executor.Execute(task, events: events);
+            await executor.Execute(task, events: events);
 
             // Assert
             eventHandled.Should().BeTrue();
         }
 
         [Fact]
-        public void events_can_be_registered_for_Executor_instance()
+        public async Task events_can_be_registered_for_Executor_instance()
         {
             // Arrange
             var eventHandled = false;
@@ -42,14 +43,14 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Act
             var executor = TaskExecutorFactory.Create(ResolverType.Sequential, events);
-            executor.Execute(task);
+            await executor.Execute(task);
 
             // Assert
             eventHandled.Should().BeTrue();
         }
 
         [Fact]
-        public void global_and_one_time_events_are_merged()
+        public async Task global_and_one_time_events_are_merged()
         {
             // Arrange
             var globalEventHandled = false;
@@ -65,7 +66,7 @@ namespace Manisero.Navvy.Tests.Telemetry
 
             // Act
             var executor = TaskExecutorFactory.Create(ResolverType.Sequential, globalEvents);
-            executor.Execute(task, events: oneTimeEvents);
+            await executor.Execute(task, events: oneTimeEvents);
 
             // Assert
             globalEventHandled.Should().BeTrue();

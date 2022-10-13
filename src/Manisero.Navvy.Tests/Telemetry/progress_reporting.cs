@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Events;
 using Manisero.Navvy.PipelineProcessing;
-using Manisero.Navvy.PipelineProcessing.Models;
 using Manisero.Navvy.Tests.Utils;
 using Xunit;
 
@@ -13,18 +13,18 @@ namespace Manisero.Navvy.Tests.Telemetry
     public class progress_reporting
     {
         [Fact]
-        public void basic_automatic()
+        public async Task basic_automatic()
         {
-            test(
+            await test(
                 ResolverType.Sequential,
                 BasicTaskStep.Empty("Step"),
                 new[] { 1f });
         }
 
         [Fact]
-        public void basic_manual()
+        public async Task basic_manual()
         {
-            test(
+            await test(
                 ResolverType.Sequential,
                 TaskStepBuilder.Build.Basic(
                     "Step",
@@ -39,9 +39,9 @@ namespace Manisero.Navvy.Tests.Telemetry
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline(ResolverType resolverType)
+        public async Task pipeline(ResolverType resolverType)
         {
-            test(
+            await test(
                 resolverType,
                 GetPipelineStep(4),
                 new[] { 0.25f, 0.5f, 0.75f, 1f });
@@ -50,9 +50,9 @@ namespace Manisero.Navvy.Tests.Telemetry
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___more_items_than_expected(ResolverType resolverType)
+        public async Task pipeline___more_items_than_expected(ResolverType resolverType)
         {
-            test(
+            await test(
                 resolverType,
                 GetPipelineStep(3, 2),
                 new[] { 0.5f, 1f, 1f });
@@ -61,15 +61,15 @@ namespace Manisero.Navvy.Tests.Telemetry
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline___less_items_than_expected(ResolverType resolverType)
+        public async Task pipeline___less_items_than_expected(ResolverType resolverType)
         {
-            test(
+            await test(
                 resolverType,
                 GetPipelineStep(3, 4),
                 new[] { 0.25f, 0.5f, 0.75f });
         }
 
-        private void test(
+        private async Task test(
             ResolverType resolverType,
             ITaskStep taskStep,
             ICollection<float> expectedProgressReports)
@@ -81,7 +81,7 @@ namespace Manisero.Navvy.Tests.Telemetry
             var events = new TaskExecutionEvents(stepProgressed: progressReports.Add);
 
             // Act
-            task.Execute(resolverType, events: events);
+            await task.Execute(resolverType, events: events);
 
             // Assert
             progressReports.Should().HaveCount(expectedProgressReports.Count);
@@ -91,16 +91,15 @@ namespace Manisero.Navvy.Tests.Telemetry
 
         private ITaskStep GetPipelineStep(int actualItemsCount, int? expectedItemsCount = null)
         {
-            return new PipelineTaskStep<int>(
-                "Step",
-                Enumerable.Repeat(0, actualItemsCount),
-                expectedItemsCount ?? actualItemsCount,
-                new List<PipelineBlock<int>>
-                {
-                    new PipelineBlock<int>(
-                        "Block",
-                        x => { })
-                });
+            return TaskStepBuilder.Build.Pipeline<int>(
+                    "Step")
+                .WithInput(
+                    Enumerable.Repeat(0, actualItemsCount),
+                    expectedItemsCount ?? actualItemsCount)
+                .WithBlock(
+                    "Block",
+                    x => { })
+                .Build();
         }
     }
 }

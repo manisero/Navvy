@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.PipelineProcessing;
 using Manisero.Navvy.PipelineProcessing.Events;
@@ -14,7 +14,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void item_start_and_end_is_reported(ResolverType resolverType)
+        public async Task item_start_and_end_is_reported(ResolverType resolverType)
         {
             // Arrange
             ItemMaterializedEvent? startedEvent = null;
@@ -27,13 +27,13 @@ namespace Manisero.Navvy.Tests.Telemetry
             var item = 1;
 
             var task = new TaskDefinition(
-                new PipelineTaskStep<int>(
-                    "Step",
-                    new[] { item },
-                    new List<PipelineBlock<int>>()));
+                TaskStepBuilder.Build.Pipeline<int>(
+                        "Step")
+                    .WithInput(new[] { item })
+                    .Build());
 
             // Act
-            task.Execute(resolverType, events: events);
+            await task.Execute(resolverType, events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -50,7 +50,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void block_start_and_end_is_reported(ResolverType resolverType)
+        public async Task block_start_and_end_is_reported(ResolverType resolverType)
         {
             // Arrange
             BlockStartedEvent? startedEvent = null;
@@ -65,13 +65,14 @@ namespace Manisero.Navvy.Tests.Telemetry
                 x => { });
 
             var task = new TaskDefinition(
-                new PipelineTaskStep<int>(
-                    "Step",
-                    new[] { 0 },
-                    new List<PipelineBlock<int>> { block }));
+                TaskStepBuilder.Build.Pipeline<int>(
+                        "Step")
+                    .WithInput(new[] { 0 })
+                    .WithBlock(block)
+                    .Build());
 
             // Act
-            task.Execute(resolverType, events: events);
+            await task.Execute(resolverType, events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -85,7 +86,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         [Theory]
         [InlineData(ResolverType.Sequential)]
         [InlineData(ResolverType.Streaming)]
-        public void pipeline_end_is_reported(ResolverType resolverType)
+        public async Task pipeline_end_is_reported(ResolverType resolverType)
         {
             // Arrange
             PipelineEndedEvent? endedEvent = null;
@@ -102,14 +103,17 @@ namespace Manisero.Navvy.Tests.Telemetry
                 x => { });
 
             var task = new TaskDefinition(
-                new PipelineTaskStep<int>(
-                    "Step",
-                    new[] { 0 },
-                    1,
-                    new List<PipelineBlock<int>> { block1, block2 }));
+                TaskStepBuilder.Build.Pipeline<int>(
+                        "Step")
+                    .WithInput(
+                        new[] { 0 },
+                        1)
+                    .WithBlock(block1)
+                    .WithBlock(block2)
+                    .Build());
 
             // Act
-            task.Execute(resolverType, events: events);
+            await task.Execute(resolverType, events: events);
 
             // Assert
             endedEvent.Should().NotBeNull();

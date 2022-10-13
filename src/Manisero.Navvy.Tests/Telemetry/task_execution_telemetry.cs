@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Manisero.Navvy.BasicProcessing;
 using Manisero.Navvy.Core.Events;
@@ -11,7 +12,7 @@ namespace Manisero.Navvy.Tests.Telemetry
     public class task_execution_telemetry
     {
         [Fact]
-        public void task_start_and_end_is_reported()
+        public async Task task_start_and_end_is_reported()
         {
             // Arrange
             TaskStartedEvent? startedEvent = null;
@@ -25,7 +26,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                 BasicTaskStep.Empty("Step"));
 
             // Act
-            task.Execute(events: events);
+            await task.Execute(events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -37,7 +38,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         }
 
         [Fact]
-        public void step_start_and_end_is_reported()
+        public async Task step_start_and_end_is_reported()
         {
             // Arrange
             StepStartedEvent? startedEvent = null;
@@ -51,7 +52,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                 BasicTaskStep.Empty("Step"));
 
             // Act
-            task.Execute(events: events);
+            await task.Execute(events: events);
 
             // Assert
             startedEvent.Should().NotBeNull();
@@ -63,7 +64,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         }
 
         [Fact]
-        public void step_skip_is_reported()
+        public async Task step_skip_is_reported()
         {
             // Arrange
             StepSkippedEvent? skippedEvent = null;
@@ -78,7 +79,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                     _ => false));
 
             // Act
-            task.Execute(events: events);
+            await task.Execute(events: events);
 
             // Assert
             skippedEvent.Should().NotBeNull();
@@ -86,7 +87,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         }
 
         [Fact]
-        public void step_cancellation_is_reported()
+        public async Task step_cancellation_is_reported()
         {
             // Arrange
             StepCanceledEvent? canceledEvent = null;
@@ -102,7 +103,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                     () => cancellationSource.Cancel()));
 
             // Act
-            task.Execute(cancellation: cancellationSource, events: events);
+            await task.Execute(cancellation: cancellationSource, events: events);
 
             // Assert
             canceledEvent.Should().NotBeNull();
@@ -110,7 +111,7 @@ namespace Manisero.Navvy.Tests.Telemetry
         }
 
         [Fact]
-        public void step_failure_is_reported()
+        public async Task step_failure_is_reported()
         {
             // Arrange
             StepFailedEvent? failedEvent = null;
@@ -126,7 +127,7 @@ namespace Manisero.Navvy.Tests.Telemetry
                     () => throw exception));
 
             // Act
-            task.Execute(events: events);
+            await task.Execute(events: events);
 
             // Assert
             failedEvent.Should().NotBeNull();
