@@ -1,17 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Manisero.Navvy.Utils
 {
     internal static class EnumerableUtils
     {
-        public static IEnumerable<List<TSource>> Batch<TSource>(
-            this IEnumerable<TSource> source,
+        public static async IAsyncEnumerable<TSource> ToAsyncEnumerable<TSource>(
+            this IEnumerable<TSource> source)
+        {
+            foreach (var item in source)
+            {
+                yield return item;
+            }
+        }
+
+        public static async IAsyncEnumerable<TResult> Select<TSource, TResult>(
+            this IAsyncEnumerable<TSource> source,
+            Func<TSource, Task<TResult>> mapping)
+        {
+            await foreach (var item in source)
+            {
+                yield return await mapping(item);
+            }
+        }
+
+        public static async IAsyncEnumerable<List<TSource>> Batch<TSource>(
+            this IAsyncEnumerable<TSource> source,
             int batchSize)
         {
             var batch = new List<TSource>(batchSize);
 
-            foreach (var item in source)
+            await foreach (var item in source)
             {
                 batch.Add(item);
 

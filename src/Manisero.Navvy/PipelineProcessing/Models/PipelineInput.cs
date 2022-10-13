@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Manisero.Navvy.Utils;
 
 namespace Manisero.Navvy.PipelineProcessing.Models
 {
@@ -15,7 +16,7 @@ namespace Manisero.Navvy.PipelineProcessing.Models
 
     public interface IPipelineInputItems<TItem>
     {
-        IEnumerable<TItem> Items { get; }
+        IAsyncEnumerable<TItem> Items { get; }
 
         int ExpectedCount { get; }
     }
@@ -40,10 +41,18 @@ namespace Manisero.Navvy.PipelineProcessing.Models
         }
 
         public PipelineInput(
-            IEnumerable<TItem> items,
+            IAsyncEnumerable<TItem> items,
             int expectedItemsCount,
             string name = PipelineInput.DefaultName)
             : this(() => new PipelineInputItems<TItem>(items, expectedItemsCount), name)
+        {
+        }
+
+        public PipelineInput(
+            IEnumerable<TItem> items,
+            int expectedItemsCount,
+            string name = PipelineInput.DefaultName)
+            : this(items.ToAsyncEnumerable(), expectedItemsCount, name)
         {
         }
 
@@ -57,12 +66,12 @@ namespace Manisero.Navvy.PipelineProcessing.Models
 
     public class PipelineInputItems<TItem> : IPipelineInputItems<TItem>
     {
-        public IEnumerable<TItem> Items { get; }
+        public IAsyncEnumerable<TItem> Items { get; }
 
         public int ExpectedCount { get; }
 
         public PipelineInputItems(
-            IEnumerable<TItem> items,
+            IAsyncEnumerable<TItem> items,
             int expectedCount)
         {
             Items = items;

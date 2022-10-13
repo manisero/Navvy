@@ -1,24 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Manisero.Navvy.PipelineProcessing.Models;
 
 namespace Manisero.Navvy.Utils
 {
     public class BatchedPipelineInputItems<TItem, TBatch> : IPipelineInputItems<TBatch>
     {
-        public IEnumerable<TBatch> Items { get; }
+        public IAsyncEnumerable<TBatch> Items { get; }
 
         public int ExpectedCount { get; }
+
+        public BatchedPipelineInputItems(
+            IAsyncEnumerable<TItem> items,
+            int expectedItemsCount,
+            int batchSize,
+            Func<List<TItem>, TBatch> batchFactory)
+            : this(
+                items,
+                expectedItemsCount,
+                batchSize,
+                x => Task.FromResult(batchFactory(x)))
+        {
+        }
+
+        public BatchedPipelineInputItems(
+            IAsyncEnumerable<TItem> items,
+            int expectedItemsCount,
+            int batchSize,
+            Func<List<TItem>, Task<TBatch>> batchFactory)
+        {
+            Items = items.Batch(batchSize).Select(batchFactory);
+            ExpectedCount = expectedItemsCount.CeilingOfDivisionBy(batchSize);
+        }
 
         public BatchedPipelineInputItems(
             IEnumerable<TItem> items,
             int expectedItemsCount,
             int batchSize,
             Func<List<TItem>, TBatch> batchFactory)
+            : this(items.ToAsyncEnumerable(), expectedItemsCount, batchSize, batchFactory)
         {
-            Items = items.Batch(batchSize).Select(batchFactory);
-            ExpectedCount = expectedItemsCount.CeilingOfDivisionBy(batchSize);
+        }
+
+        public BatchedPipelineInputItems(
+            IEnumerable<TItem> items,
+            int expectedItemsCount,
+            int batchSize,
+            Func<List<TItem>, Task<TBatch>> batchFactory)
+            : this(items.ToAsyncEnumerable(), expectedItemsCount, batchSize, batchFactory)
+        {
         }
 
         public BatchedPipelineInputItems(
@@ -30,9 +61,9 @@ namespace Manisero.Navvy.Utils
         }
 
         public BatchedPipelineInputItems(
-            IReadOnlyCollection<TItem> items,
+            ICollection<TItem> items,
             int batchSize,
-            Func<List<TItem>, TBatch> batchFactory)
+            Func<List<TItem>, Task<TBatch>> batchFactory)
             : this(items, items.Count, batchSize, batchFactory)
         {
         }
@@ -40,6 +71,14 @@ namespace Manisero.Navvy.Utils
 
     public class BatchedPipelineInputItems<TItem> : BatchedPipelineInputItems<TItem, List<TItem>>
     {
+        public BatchedPipelineInputItems(
+            IAsyncEnumerable<TItem> items,
+            int expectedItemsCount,
+            int batchSize)
+            : base(items, expectedItemsCount, batchSize, x => x)
+        {
+        }
+
         public BatchedPipelineInputItems(
             IEnumerable<TItem> items,
             int expectedItemsCount,
@@ -51,14 +90,7 @@ namespace Manisero.Navvy.Utils
         public BatchedPipelineInputItems(
             ICollection<TItem> items,
             int batchSize)
-            : this(items, items.Count, batchSize)
-        {
-        }
-
-        public BatchedPipelineInputItems(
-            IReadOnlyCollection<TItem> items,
-            int batchSize)
-            : this(items, items.Count, batchSize)
+            : base(items, batchSize, x => x)
         {
         }
     }
